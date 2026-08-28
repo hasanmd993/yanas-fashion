@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
+use App\Http\Controllers\Admin\SliderController as AdminSliderController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
@@ -41,6 +42,7 @@ Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.in
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 Route::post('/checkout/coupon', [CheckoutController::class, 'applyCoupon'])->name('checkout.coupon');
 Route::get('/order-confirmed/{order_number}', [CheckoutController::class, 'success'])->name('checkout.success');
+Route::get('/order/{order_number}/invoice', [CheckoutController::class, 'downloadInvoice'])->name('order.invoice');
 
 // Order Tracking
 Route::get('/order-tracking', [OrderTrackingController::class, 'index'])->name('tracking.index');
@@ -52,13 +54,19 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // Orders
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/export/excel', [AdminOrderController::class, 'exportExcel'])->name('orders.export_excel');
+    Route::get('/orders/export/courier', [AdminOrderController::class, 'exportCourierCsv'])->name('orders.export_courier');
     Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders/{id}/invoice', [AdminOrderController::class, 'downloadInvoice'])->name('orders.invoice');
+    Route::get('/orders/{id}/print', [AdminOrderController::class, 'printInvoice'])->name('orders.print');
     Route::post('/orders/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update_status');
     Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
 
-    // Products & Categories CRUD
+    // Products, Categories, Sliders & Coupons CRUD
     Route::resource('products', AdminProductController::class);
     Route::resource('categories', AdminCategoryController::class);
+    Route::resource('sliders', AdminSliderController::class);
+    Route::resource('coupons', \App\Http\Controllers\Admin\CouponController::class);
 
     // Settings
     Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings.index');

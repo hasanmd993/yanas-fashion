@@ -15,7 +15,7 @@
     </div>
 
     <div class="panel max-w-xl">
-        <form action="{{ route('admin.categories.update', $category->id) }}" method="POST" class="space-y-4 text-xs">
+        <form action="{{ route('admin.categories.update', $category->id) }}" method="POST" enctype="multipart/form-data" class="space-y-4 text-xs">
             @csrf
             @method('PUT')
 
@@ -31,10 +31,29 @@
                        class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">
             </div>
 
-            <div>
-                <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Image Path</label>
-                <input type="text" name="image" value="{{ old('image', $category->image) }}" 
-                       class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">
+            <div class="p-3.5 rounded-xl bg-gray-50 dark:bg-[#14233c] border border-dashed border-gray-300 dark:border-[#192a43]">
+                <div class="flex items-center justify-between mb-1.5">
+                    <label class="block font-bold text-gray-800 dark:text-white">
+                        Category Image (নতুন ছবি আপলোড করতে পারেন)
+                    </label>
+                    <span class="badge badge-success text-[10px]">✨ Auto WebP</span>
+                </div>
+
+                @if($category->image)
+                    <div class="flex items-center gap-3 mb-2">
+                        <img src="{{ asset($category->image) }}" alt="{{ $category->name }}" class="h-14 w-14 rounded-full object-cover border border-gray-200 dark:border-[#192a43]">
+                        <span class="text-[11px] text-gray-400 font-mono">{{ $category->image }}</span>
+                    </div>
+                @endif
+
+                <input type="file" name="image_file" accept="image/*" 
+                       class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-2 text-xs font-semibold file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-primary file:text-white hover:file:bg-primary-hover">
+                
+                <div class="mt-2 text-gray-400 text-[11px]">
+                    Or keep existing image path:
+                    <input type="text" name="image" value="{{ old('image', $category->image) }}" 
+                           class="mt-1 w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-2 text-xs font-mono dark:text-white">
+                </div>
             </div>
 
             <div>

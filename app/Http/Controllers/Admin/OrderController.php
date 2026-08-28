@@ -65,7 +65,37 @@ class OrderController extends Controller
     public function destroy($id)
     {
         $order = Order::findOrFail($id);
+        $order->items()->delete();
         $order->delete();
-        return redirect()->route('admin.orders.index')->with('success', 'অর্ডার মুছে ফেলা হয়েছে!');
+
+        return redirect()->route('admin.orders.index')->with('success', 'অর্ডার সফলভাবে মুছে ফেলা হয়েছে!');
+    }
+
+    public function downloadInvoice($id)
+    {
+        $order = Order::with('items')->findOrFail($id);
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('invoices.order_pdf', compact('order'));
+        return $pdf->download("Invoice-{$order->order_number}.pdf");
+    }
+
+    public function printInvoice($id)
+    {
+        $order = Order::with('items')->findOrFail($id);
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('invoices.order_pdf', compact('order'));
+        return $pdf->stream("Invoice-{$order->order_number}.pdf");
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $status = $request->get('status', 'all');
+        $fileName = 'Yanas_Fashion_Orders_' . date('Y_m_d_His') . '.xlsx';
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\OrdersExport($status), $fileName);
+    }
+
+    public function exportCourierCsv(Request $request)
+    {
+        $status = $request->get('status', 'pending');
+        $fileName = 'Steadfast_Courier_Bulk_' . date('Y_m_d_His') . '.csv';
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\CourierBulkExport($status), $fileName, \Maatwebsite\Excel\Excel::CSV);
     }
 }

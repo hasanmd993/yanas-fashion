@@ -15,7 +15,7 @@
     </div>
 
     <div class="panel max-w-4xl">
-        <form action="{{ route('admin.products.update', $product->id) }}" method="POST" class="space-y-6 text-xs">
+        <form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6 text-xs">
             @csrf
             @method('PUT')
 
@@ -61,7 +61,7 @@
 
                 <!-- Sale Price -->
                 <div>
-                    <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Sale Price (৳)</label>
+                    <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Sale / Discount Price (৳)</label>
                     <input type="number" step="0.01" name="sale_price" value="{{ old('sale_price', $product->sale_price) }}" 
                            class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">
                 </div>
@@ -80,11 +80,42 @@
                            class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">
                 </div>
 
-                <!-- Thumbnail -->
-                <div class="sm:col-span-2">
-                    <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Thumbnail Image Path *</label>
-                    <input type="text" name="thumbnail" required value="{{ old('thumbnail', $product->thumbnail) }}" 
-                           class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">
+                <!-- Thumbnail Upload (Intervention Image Auto-WebP) -->
+                <div class="sm:col-span-2 p-4 rounded-xl bg-gray-50 dark:bg-[#14233c] border border-dashed border-gray-300 dark:border-[#192a43]">
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block font-bold text-gray-800 dark:text-white">
+                            Thumbnail Image (নতুন ছবি আপলোড করতে পারেন)
+                        </label>
+                        <span class="badge badge-success text-[10px]">✨ Auto WebP Optimized</span>
+                    </div>
+
+                    @if($product->thumbnail)
+                        <div class="flex items-center gap-3 mb-3">
+                            <img src="{{ asset($product->thumbnail) }}" alt="{{ $product->title }}" class="h-16 w-16 rounded-lg object-cover border border-gray-200 dark:border-[#192a43]">
+                            <div>
+                                <span class="text-[11px] text-gray-400 font-mono block">{{ $product->thumbnail }}</span>
+                                <span class="text-[10px] text-primary font-semibold">Current active thumbnail</span>
+                            </div>
+                        </div>
+                    @endif
+                    
+                    <input type="file" name="thumbnail_file" accept="image/*" 
+                           class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-2 text-xs font-semibold file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-primary file:text-white hover:file:bg-primary-hover">
+                    
+                    <div class="mt-3 text-gray-400 text-[11px]">
+                        Or keep existing path:
+                        <input type="text" name="thumbnail" value="{{ old('thumbnail', $product->thumbnail) }}" 
+                               class="mt-1 w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-2.5 text-xs font-mono dark:text-white">
+                    </div>
+                </div>
+
+                <!-- Gallery Upload -->
+                <div class="sm:col-span-2 p-4 rounded-xl bg-gray-50 dark:bg-[#14233c] border border-dashed border-gray-300 dark:border-[#192a43]">
+                    <label class="block font-bold text-gray-800 dark:text-white mb-1">
+                        Gallery Extra Images (নতুন অতিরিক্ত ছবি আপলোড করুন)
+                    </label>
+                    <input type="file" name="gallery_files[]" multiple accept="image/*" 
+                           class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-2 text-xs font-semibold file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-secondary file:text-white hover:file:bg-secondary-hover">
                 </div>
 
                 <!-- Sizes -->

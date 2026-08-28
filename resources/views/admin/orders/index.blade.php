@@ -7,8 +7,18 @@
     <!-- Header -->
     <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-extrabold text-gray-800 dark:text-white">Orders Management</h1>
-            <p class="text-xs text-gray-500 dark:text-gray-400">Track, process and fulfill customer orders</p>
+            <h1 class="text-2xl font-extrabold text-gray-800 dark:text-white">Orders Management (অর্ডারসমূহ)</h1>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Track, process, export and fulfill customer orders</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+            <a href="{{ route('admin.orders.export_excel', ['status' => request('status', 'all')]) }}" 
+               class="btn inline-flex items-center gap-2 rounded-lg bg-[#107c41] px-3.5 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#0b5c30] transition-all" title="Export all filtered orders to Excel (.xlsx)">
+                <i class="fa-solid fa-file-excel"></i> Export Excel
+            </a>
+            <a href="{{ route('admin.orders.export_courier', ['status' => request('status', 'pending')]) }}" 
+               class="btn inline-flex items-center gap-2 rounded-lg bg-secondary px-3.5 py-2 text-xs font-bold text-white shadow-sm hover:bg-secondary-hover transition-all" title="Bulk Courier Format for Steadfast / Pathao">
+                <i class="fa-solid fa-truck-fast"></i> Steadfast / Pathao CSV
+            </a>
         </div>
     </div>
 

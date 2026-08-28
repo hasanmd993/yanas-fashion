@@ -94,8 +94,11 @@
 
             <!-- Action Buttons -->
             <div style="display: flex; justify-content: center; gap: 14px; margin-top: 28px; flex-wrap: wrap;">
+                <a href="{{ route('order.invoice', $order->order_number) }}" class="btn btn-outline btn-sm" style="border-color:var(--primary); color:var(--primary);">
+                    <i class="fa-solid fa-file-pdf"></i> PDF ইনভয়েস ডাউনলোড
+                </a>
                 <button type="button" onclick="window.print()" class="btn btn-outline btn-sm">
-                    <i class="fa-solid fa-print"></i> ইনভয়েস প্রিন্ট করুন
+                    <i class="fa-solid fa-print"></i> প্রিন্ট করুন
                 </button>
                 <a href="{{ route('tracking.index') }}" class="btn btn-primary btn-sm">
                     <i class="fa-solid fa-truck-fast"></i> অর্ডার ট্র্যাক করুন

@@ -14,13 +14,16 @@
                 Order #{{ $order->order_number }}
             </h1>
         </div>
-        <div class="flex items-center gap-3">
-            <button type="button" onclick="window.print()" class="btn inline-flex items-center gap-2 rounded-lg border border-gray-300 dark:border-[#192a43] bg-white dark:bg-[#1b2e4b] px-4 py-2 text-xs font-bold text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 transition-all">
-                <i class="fa-solid fa-print"></i> Print Invoice
-            </button>
+        <div class="flex items-center gap-2 sm:gap-3">
+            <a href="{{ route('admin.orders.print', $order->id) }}" target="_blank" class="btn inline-flex items-center gap-2 rounded-lg border border-gray-300 dark:border-[#192a43] bg-white dark:bg-[#1b2e4b] px-3.5 py-2 text-xs font-bold text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 transition-all" title="Open PDF Invoice in Browser">
+                <i class="fa-solid fa-print text-primary"></i> Print PDF
+            </a>
+            <a href="{{ route('admin.orders.invoice', $order->id) }}" class="btn inline-flex items-center gap-2 rounded-lg bg-primary px-3.5 py-2 text-xs font-bold text-white shadow-md hover:bg-primary-hover transition-all" title="Download PDF File">
+                <i class="fa-solid fa-file-arrow-down"></i> Download PDF
+            </a>
             <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $order->customer_phone) }}?text=Hello%20{{ urlencode($order->customer_name) }},%20regarding%20your%20Yana's%20Fashion%20order%20%23{{ $order->order_number }}..." target="_blank" 
-               class="btn inline-flex items-center gap-2 rounded-lg bg-[#25D366] px-4 py-2 text-xs font-bold text-white shadow-md hover:bg-[#1eb956] transition-all">
-                <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp Customer
+               class="btn inline-flex items-center gap-2 rounded-lg bg-[#25D366] px-3.5 py-2 text-xs font-bold text-white shadow-md hover:bg-[#1eb956] transition-all">
+                <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
             </a>
         </div>
     </div>

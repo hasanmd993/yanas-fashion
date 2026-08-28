@@ -4,12 +4,121 @@
  */
 
 document.addEventListener('DOMContentLoaded', function () {
+    initHeroSlider();
     initLiveSearch();
     initCartDrawer();
     initCheckoutCalculator();
     initProductGallery();
     initSizeChartModal();
 });
+
+// =========================================================================
+// 0. Luxury Hero Slider Engine (Auto-Play, Swipe & Indicators)
+// =========================================================================
+function initHeroSlider() {
+    const slider = document.getElementById('heroSlider');
+    if (!slider) return;
+
+    const slides = slider.querySelectorAll('.hero-slide');
+    const dots = slider.querySelectorAll('.hero-dot');
+    const prevBtn = document.getElementById('heroPrevBtn');
+    const nextBtn = document.getElementById('heroNextBtn');
+    const totalSlides = slides.length;
+
+    if (totalSlides <= 1) return;
+
+    let currentSlide = 0;
+    let autoPlayInterval = 5000;
+    let autoPlayTimer = null;
+
+    function goToSlide(index) {
+        slides[currentSlide].classList.remove('active');
+        if (dots[currentSlide]) {
+            dots[currentSlide].classList.remove('active');
+        }
+
+        currentSlide = (index + totalSlides) % totalSlides;
+
+        slides[currentSlide].classList.add('active');
+        if (dots[currentSlide]) {
+            dots[currentSlide].classList.add('active');
+        }
+    }
+
+    function nextSlide() {
+        goToSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+        goToSlide(currentSlide - 1);
+    }
+
+    function startAutoPlay() {
+        stopAutoPlay();
+        autoPlayTimer = setInterval(nextSlide, autoPlayInterval);
+    }
+
+    function stopAutoPlay() {
+        if (autoPlayTimer) {
+            clearInterval(autoPlayTimer);
+            autoPlayTimer = null;
+        }
+    }
+
+    // Button Click Listeners
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            startAutoPlay();
+        });
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            startAutoPlay();
+        });
+    }
+
+    // Dot Click Listeners
+    dots.forEach((dot, idx) => {
+        dot.addEventListener('click', () => {
+            goToSlide(idx);
+            startAutoPlay();
+        });
+    });
+
+    // Pause on Hover
+    slider.addEventListener('mouseenter', stopAutoPlay);
+    slider.addEventListener('mouseleave', startAutoPlay);
+
+    // Touch / Swipe Gestures for Mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    slider.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        stopAutoPlay();
+    }, { passive: true });
+
+    slider.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+        startAutoPlay();
+    }, { passive: true });
+
+    function handleSwipe() {
+        const threshold = 40; // minimum distance to trigger swipe
+        if (touchStartX - touchEndX > threshold) {
+            nextSlide(); // Swipe Left
+        } else if (touchEndX - touchStartX > threshold) {
+            prevSlide(); // Swipe Right
+        }
+    }
+
+    // Start auto-play
+    startAutoPlay();
+}
 
 // =========================================================================
 // 1. Live Autocomplete Header Search

@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Setting;
+use App\Models\Slider;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index()
     {
+        $sliders = Slider::active()->get();
+
         $categories = Category::where('is_active', true)
             ->orderBy('sort_order', 'asc')
             ->get();
@@ -34,6 +37,7 @@ class HomeController extends Controller
             ->get();
 
         return view('home', compact(
+            'sliders',
             'categories',
             'featuredProducts',
             'trendingProducts',

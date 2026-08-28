@@ -260,4 +260,11 @@ class CheckoutController extends Controller
 
         return view('checkout.success', compact('order', 'whatsappUrl'));
     }
+
+    public function downloadInvoice($order_number)
+    {
+        $order = Order::with('items')->where('order_number', $order_number)->firstOrFail();
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('invoices.order_pdf', compact('order'));
+        return $pdf->download("Invoice-{$order->order_number}.pdf");
+    }
 }

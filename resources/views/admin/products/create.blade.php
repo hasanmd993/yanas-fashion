@@ -15,7 +15,7 @@
     </div>
 
     <div class="panel max-w-4xl">
-        <form action="{{ route('admin.products.store') }}" method="POST" class="space-y-6 text-xs">
+        <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6 text-xs">
             @csrf
 
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -80,11 +80,32 @@
                            class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">
                 </div>
 
-                <!-- Thumbnail Path -->
-                <div class="sm:col-span-2">
-                    <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Thumbnail Image Path *</label>
-                    <input type="text" name="thumbnail" required placeholder="/assets/product-embroidered-panjabi.jpg" value="{{ old('thumbnail', '/assets/product-embroidered-panjabi.jpg') }}" 
-                           class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">
+                <!-- Thumbnail Upload (Intervention Image Auto-WebP) -->
+                <div class="sm:col-span-2 p-4 rounded-xl bg-gray-50 dark:bg-[#14233c] border border-dashed border-gray-300 dark:border-[#192a43]">
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block font-bold text-gray-800 dark:text-white">
+                            Thumbnail Image (প্রধান ছবি আপলোড করুন)
+                        </label>
+                        <span class="badge badge-success text-[10px]">✨ Auto WebP Optimized</span>
+                    </div>
+                    
+                    <input type="file" name="thumbnail_file" accept="image/*" 
+                           class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-2 text-xs font-semibold file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-primary file:text-white hover:file:bg-primary-hover">
+                    
+                    <div class="mt-3 text-gray-400 text-[11px]">
+                        Or enter existing image path:
+                        <input type="text" name="thumbnail" placeholder="/assets/product-embroidered-panjabi.jpg" value="{{ old('thumbnail') }}" 
+                               class="mt-1 w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-2.5 text-xs font-mono dark:text-white">
+                    </div>
+                </div>
+
+                <!-- Gallery Upload -->
+                <div class="sm:col-span-2 p-4 rounded-xl bg-gray-50 dark:bg-[#14233c] border border-dashed border-gray-300 dark:border-[#192a43]">
+                    <label class="block font-bold text-gray-800 dark:text-white mb-1">
+                        Gallery Extra Images (গ্যালারি অতিরিক্ত ছবিসমূহ - একাধিক সিলেক্ট করতে পারেন)
+                    </label>
+                    <input type="file" name="gallery_files[]" multiple accept="image/*" 
+                           class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-2 text-xs font-semibold file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-secondary file:text-white hover:file:bg-secondary-hover">
                 </div>
 
                 <!-- Sizes -->

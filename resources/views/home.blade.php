@@ -4,30 +4,84 @@
 
 @section('content')
 
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <img src="{{ asset('assets/hero.jpg') }}" alt="Bangladeshi Luxury Fashion" class="hero-bg-img">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-tag">
-                    <i class="fa-solid fa-sparkles"></i> Pohela Boishakh & Festive Edit 2026
-                </div>
-                <h1 class="hero-title">
-                    বাংলার ঐতিহ্য, <span>আধুনিক আভিজাত্য</span>
-                </h1>
-                <p class="hero-subtitle">
-                    খাঁটি হাতে বোনা ঢাকাই জামদানি, প্রিমিয়াম রাজমহলী সিল্ক ও নিখুঁত ফেস্টিভ পাঞ্জাবি। সারা বাংলাদেশে হোম ডেলিভারি ও ক্যাশ অন ডেলিভারি সুবিধা।
-                </p>
-                <div class="hero-cta-group">
-                    <a href="{{ route('shop.index') }}" class="btn btn-accent btn-lg">
-                        কালেকশন দেখুন (Explore Collection) <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                    <a href="{{ route('shop.index', ['category' => 'festive-panjabi']) }}" class="btn btn-outline" style="color:#fff; border-color:rgba(255,255,255,0.4);">
-                        পাঞ্জাবি কালেকশন
-                    </a>
+    <!-- Interactive Luxury Hero Slider -->
+    <section class="hero-slider-section" id="heroSlider">
+        
+        @forelse($sliders as $idx => $slide)
+            <div class="hero-slide {{ $idx === 0 ? 'active' : '' }}" data-slide="{{ $idx }}">
+                <img src="{{ asset($slide->image) }}" alt="{{ $slide->title }}" class="hero-slide-bg">
+                <div class="hero-slide-overlay"></div>
+                <div class="container">
+                    <div class="hero-content">
+                        @if($slide->tag)
+                            <div class="hero-tag">
+                                <i class="fa-solid fa-sparkles"></i> {{ $slide->tag }}
+                            </div>
+                        @endif
+                        <h1 class="hero-title">
+                            {!! $slide->title !!}
+                        </h1>
+                        @if($slide->subtitle)
+                            <p class="hero-subtitle">
+                                {!! $slide->subtitle !!}
+                            </p>
+                        @endif
+                        <div class="hero-cta-group">
+                            <a href="{{ url($slide->button_link) }}" class="btn btn-accent btn-lg">
+                                {{ $slide->button_text }} <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                            @if($slide->secondary_button_text && $slide->secondary_button_link)
+                                <a href="{{ url($slide->secondary_button_link) }}" class="btn btn-outline" style="color:#fff; border-color:rgba(255,255,255,0.4);">
+                                    {{ $slide->secondary_button_text }}
+                                </a>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        @empty
+            <!-- Fallback Static Slide if DB is empty -->
+            <div class="hero-slide active" data-slide="0">
+                <img src="{{ asset('assets/hero.jpg') }}" alt="Bangladeshi Festive Fashion" class="hero-slide-bg">
+                <div class="hero-slide-overlay"></div>
+                <div class="container">
+                    <div class="hero-content">
+                        <div class="hero-tag">
+                            <i class="fa-solid fa-sparkles"></i> Pohela Boishakh & Festive Edit 2026
+                        </div>
+                        <h1 class="hero-title">
+                            বাংলার ঐতিহ্য, <span>আধুনিক আভিজাত্য</span>
+                        </h1>
+                        <p class="hero-subtitle">
+                            খাঁটি হাতে বোনা ঢাকাই জামদানি, প্রিমিয়াম রাজমহলী সিল্ক ও নিখুঁত ফেস্টিভ পাঞ্জাবি।
+                        </p>
+                        <div class="hero-cta-group">
+                            <a href="{{ route('shop.index') }}" class="btn btn-accent btn-lg">
+                                কালেকশন দেখুন <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforelse
+
+        @if($sliders->count() > 1)
+            <!-- Navigation Arrows -->
+            <button type="button" class="hero-slider-nav prev" id="heroPrevBtn" aria-label="Previous Slide">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button type="button" class="hero-slider-nav next" id="heroNextBtn" aria-label="Next Slide">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+
+            <!-- Indicator Progress Dots -->
+            <div class="hero-slider-dots" id="heroDotsContainer">
+                @foreach($sliders as $idx => $s)
+                    <span class="hero-dot {{ $idx === 0 ? 'active' : '' }}" data-index="{{ $idx }}"></span>
+                @endforeach
+            </div>
+        @endif
+
     </section>
 
     <!-- Categories Shelf Section -->

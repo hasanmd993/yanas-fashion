@@ -74,6 +74,24 @@
                     </a>
                 </li>
 
+                <!-- Hero Sliders -->
+                <li>
+                    <a href="{{ route('admin.sliders.index') }}" 
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all {{ request()->routeIs('admin.sliders.*') ? 'bg-primary text-white shadow-md font-bold' : 'hover:bg-primary-light hover:text-primary dark:hover:bg-[#1b2e4b] dark:hover:text-white' }}">
+                        <i class="fa-solid fa-images w-5 text-center text-base"></i>
+                        <span>Hero Sliders (স্লাইডার)</span>
+                    </a>
+                </li>
+
+                <!-- Coupons & Discounts -->
+                <li>
+                    <a href="{{ route('admin.coupons.index') }}" 
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all {{ request()->routeIs('admin.coupons.*') ? 'bg-primary text-white shadow-md font-bold' : 'hover:bg-primary-light hover:text-primary dark:hover:bg-[#1b2e4b] dark:hover:text-white' }}">
+                        <i class="fa-solid fa-ticket w-5 text-center text-base"></i>
+                        <span>Coupons (কুপন ও অফার)</span>
+                    </a>
+                </li>
+
                 <!-- Section: Management & Settings -->
                 <li class="px-3 pt-5 pb-1 text-[11px] font-extrabold uppercase tracking-wider text-gray-400 dark:text-gray-500">
                     Configuration
