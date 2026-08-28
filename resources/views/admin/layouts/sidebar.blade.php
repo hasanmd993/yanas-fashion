@@ -106,6 +106,15 @@
                     </a>
                 </li>
 
+                <!-- Backups -->
+                <li>
+                    <a href="{{ route('admin.backups.index') }}" 
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all {{ request()->routeIs('admin.backups.*') ? 'bg-primary text-white shadow-md font-bold' : 'hover:bg-primary-light hover:text-primary dark:hover:bg-[#1b2e4b] dark:hover:text-white' }}">
+                        <i class="fa-solid fa-shield-halved w-5 text-center text-base"></i>
+                        <span>System Backups (ব্যাকআপ)</span>
+                    </a>
+                </li>
+
                 <!-- Live Storefront Link -->
                 <li class="pt-4 mt-4 border-t border-gray-200 dark:border-[#192a43]">
                     <a href="{{ route('home') }}" target="_blank" 

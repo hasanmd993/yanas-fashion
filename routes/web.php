@@ -72,4 +72,11 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // Settings
     Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
+
+    // System Backups
+    Route::get('/backups', [\App\Http\Controllers\Admin\BackupController::class, 'index'])->name('backups.index');
+    Route::post('/backups/create-db', [\App\Http\Controllers\Admin\BackupController::class, 'createDb'])->name('backups.create_db');
+    Route::post('/backups/create-full', [\App\Http\Controllers\Admin\BackupController::class, 'createFull'])->name('backups.create_full');
+    Route::get('/backups/download', [\App\Http\Controllers\Admin\BackupController::class, 'download'])->name('backups.download');
+    Route::delete('/backups/destroy', [\App\Http\Controllers\Admin\BackupController::class, 'destroy'])->name('backups.destroy');
 });
