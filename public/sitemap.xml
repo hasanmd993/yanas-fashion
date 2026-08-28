@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+    <url>
+    <loc>http://localhost:8000</loc>
+    <lastmod>2026-08-28T20:07:42+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+            </url>
+    <url>
+    <loc>http://localhost:8000/shop</loc>
+    <lastmod>2026-08-28T20:07:42+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+            </url>
+    <url>
+    <loc>http://localhost:8000/order-tracking</loc>
+    <lastmod>2026-08-28T20:07:42+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+            </url>
+    <url>
+    <loc>http://localhost:8000/cart</loc>
+    <lastmod>2026-08-28T20:07:42+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+            </url>
+    <url>
+    <loc>http://localhost:8000/checkout</loc>
+    <lastmod>2026-08-28T20:07:42+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+            </url>
+    <url>
+    <loc>http://localhost:8000/shop?category=mens-fashion</loc>
+    <lastmod>2026-08-28T18:45:48+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>http://localhost:8000/shop?category=womens-ethnic</loc>
+    <lastmod>2026-08-28T18:45:48+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>http://localhost:8000/shop?category=festive-panjabi</loc>
+    <lastmod>2026-08-28T18:45:49+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>http://localhost:8000/shop?category=cargo-trousers</loc>
+    <lastmod>2026-08-28T18:45:49+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>http://localhost:8000/shop?category=artisanal-accessories</loc>
+    <lastmod>2026-08-28T18:45:49+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>http://localhost:8000/product/heritage-dhakai-jamdani-saree</loc>
+    <lastmod>2026-08-28T18:45:49+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+    <image:loc>http://localhost:8000/assets/product-jamdani-saree.jpg</image:loc>
+    <image:caption>Heritage Dhakai Jamdani Saree</image:caption>
+</image:image>
+        </url>
+    <url>
+    <loc>http://localhost:8000/product/royal-embroidered-cotton-panjabi</loc>
+    <lastmod>2026-08-28T18:45:49+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+    <image:loc>http://localhost:8000/assets/product-embroidered-panjabi.jpg</image:loc>
+    <image:caption>Royal Embroidered Cotton Panjabi</image:caption>
+</image:image>
+        </url>
+    <url>
+    <loc>http://localhost:8000/product/silk-fusion-kurti-trouser-set</loc>
+    <lastmod>2026-08-28T18:45:49+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+    <image:loc>http://localhost:8000/assets/product-silk-kurti.jpg</image:loc>
+    <image:caption>Silk Fusion Kurti &amp; Trouser Set</image:caption>
+</image:image>
+        </url>
+    <url>
+    <loc>http://localhost:8000/product/tailored-semi-fitted-kabli-suit</loc>
+    <lastmod>2026-08-28T18:45:49+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+    <image:loc>http://localhost:8000/assets/product-tailored-kabli.jpg</image:loc>
+    <image:caption>Tailored Semi-Fitted Kabli Suit</image:caption>
+</image:image>
+        </url>
+    <url>
+    <loc>http://localhost:8000/product/twel-stitch-6-pocket-cargo-pant</loc>
+    <lastmod>2026-08-28T18:45:49+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+    <image:loc>http://localhost:8000/assets/product-trousers.jpg</image:loc>
+    <image:caption>Twel Stitch 6-Pocket Tactical Cargo Pant</image:caption>
+</image:image>
+        </url>
+    <url>
+    <loc>http://localhost:8000/product/fine-knit-cashmere-touch-sweater</loc>
+    <lastmod>2026-08-28T18:45:49+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+    <image:loc>http://localhost:8000/assets/product-knit-sweater.jpg</image:loc>
+    <image:caption>Fine Knit Cashmere-Touch Sweater</image:caption>
+</image:image>
+        </url>
+</urlset>

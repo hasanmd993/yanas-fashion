@@ -44,4 +44,13 @@ class HomeController extends Controller
             'latestProducts'
         ));
     }
+
+    public function sitemap()
+    {
+        $path = public_path('sitemap.xml');
+        if (!file_exists($path)) {
+            \Illuminate\Support\Facades\Artisan::call('sitemap:generate');
+        }
+        return response()->file($path, ['Content-Type' => 'application/xml']);
+    }
 }

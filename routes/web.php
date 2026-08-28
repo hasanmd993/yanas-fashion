@@ -20,8 +20,9 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// Storefront Home & Catalog
+// Public Storefront Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/sitemap.xml', [HomeController::class, 'sitemap'])->name('sitemap');
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
 
