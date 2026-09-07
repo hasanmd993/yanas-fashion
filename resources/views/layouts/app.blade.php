@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', "Yana's Fashion — Bangladeshi Luxury & Contemporary Ethnic Wear")</title>
+    <title>@yield('title', "Yanas Fashion — Contemporary & Luxury Fashion Dhaka")</title>
     
     <!-- Meta & SEO Tags -->
-    <meta name="description" content="Shop luxury Dhakai Jamdani sarees, tailored festive panjabis, twel-stitch cargo trousers, and silk kurtis with Cash on Delivery across Bangladesh.">
-    <meta name="keywords" content="Yanas Fashion, Wasitex, Luxury Look, Jamdani saree, Men panjabi, Cargo pants BD, Bangladeshi fashion, online dress shop Dhaka">
+    <meta name="description" content="Shop luxury festive wear, tailored panjabis, twel-stitch cargo trousers, and contemporary outfits with Cash on Delivery across Bangladesh.">
+    <meta name="keywords" content="Yanas Fashion, Wasitex, Luxury Fashion, Men panjabi, Cargo pants BD, Bangladeshi fashion, online shop Dhaka">
     
     <!-- FontAwesome 6 Icons CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -22,15 +22,15 @@
     <!-- Top Announcement Bar -->
     <div class="announcement-bar">
         <div>
-            ✨ <span class="highlight">ঢাকা সিটিতে ফ্রি ডেলিভারি</span> ৳৩,০০০+ অর্ডারে &nbsp;|&nbsp; 🚚 সারা বাংলাদেশে ৬৪ জেলায় হোম ডেলিভারি &nbsp;|&nbsp; 💳 বিকাশ, নগদ ও ক্যাশ অন ডেলিভারি
+            ✨ <span class="highlight">Free Delivery in Dhaka City</span> on orders over ৳2,500 &nbsp;|&nbsp; 🚚 Express Delivery across 64 Districts &nbsp;|&nbsp; 💳 Cash on Delivery & Mobile Banking
         </div>
         <div class="announcement-nav">
-            <a href="{{ route('tracking.index') }}"><i class="fa-solid fa-location-dot"></i> অর্ডার ট্র্যাক করুন</a>
-            <a href="tel:01713580400"><i class="fa-solid fa-phone"></i> হেল্পলাইন: 01713580400</a>
+            <a href="{{ route('tracking.index') }}"><i class="fa-solid fa-location-dot"></i> Order Tracking</a>
+            <a href="tel:01713580400"><i class="fa-solid fa-phone"></i> Helpline: 01713-580400</a>
             @auth
-                <a href="{{ route('admin.dashboard') }}"><i class="fa-solid fa-gauge"></i> অ্যাডমিন ড্যাশবোর্ড</a>
+                <a href="{{ route('admin.dashboard') }}"><i class="fa-solid fa-gauge"></i> Admin Dashboard</a>
             @else
-                <a href="{{ route('tyro-login.login') }}"><i class="fa-solid fa-lock"></i> লগইন</a>
+                <a href="{{ route('tyro-login.login') }}"><i class="fa-solid fa-lock"></i> Login</a>
             @endauth
         </div>
     </div>
@@ -42,7 +42,7 @@
                 <!-- Brand Logo -->
                 <div class="logo-wrapper">
                     <a href="{{ route('home') }}">
-                        <div class="brand-logo">Yana's<span>.</span></div>
+                        <div class="brand-logo">Yanas<span>.</span></div>
                         <span class="brand-subtitle">Dhaka · Luxury Fashion</span>
                     </a>
                 </div>
@@ -50,7 +50,7 @@
                 <!-- Live Search Bar -->
                 <div class="search-container">
                     <div class="search-input-wrap">
-                        <input type="text" id="global-search-input" placeholder="শার্ট, পাঞ্জাবি, জামদানি শাড়ি, কার্গো প্যান্ট খুঁজুন..." autocomplete="off">
+                        <input type="text" id="global-search-input" placeholder="Search shirts, panjabi, trousers, jackets..." autocomplete="off">
                         <button class="search-btn" aria-label="Search">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </button>
@@ -63,17 +63,17 @@
                     <a href="tel:01713580400" class="hotline-pill">
                         <div class="hotline-icon"><i class="fa-solid fa-phone"></i></div>
                         <div class="hotline-text">
-                            <small>সরাসরি কল করুন</small>
+                            <small>Call Us Directly</small>
                             <strong>01713580400</strong>
                         </div>
                     </a>
 
-                    <a href="{{ route('tracking.index') }}" class="header-icon-btn" title="অর্ডার ট্র্যাকিং">
+                    <a href="{{ route('tracking.index') }}" class="header-icon-btn" title="Order Tracking">
                         <i class="fa-solid fa-truck-fast"></i>
                     </a>
 
                     <!-- Trigger Slide-out Cart Drawer -->
-                    <button type="button" class="header-icon-btn trigger-cart-drawer" title="শপিং ব্যাগ" aria-label="Shopping Bag">
+                    <button type="button" class="header-icon-btn trigger-cart-drawer" title="Shopping Bag" aria-label="Shopping Bag">
                         <i class="fa-solid fa-bag-shopping"></i>
                         <span class="badge-count cart-counter-badge">
                             {{ count(session('cart', [])) }}
@@ -87,14 +87,11 @@
         <nav class="main-nav">
             <div class="container">
                 <ul>
-                    <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">হোম (Home)</a></li>
-                    <li><a href="{{ route('shop.index') }}" class="{{ request()->routeIs('shop.index') && !request('category') ? 'active' : '' }}">সব কালেকশন (All Shop)</a></li>
-                    <li><a href="{{ route('shop.index', ['category' => 'mens-fashion']) }}">মেনস ফ্যাশন</a></li>
-                    <li><a href="{{ route('shop.index', ['category' => 'womens-ethnic']) }}">ওমেন্স এথনিক</a></li>
-                    <li><a href="{{ route('shop.index', ['category' => 'festive-panjabi']) }}">ফেস্টিভ পাঞ্জাবি</a></li>
-                    <li><a href="{{ route('shop.index', ['category' => 'cargo-trousers']) }}">কার্গো ও ট্রাউজার</a></li>
-                    <li><a href="{{ route('shop.index', ['category' => 'artisanal-accessories']) }}">অ্যাক্সেসরিজ</a></li>
-                    <li><a href="{{ route('tracking.index') }}">অর্ডার ট্র্যাকিং</a></li>
+                    <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a></li>
+                    <li><a href="{{ route('shop.index') }}" class="{{ request()->routeIs('shop.index') && !request('category') ? 'active' : '' }}">Shop All</a></li>
+                    <li><a href="{{ route('shop.index', ['category' => 'mens-fashion']) }}">Men's Fashion</a></li>
+                    <li><a href="{{ route('shop.index', ['category' => 'cargo-trousers']) }}">Cargo & Trousers</a></li>
+                    <li><a href="{{ route('tracking.index') }}">Order Tracking</a></li>
                 </ul>
             </div>
         </nav>
@@ -125,7 +122,7 @@
     <div class="cart-drawer-overlay" id="cart-drawer-overlay"></div>
     <div class="cart-drawer" id="cart-drawer">
         <div class="drawer-header">
-            <h3><i class="fa-solid fa-bag-shopping" style="color:var(--primary); margin-right:8px;"></i> আপনার শপিং ব্যাগ</h3>
+            <h3><i class="fa-solid fa-bag-shopping" style="color:var(--primary); margin-right:8px;"></i> Your Shopping Bag</h3>
             <button type="button" class="drawer-close-btn" id="close-cart-drawer">&times;</button>
         </div>
         <div class="drawer-body" id="drawer-cart-items">
@@ -133,11 +130,11 @@
         </div>
         <div class="drawer-footer">
             <div class="drawer-subtotal">
-                <span>মোট (Subtotal):</span>
+                <span>Subtotal:</span>
                 <span id="drawer-subtotal-amount" style="color:var(--primary);">৳0</span>
             </div>
             <a href="{{ route('checkout.index') }}" class="btn btn-primary btn-block">
-                অর্ডার সম্পন্ন করুন (Proceed to Checkout) <i class="fa-solid fa-arrow-right"></i>
+                Proceed to Checkout <i class="fa-solid fa-arrow-right"></i>
             </a>
         </div>
     </div>
@@ -146,36 +143,53 @@
     <div class="floating-cart-pill trigger-cart-drawer">
         <i class="fa-solid fa-bag-shopping" style="font-size:1.3rem;"></i>
         <span class="cart-counter-badge" style="font-size:0.85rem; font-weight:800;">{{ count(session('cart', [])) }}</span>
-        <span id="floating-cart-total" style="font-size:0.75rem; font-weight:700;">কার্ট</span>
+        <span id="floating-cart-total" style="font-size:0.75rem; font-weight:700;">Cart</span>
     </div>
 
-    <!-- Floating WhatsApp Action -->
-    <a href="https://wa.me/8801713580400?text=Hello%20Yana's%20Fashion,%20I%20need%20help%20with%20an%20order." target="_blank" class="floating-whatsapp" title="WhatsApp Chat">
-        <i class="fa-brands fa-whatsapp"></i>
-    </a>
+    <!-- Expandable Floating 3-in-1 Communication Widget -->
+    <div class="floating-communication-widget" id="floatingCommunicationWidget">
+        <div class="communication-channels">
+            <a href="https://wa.me/8801713580400?text={{ urlencode('Hello Yana\'s Fashion, I would like to inquire about an order.') }}" target="_blank" class="channel-btn whatsapp-channel" title="WhatsApp Chat">
+                <i class="fa-brands fa-whatsapp"></i>
+                <span class="channel-tooltip">Chat on WhatsApp</span>
+            </a>
+            <a href="tel:01713580400" class="channel-btn phone-channel" title="Call Us">
+                <i class="fa-solid fa-phone"></i>
+                <span class="channel-tooltip">Call Us Directly</span>
+            </a>
+            <a href="https://m.me/yanasfashionbd" target="_blank" class="channel-btn messenger-channel" title="Facebook Messenger">
+                <i class="fa-brands fa-facebook-messenger"></i>
+                <span class="channel-tooltip">Message on Messenger</span>
+            </a>
+        </div>
+        <button type="button" class="widget-toggle-btn" id="widgetToggleBtn" aria-label="Customer Support">
+            <i class="fa-solid fa-comments icon-open"></i>
+            <i class="fa-solid fa-xmark icon-close"></i>
+        </button>
+    </div>
 
     <!-- Mobile Bottom Sticky Navigation -->
     <nav class="mobile-bottom-bar">
         <a href="{{ route('home') }}" class="mobile-nav-item {{ request()->routeIs('home') ? 'active' : '' }}">
             <i class="fa-solid fa-house"></i>
-            <span>হোম</span>
+            <span>Home</span>
         </a>
         <a href="{{ route('shop.index') }}" class="mobile-nav-item {{ request()->routeIs('shop.index') ? 'active' : '' }}">
             <i class="fa-solid fa-border-all"></i>
-            <span>কালেকশন</span>
+            <span>Shop</span>
         </a>
         <button type="button" class="mobile-nav-item trigger-cart-drawer" style="background:none; border:none; cursor:pointer;">
             <i class="fa-solid fa-bag-shopping"></i>
             <span class="badge-count cart-counter-badge">{{ count(session('cart', [])) }}</span>
-            <span>কার্ট</span>
+            <span>Cart</span>
         </button>
         <a href="{{ route('tracking.index') }}" class="mobile-nav-item {{ request()->routeIs('tracking.index') ? 'active' : '' }}">
             <i class="fa-solid fa-truck-fast"></i>
-            <span>ট্র্যাকিং</span>
+            <span>Tracking</span>
         </a>
         <a href="tel:01713580400" class="mobile-nav-item">
             <i class="fa-solid fa-phone"></i>
-            <span>কল করুন</span>
+            <span>Call</span>
         </a>
     </nav>
 
@@ -185,8 +199,8 @@
             <div class="footer-grid">
                 <!-- Brand Info -->
                 <div class="footer-brand">
-                    <div class="brand-logo" style="color:#ffffff;">Yana's<span>.</span></div>
-                    <p>ঐতিহ্যবাহী ঢাকাই জামদানি, রাজমহলী সিল্ক ও আধুনিক আভিজাত্যের সমন্বয়ে তৈরি প্রিমিয়াম ফ্যাশন আউটফিট। সারা বাংলাদেশে ক্যাশ অন ডেলিভারি সহ দ্রুততম ডেলিভারি সেবা।</p>
+                    <div class="brand-logo" style="color:#ffffff;">Yanas<span>.</span></div>
+                    <p>Premium contemporary fashion crafted with fine tailoring, luxury fabrics, and modern aesthetics. Fast express delivery with Cash on Delivery nationwide across Bangladesh.</p>
                     <div style="display:flex; gap:12px; font-size:1.2rem;">
                         <a href="https://facebook.com" target="_blank" style="color:#fff;"><i class="fa-brands fa-facebook"></i></a>
                         <a href="https://instagram.com" target="_blank" style="color:#fff;"><i class="fa-brands fa-instagram"></i></a>
@@ -197,36 +211,36 @@
 
                 <!-- Quick Links -->
                 <div>
-                    <h4 class="footer-title">কুইক মেনু</h4>
+                    <h4 class="footer-title">Quick Menu</h4>
                     <ul class="footer-links">
-                        <li><a href="{{ route('home') }}">হোম পেজ</a></li>
-                        <li><a href="{{ route('shop.index') }}">সব কালেকশন</a></li>
-                        <li><a href="{{ route('shop.index', ['category' => 'mens-fashion']) }}">মেনস ফ্যাশন</a></li>
-                        <li><a href="{{ route('shop.index', ['category' => 'womens-ethnic']) }}">ওমেন্স এথনিক</a></li>
-                        <li><a href="{{ route('tracking.index') }}">অর্ডার ট্র্যাকিং</a></li>
+                        <li><a href="{{ route('home') }}">Home</a></li>
+                        <li><a href="{{ route('shop.index') }}">Shop All</a></li>
+                        <li><a href="{{ route('shop.index', ['category' => 'mens-fashion']) }}">Men's Fashion</a></li>
+                        <li><a href="{{ route('shop.index', ['category' => 'cargo-trousers']) }}">Cargo & Trousers</a></li>
+                        <li><a href="{{ route('tracking.index') }}">Order Tracking</a></li>
                     </ul>
                 </div>
 
                 <!-- Customer Care -->
                 <div>
-                    <h4 class="footer-title">কাস্টমার সার্ভিস</h4>
+                    <h4 class="footer-title">Customer Care</h4>
                     <ul class="footer-links">
-                        <li><a href="{{ route('tracking.index') }}">অর্ডার ট্র্যাক করুন</a></li>
-                        <li><a href="{{ route('checkout.index') }}">চেকআউট</a></li>
-                        <li><a href="tel:01713580400">হটলাইন সাপোর্ট</a></li>
-                        <li><a href="https://wa.me/8801713580400">হোয়াটসঅ্যাপ অর্ডার</a></li>
-                        <li><a href="{{ route('admin.dashboard') }}">অ্যাডমিন পোর্টাল</a></li>
+                        <li><a href="{{ route('tracking.index') }}">Track Your Order</a></li>
+                        <li><a href="{{ route('checkout.index') }}">Checkout</a></li>
+                        <li><a href="tel:01713580400">Hotline Support</a></li>
+                        <li><a href="https://wa.me/8801713580400">WhatsApp Order</a></li>
+                        <li><a href="{{ route('admin.dashboard') }}">Admin Portal</a></li>
                     </ul>
                 </div>
 
                 <!-- Contact & Payments -->
                 <div>
-                    <h4 class="footer-title">যোগাযোগ ও পেমেন্ট</h4>
+                    <h4 class="footer-title">Contact & Support</h4>
                     <p style="font-size:0.88rem; color:#b7ab9c; margin-bottom:8px;">
-                        <i class="fa-solid fa-location-dot" style="color:var(--accent); margin-right:6px;"></i> বাড়ি ৪২, রোড ১১, বনানী, ঢাকা-১২১৩
+                        <i class="fa-solid fa-location-dot" style="color:var(--accent); margin-right:6px;"></i> House 42, Road 11, Banani, Dhaka-1213
                     </p>
                     <p style="font-size:0.88rem; color:#b7ab9c; margin-bottom:8px;">
-                        <i class="fa-solid fa-phone" style="color:var(--accent); margin-right:6px;"></i> ০১৭১৩-৫৮০৪০০
+                        <i class="fa-solid fa-phone" style="color:var(--accent); margin-right:6px;"></i> +880 1713-580400
                     </p>
                     <p style="font-size:0.88rem; color:#b7ab9c;">
                         <i class="fa-solid fa-envelope" style="color:var(--accent); margin-right:6px;"></i> support@yanasfashion.com
@@ -244,7 +258,7 @@
             </div>
 
             <div class="footer-bottom">
-                <p>© 2026 Yana's Fashion. All Rights Reserved. Crafted with passion in Bangladesh.</p>
+                <p>© 2026 Yanas Fashion. All Rights Reserved. Crafted with passion in Bangladesh.</p>
             </div>
         </div>
     </footer>
@@ -254,3 +268,4 @@
     @stack('scripts')
 </body>
 </html>
+

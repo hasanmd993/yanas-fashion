@@ -43,3 +43,4 @@ return [
     'newest_backup_date' => 'Fecha de la copia de seguridad más reciente',
     'oldest_backup_date' => 'Fecha de la copia de seguridad más antigua',
 ];
+

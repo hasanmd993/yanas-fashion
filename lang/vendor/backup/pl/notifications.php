@@ -43,3 +43,4 @@ return [
     'newest_backup_date' => 'Najnowszy rozmiar kopii zapasowej',
     'oldest_backup_date' => 'Najstarszy rozmiar kopii zapasowej',
 ];
+

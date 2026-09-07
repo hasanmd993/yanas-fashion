@@ -79,3 +79,4 @@ class CouponController extends Controller
         return redirect()->route('admin.coupons.index')->with('success', "কুপন '{$code}' সফলভাবে মুছে ফেলা হয়েছে!");
     }
 }
+

@@ -8,7 +8,7 @@
                     Y
                 </div>
                 <div>
-                    <span class="text-xl font-bold font-serif tracking-tight text-primary dark:text-white">Yana's<span class="text-secondary">.</span></span>
+                    <span class="text-xl font-bold font-serif tracking-tight text-primary dark:text-white">Yanas<span class="text-secondary">.</span></span>
                     <span class="block text-[10px] uppercase font-bold tracking-widest text-gray-400 dark:text-gray-500">Admin Control</span>
                 </div>
             </a>
@@ -129,3 +129,4 @@
 
     </nav>
 </div>
+

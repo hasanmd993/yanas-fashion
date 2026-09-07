@@ -8,3 +8,4 @@ if (!function_exists('get_setting')) {
         return Setting::get($key, $default);
     }
 }
+

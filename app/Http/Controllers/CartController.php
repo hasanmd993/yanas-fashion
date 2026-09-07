@@ -125,3 +125,4 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'কার্ট খালি করা হয়েছে!');
     }
 }
+

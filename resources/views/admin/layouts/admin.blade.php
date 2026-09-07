@@ -135,7 +135,7 @@
         <!-- Sidebar Navigation -->
         <aside class="admin-sidebar">
             <div class="admin-brand">
-                <h2>Yana's<span>.</span> Admin</h2>
+                <h2>Yanas<span>.</span> Admin</h2>
                 <small style="color:var(--text-muted); font-size:0.75rem;">E-Commerce Control Panel</small>
             </div>
 
@@ -188,3 +188,4 @@
 
 </body>
 </html>
+

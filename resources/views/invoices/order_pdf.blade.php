@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Invoice #{{ $order->order_number }} - Yana's Fashion</title>
+    <title>Invoice #{{ $order->order_number }} - Yanas Fashion</title>
     <style>
         body {
             font-family: 'DejaVu Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -151,7 +151,7 @@
     <table class="invoice-header">
         <tr>
             <td>
-                <div class="brand-title">YANA'S FASHION</div>
+                <div class="brand-title">Yanas Fashion</div>
                 <div class="brand-subtitle">Bangladeshi Luxury & Contemporary Ethnic Wear</div>
                 <div style="font-size: 10px; color: #666; margin-top: 4px;">
                     Hotline: +880 1700-000000 | Web: www.yanasfashion.com
@@ -251,9 +251,10 @@
 
     <!-- Footer -->
     <div class="footer-note">
-        <p>Thank you for shopping with <strong>Yana's Fashion</strong>! We appreciate your trust in Bangladeshi craftsmanship.</p>
+        <p>Thank you for shopping with <strong>Yanas Fashion</strong>! We appreciate your trust in Bangladeshi craftsmanship.</p>
         <p>For exchange, returns, or queries, please contact our support hotline or WhatsApp within 3 days of delivery.</p>
     </div>
 
 </body>
 </html>
+

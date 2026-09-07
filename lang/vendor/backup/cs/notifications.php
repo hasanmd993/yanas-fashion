@@ -43,3 +43,4 @@ return [
     'newest_backup_date' => 'Datum nejnovější zálohy',
     'oldest_backup_date' => 'Datum nejstarší zálohy',
 ];
+

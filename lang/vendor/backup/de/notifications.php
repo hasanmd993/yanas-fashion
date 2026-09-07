@@ -43,3 +43,4 @@ return [
     'newest_backup_date' => 'Neustes Backup',
     'oldest_backup_date' => 'Ältestes Backup',
 ];
+

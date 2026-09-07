@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', "অর্ডার সফল হয়েছে (#{$order->order_number}) — Yana's Fashion")
+@section('title', "অর্ডার সফল হয়েছে (#{$order->order_number}) — Yanas Fashion")
 
 @section('content')
 
@@ -113,3 +113,4 @@
     </section>
 
 @endsection
+

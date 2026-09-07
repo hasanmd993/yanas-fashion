@@ -43,3 +43,4 @@ return [
     'newest_backup_date' => 'En yeni yedekleme tarihi',
     'oldest_backup_date' => 'En eski yedekleme tarihi',
 ];
+

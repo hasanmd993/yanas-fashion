@@ -21,7 +21,7 @@
             <a href="{{ route('admin.orders.invoice', $order->id) }}" class="btn inline-flex items-center gap-2 rounded-lg bg-primary px-3.5 py-2 text-xs font-bold text-white shadow-md hover:bg-primary-hover transition-all" title="Download PDF File">
                 <i class="fa-solid fa-file-arrow-down"></i> Download PDF
             </a>
-            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $order->customer_phone) }}?text=Hello%20{{ urlencode($order->customer_name) }},%20regarding%20your%20Yana's%20Fashion%20order%20%23{{ $order->order_number }}..." target="_blank" 
+            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $order->customer_phone) }}?text=Hello%20{{ urlencode($order->customer_name) }},%20regarding%20your%20Yanas%20Fashion%20order%20%23{{ $order->order_number }}..." target="_blank" 
                class="btn inline-flex items-center gap-2 rounded-lg bg-[#25D366] px-3.5 py-2 text-xs font-bold text-white shadow-md hover:bg-[#1eb956] transition-all">
                 <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
             </a>
@@ -188,3 +188,4 @@
     </div>
 
 @endsection
+

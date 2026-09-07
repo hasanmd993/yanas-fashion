@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $product->title . " — Yana's Fashion")
+@section('title', $product->title . " — Yanas Fashion")
 
 @section('content')
 
@@ -127,7 +127,7 @@
                     </button>
                     
                     @php
-                        $waText = urlencode("Hello Yana's Fashion, I want to order '{$product->title}' (SKU: {$product->sku}) at ৳" . number_format($product->effective_price) . ".");
+                        $waText = urlencode("Hello Yanas Fashion, I want to order '{$product->title}' (SKU: {$product->sku}) at ৳" . number_format($product->effective_price) . ".");
                     @endphp
                     <a href="https://wa.me/8801713580400?text={{ $waText }}" target="_blank" class="btn btn-whatsapp">
                         <i class="fa-brands fa-whatsapp"></i> হোয়াটসঅ্যাপে অর্ডার
@@ -300,3 +300,4 @@
     }
 </script>
 @endpush
+

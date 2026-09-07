@@ -15,7 +15,7 @@ class BackupController extends Controller
 
     public function __construct()
     {
-        $this->backupFolder = config('backup.backup.name', "Yana's Fashion");
+        $this->backupFolder = config('backup.backup.name', "Yanas Fashion");
     }
 
     public function index()
@@ -25,7 +25,7 @@ class BackupController extends Controller
 
         // Also check root or alternative folder name if any
         if (empty($files)) {
-            $files = $disk->allFiles("Yana's Fashion");
+            $files = $disk->allFiles("Yanas Fashion");
         }
 
         $backups = [];
@@ -81,7 +81,7 @@ class BackupController extends Controller
         // Locate file
         $filePath = $this->backupFolder . '/' . $fileName;
         if (!$disk->exists($filePath)) {
-            $filePath = "Yana's Fashion/" . $fileName;
+            $filePath = "Yanas Fashion/" . $fileName;
         }
 
         if ($disk->exists($filePath)) {
@@ -98,7 +98,7 @@ class BackupController extends Controller
 
         $filePath = $this->backupFolder . '/' . $fileName;
         if (!$disk->exists($filePath)) {
-            $filePath = "Yana's Fashion/" . $fileName;
+            $filePath = "Yanas Fashion/" . $fileName;
         }
 
         if ($disk->exists($filePath)) {
@@ -116,3 +116,4 @@ class BackupController extends Controller
         return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . ' ' . @$size[$factor];
     }
 }
+

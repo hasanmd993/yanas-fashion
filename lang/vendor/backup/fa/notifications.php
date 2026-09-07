@@ -43,3 +43,4 @@ return [
     'newest_backup_date' => 'تاریخ جدیدترین نسخه پشتیبان',
     'oldest_backup_date' => 'تاریخ قدیمی‌ترین نسخه پشتیبان',
 ];
+

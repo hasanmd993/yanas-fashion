@@ -54,3 +54,4 @@ class HomeController extends Controller
         return response()->file($path, ['Content-Type' => 'application/xml']);
     }
 }
+

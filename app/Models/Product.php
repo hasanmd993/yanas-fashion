@@ -77,3 +77,4 @@ class Product extends Model
         return 0;
     }
 }
+

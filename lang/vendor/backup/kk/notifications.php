@@ -43,3 +43,4 @@ return [
     'newest_backup_date' => 'Соңғы резервтік көшірме күні',
     'oldest_backup_date' => 'Ең ескі резервтік көшірме күні',
 ];
+

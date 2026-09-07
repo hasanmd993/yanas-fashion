@@ -98,3 +98,4 @@ class SliderController extends Controller
         return redirect()->route('admin.sliders.index')->with('success', 'Hero slide deleted successfully.');
     }
 }
+

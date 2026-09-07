@@ -43,3 +43,4 @@ return [
     'newest_backup_date' => 'Nyeste backup-størrelse',
     'oldest_backup_date' => 'Eldste sikkerhetskopistørrelse',
 ];
+

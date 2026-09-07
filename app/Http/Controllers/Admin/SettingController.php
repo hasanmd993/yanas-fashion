@@ -25,3 +25,4 @@ class SettingController extends Controller
         return redirect()->back()->with('success', 'স্টোর সেটিংস সফলভাবে সংরক্ষিত হয়েছে!');
     }
 }
+

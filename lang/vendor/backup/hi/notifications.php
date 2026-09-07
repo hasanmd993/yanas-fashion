@@ -43,3 +43,4 @@ return [
     'newest_backup_date' => 'नवीनतम बैकअप आकार',
     'oldest_backup_date' => 'सबसे पुराना बैकअप आकार',
 ];
+

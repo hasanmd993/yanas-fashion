@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
 
         // Store Settings
         $settings = [
-            'site_name' => "Yana's Fashion",
+            'site_name' => "Yanas Fashion",
             'tagline' => 'Bangladeshi Luxury & Contemporary Ethnic Wear',
             'hotline' => '01713580400',
             'whatsapp_number' => '8801713580400',
@@ -310,3 +310,4 @@ class DatabaseSeeder extends Seeder
         );
     }
 }
+

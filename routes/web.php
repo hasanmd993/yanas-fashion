@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes (Yana's Fashion E-Commerce)
+| Web Routes (Yanas Fashion E-Commerce)
 |--------------------------------------------------------------------------
 */
 
@@ -80,3 +80,4 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/backups/download', [\App\Http\Controllers\Admin\BackupController::class, 'download'])->name('backups.download');
     Route::delete('/backups/destroy', [\App\Http\Controllers\Admin\BackupController::class, 'destroy'])->name('backups.destroy');
 });
+

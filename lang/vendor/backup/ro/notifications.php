@@ -43,3 +43,4 @@ return [
     'newest_backup_date' => 'Cea mai nouă dimensiune de rezervă',
     'oldest_backup_date' => 'Cea mai veche dimensiune de rezervă',
 ];
+

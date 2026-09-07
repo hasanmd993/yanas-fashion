@@ -25,3 +25,4 @@ class Setting extends Model
         return static::updateOrCreate(['key' => $key], ['value' => $value]);
     }
 }
+

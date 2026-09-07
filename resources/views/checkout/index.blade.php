@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', "চেকআউট ও অর্ডার কনফার্মেশন — Yana's Fashion")
+@section('title', "চেকআউট ও অর্ডার কনফার্মেশন — Yanas Fashion")
 
 @section('content')
 
@@ -204,3 +204,4 @@
     </section>
 
 @endsection
+

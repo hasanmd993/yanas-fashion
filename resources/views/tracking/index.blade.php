@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', "লাইভ অর্ডার ট্র্যাকিং — Yana's Fashion")
+@section('title', "লাইভ অর্ডার ট্র্যাকিং — Yanas Fashion")
 
 @section('content')
 
@@ -119,3 +119,4 @@
     </section>
 
 @endsection
+

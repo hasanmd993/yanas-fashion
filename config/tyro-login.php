@@ -241,7 +241,7 @@ return [
     |
     */
     'branding' => [
-        'app_name' => env('TYRO_LOGIN_APP_NAME', "Yana's Fashion"),
+        'app_name' => env('TYRO_LOGIN_APP_NAME', "Yanas Fashion"),
         'logo' => env('TYRO_LOGIN_LOGO', null),
         'logo_dark' => env('TYRO_LOGIN_LOGO_DARK', null),
         'logo_height' => env('TYRO_LOGIN_LOGO_HEIGHT', '48px'),
@@ -856,3 +856,4 @@ return [
         'ttl' => (int) env('TYRO_LOGIN_FORCE_LOGOUT_TTL', (int) env('SESSION_LIFETIME', 120) + 1),
     ],
 ];
+

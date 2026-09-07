@@ -105,3 +105,4 @@ class GenerateSitemap extends Command
         return Command::SUCCESS;
     }
 }
+

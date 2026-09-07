@@ -43,3 +43,4 @@ return [
     'newest_backup_date' => 'أحدث تاريخ النسخ الاحتياطي',
     'oldest_backup_date' => 'أقدم تاريخ نسخ احتياطي',
 ];
+

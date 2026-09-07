@@ -72,3 +72,4 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping, ShouldA
         ];
     }
 }
+

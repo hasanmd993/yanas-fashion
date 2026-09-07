@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', ($currentCategory ? $currentCategory->name . " — " : "সব কালেকশন — ") . "Yana's Fashion")
+@section('title', ($currentCategory ? $currentCategory->name . " — " : "সব কালেকশন — ") . "Yanas Fashion")
 
 @section('content')
 
@@ -125,3 +125,4 @@
     </section>
 
 @endsection
+

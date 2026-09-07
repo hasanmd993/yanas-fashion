@@ -43,3 +43,4 @@ return [
     'newest_backup_date' => '最新のバックアップ日時',
     'oldest_backup_date' => '最も古いバックアップ日時',
 ];
+

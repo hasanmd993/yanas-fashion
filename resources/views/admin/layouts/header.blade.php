@@ -13,7 +13,7 @@
             <div class="hidden sm:flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                 <span class="font-bold text-gray-800 dark:text-white">Admin Control Center</span>
                 <span>/</span>
-                <span>Yana's Fashion</span>
+                <span>Yanas Fashion</span>
             </div>
         </div>
 
@@ -155,3 +155,4 @@
 
     </div>
 </header>
+

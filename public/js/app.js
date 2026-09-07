@@ -1,15 +1,17 @@
 /**
- * Yana's Fashion - E-Commerce Client Engine
+ * Yanas Fashion - E-Commerce Client Engine
  * High-Conversion Interactive Functions
  */
 
 document.addEventListener('DOMContentLoaded', function () {
     initHeroSlider();
+    initTypewriterSearch();
     initLiveSearch();
     initCartDrawer();
     initCheckoutCalculator();
     initProductGallery();
     initSizeChartModal();
+    initFloatingCommunicationWidget();
 });
 
 // =========================================================================
@@ -20,7 +22,7 @@ function initHeroSlider() {
     if (!slider) return;
 
     const slides = slider.querySelectorAll('.hero-slide');
-    const dots = slider.querySelectorAll('.hero-dot');
+    const dots = slider.querySelectorAll('.hero-dot, .hp-dot');
     const prevBtn = document.getElementById('heroPrevBtn');
     const nextBtn = document.getElementById('heroNextBtn');
     const totalSlides = slides.length;
@@ -28,22 +30,29 @@ function initHeroSlider() {
     if (totalSlides <= 1) return;
 
     let currentSlide = 0;
-    let autoPlayInterval = 5000;
+    let autoPlayInterval = 3000;
     let autoPlayTimer = null;
+
+    function updateCounter(idx) {
+        // Update dash indicators inside the active slide
+        const activeSlide = slides[idx];
+        const allDashes = slider.querySelectorAll('.hp-slide-dash');
+        allDashes.forEach((d, i) => {
+            d.classList.toggle('active', i === idx);
+        });
+    }
 
     function goToSlide(index) {
         slides[currentSlide].classList.remove('active');
-        if (dots[currentSlide]) {
-            dots[currentSlide].classList.remove('active');
-        }
+        if (dots[currentSlide]) dots[currentSlide].classList.remove('active');
 
         currentSlide = (index + totalSlides) % totalSlides;
 
         slides[currentSlide].classList.add('active');
-        if (dots[currentSlide]) {
-            dots[currentSlide].classList.add('active');
-        }
+        if (dots[currentSlide]) dots[currentSlide].classList.add('active');
+        updateCounter(currentSlide);
     }
+
 
     function nextSlide() {
         goToSlide(currentSlide + 1);
@@ -145,7 +154,7 @@ function initLiveSearch() {
                 .then(res => res.json())
                 .then(products => {
                     if (products.length === 0) {
-                        dropdown.innerHTML = '<div style="padding:14px; text-align:center; color:#888; font-size:0.88rem;">কোন পণ্য পাওয়া যায়নি</div>';
+                        dropdown.innerHTML = '<div style="padding:14px; text-align:center; color:#888; font-size:0.88rem;">No products found</div>';
                         dropdown.style.display = 'block';
                         return;
                     }
@@ -227,8 +236,8 @@ function refreshCartDrawer() {
                 drawerBody.innerHTML = `
                     <div style="text-align:center; padding:48px 16px;">
                         <i class="fa-solid fa-bag-shopping" style="font-size:3rem; color:#ccc; margin-bottom:16px;"></i>
-                        <p style="color:#666; font-size:1rem; margin-bottom:16px;">আপনার শপিং ব্যাগ বর্তমানে খালি</p>
-                        <a href="/shop" class="btn btn-primary btn-sm">কেনাকাটা শুরু করুন</a>
+                        <p style="color:#666; font-size:1rem; margin-bottom:16px;">Your shopping bag is currently empty</p>
+                        <a href="/shop" class="btn btn-primary btn-sm">Start Shopping</a>
                     </div>
                 `;
                 return;
@@ -241,7 +250,7 @@ function refreshCartDrawer() {
                         <img src="${item.thumbnail}" alt="${item.title}" class="drawer-item-img">
                         <div class="drawer-item-details">
                             <a href="/product/${item.slug}" class="drawer-item-title">${item.title}</a>
-                            <div class="drawer-item-size">${item.size ? 'সাইজ: ' + item.size : ''}</div>
+                            <div class="drawer-item-size">${item.size ? 'Size: ' + item.size : ''}</div>
                             <div class="drawer-item-bottom">
                                 <div class="qty-stepper">
                                     <button class="qty-btn" onclick="updateCartQty('${item.key}', ${item.quantity - 1})">-</button>
@@ -365,7 +374,7 @@ function initCheckoutCalculator() {
         // Free shipping check over 3000 in Dhaka
         if (subtotal >= 3000 && selectedZone === 'inside_dhaka') {
             deliveryCharge = 0;
-            if (deliveryFeeEl) deliveryFeeEl.innerHTML = '<span style="color:var(--success); font-weight:700;">ফ্রি (Free Delivery)</span>';
+            if (deliveryFeeEl) deliveryFeeEl.innerHTML = '<span style="color:var(--success); font-weight:700;">FREE (Free Delivery)</span>';
         } else {
             if (deliveryFeeEl) deliveryFeeEl.innerText = `৳${deliveryCharge}`;
         }
@@ -460,3 +469,90 @@ function initSizeChartModal() {
         }
     });
 }
+
+// =========================================================================
+// 6. Typewriter Animated Search Placeholder (Wasitex BD Style)
+// =========================================================================
+function initTypewriterSearch() {
+    const input = document.getElementById('global-search-input');
+    if (!input) return;
+
+    const phrases = [
+        'Search shirts, t-shirts...',
+        'Search cargo pants & trousers...',
+        'Search festive panjabi...',
+        'Search premium polo shirts...',
+        'Search new luxury arrivals...'
+    ];
+
+    let phraseIdx = 0;
+    let charIdx = 0;
+    let isDeleting = false;
+    let typingTimer = null;
+    let isPaused = false;
+
+    function typeLoop() {
+        if (isPaused) return;
+
+        const currentPhrase = phrases[phraseIdx];
+
+        if (isDeleting) {
+            input.setAttribute('placeholder', currentPhrase.substring(0, charIdx - 1));
+            charIdx--;
+        } else {
+            input.setAttribute('placeholder', currentPhrase.substring(0, charIdx + 1));
+            charIdx++;
+        }
+
+        let typeSpeed = isDeleting ? 45 : 85;
+
+        if (!isDeleting && charIdx === currentPhrase.length) {
+            typeSpeed = 1800; // Pause after typing full phrase
+            isDeleting = true;
+        } else if (isDeleting && charIdx === 0) {
+            isDeleting = false;
+            phraseIdx = (phraseIdx + 1) % phrases.length;
+            typeSpeed = 400; // Pause before typing next phrase
+        }
+
+        typingTimer = setTimeout(typeLoop, typeSpeed);
+    }
+
+    input.addEventListener('focus', function () {
+        isPaused = true;
+        clearTimeout(typingTimer);
+    });
+
+    input.addEventListener('blur', function () {
+        if (!this.value.trim()) {
+            isPaused = false;
+            typeLoop();
+        }
+    });
+
+    // Start typewriter loop
+    typeLoop();
+}
+
+// =========================================================================
+// 7. Expandable 3-in-1 Floating Communication Widget
+// =========================================================================
+function initFloatingCommunicationWidget() {
+    const widget = document.getElementById('floatingCommunicationWidget');
+    const toggleBtn = document.getElementById('widgetToggleBtn');
+
+    if (!widget || !toggleBtn) return;
+
+    toggleBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        widget.classList.toggle('active');
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!widget.contains(e.target)) {
+            widget.classList.remove('active');
+        }
+    });
+}
+
+

@@ -93,3 +93,4 @@ class CategoryController extends Controller
         return redirect()->route('admin.categories.index')->with('success', 'ক্যাটাগরি মুছে ফেলা হয়েছে!');
     }
 }
+

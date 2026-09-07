@@ -244,7 +244,7 @@ class CheckoutController extends Controller
         }
 
         $waMessage = urlencode(
-            "🛍️ *Yana's Fashion - New Order Confirmation*\n" .
+            "🛍️ *Yanas Fashion - New Order Confirmation*\n" .
             "Order ID: *#{$order->order_number}*\n" .
             "Name: {$order->customer_name}\n" .
             "Phone: {$order->customer_phone}\n" .
@@ -268,3 +268,4 @@ class CheckoutController extends Controller
         return $pdf->download("Invoice-{$order->order_number}.pdf");
     }
 }
+

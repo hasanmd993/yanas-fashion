@@ -45,3 +45,4 @@ class OrderTrackingController extends Controller
         return view('tracking.index', compact('order'));
     }
 }
+

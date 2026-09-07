@@ -47,3 +47,4 @@ class Coupon extends Model
         return min($this->value, $amount);
     }
 }
+

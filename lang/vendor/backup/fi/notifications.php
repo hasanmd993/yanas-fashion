@@ -43,3 +43,4 @@ return [
     'newest_backup_date' => 'Uusin varmuuskopion koko',
     'oldest_backup_date' => 'Vanhin varmuuskopion koko',
 ];
+

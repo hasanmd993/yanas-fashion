@@ -55,3 +55,4 @@ return [
     'crawl_profile' => Profile::class,
 
 ];
+
