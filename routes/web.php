@@ -81,5 +81,11 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::post('/backups/create-full', [\App\Http\Controllers\Admin\BackupController::class, 'createFull'])->name('backups.create_full');
     Route::get('/backups/download', [\App\Http\Controllers\Admin\BackupController::class, 'download'])->name('backups.download');
     Route::delete('/backups/destroy', [\App\Http\Controllers\Admin\BackupController::class, 'destroy'])->name('backups.destroy');
+
+    // Notifications
+    Route::post('/notifications/clear', function () {
+        session(['notifications_cleared_at' => now()]);
+        return response()->json(['success' => true, 'message' => 'Notifications cleared']);
+    })->name('notifications.clear');
 });
 

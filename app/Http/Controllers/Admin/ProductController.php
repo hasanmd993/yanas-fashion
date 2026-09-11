@@ -28,14 +28,14 @@ class ProductController extends Controller
         }
 
         $products = $query->paginate(15)->withQueryString();
-        $categories = Category::all();
+        $categories = Category::with('parent')->orderBy('sort_order', 'asc')->get();
 
         return view('admin.products.index', compact('products', 'categories'));
     }
 
     public function create()
     {
-        $categories = Category::all();
+        $categories = Category::with('parent')->orderBy('sort_order', 'asc')->get();
         return view('admin.products.create', compact('categories'));
     }
 
@@ -96,7 +96,7 @@ class ProductController extends Controller
     public function edit($id)
     {
         $product = Product::findOrFail($id);
-        $categories = Category::all();
+        $categories = Category::with('parent')->orderBy('sort_order', 'asc')->get();
         return view('admin.products.edit', compact('product', 'categories'));
     }
 

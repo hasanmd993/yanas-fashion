@@ -73,3 +73,14 @@ if (!function_exists('get_favicon_url')) {
     }
 }
 
+if (!function_exists('get_nav_categories')) {
+    function get_nav_categories()
+    {
+        return \App\Models\Category::whereNull('parent_id')
+            ->where('is_active', true)
+            ->with(['activeChildren.activeChildren'])
+            ->orderBy('sort_order', 'asc')
+            ->get();
+    }
+}
+

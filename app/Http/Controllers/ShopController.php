@@ -11,13 +11,24 @@ class ShopController extends Controller
     public function index(Request $request)
     {
         $query = Product::with('category')->where('is_active', true);
+        $currentCategory = null;
+        $activeParentCategory = null;
 
-        // Filter by category
+        // Filter by category (including all descendants)
         if ($request->filled('category')) {
             $categorySlug = $request->query('category');
-            $category = Category::where('slug', $categorySlug)->first();
-            if ($category) {
-                $query->where('category_id', $category->id);
+            $currentCategory = Category::with('parent.parent')->where('slug', $categorySlug)->first();
+
+            if ($currentCategory) {
+                $descendantIds = $currentCategory->getAllDescendantIds();
+                $query->whereIn('category_id', $descendantIds);
+
+                // Find top-level root parent category
+                $cursor = $currentCategory;
+                while ($cursor->parent) {
+                    $cursor = $cursor->parent;
+                }
+                $activeParentCategory = $cursor;
             }
         }
 
@@ -49,10 +60,17 @@ class ShopController extends Controller
         }
 
         $products = $query->paginate(12)->withQueryString();
-        $categories = Category::where('is_active', true)->orderBy('sort_order', 'asc')->get();
-        $currentCategory = $request->filled('category') ? Category::where('slug', $request->query('category'))->first() : null;
 
-        return view('shop.index', compact('products', 'categories', 'currentCategory'));
+        // 3-Tier Hierarchical Categories for Storefront
+        $parentCategories = Category::whereNull('parent_id')
+            ->where('is_active', true)
+            ->with(['activeChildren.activeChildren'])
+            ->orderBy('sort_order', 'asc')
+            ->get();
+
+        $categories = Category::where('is_active', true)->orderBy('sort_order', 'asc')->get();
+
+        return view('shop.index', compact('products', 'categories', 'currentCategory', 'parentCategories', 'activeParentCategory'));
     }
 
     public function searchApi(Request $request)
@@ -74,4 +92,3 @@ class ShopController extends Controller
         return response()->json($products);
     }
 }
-

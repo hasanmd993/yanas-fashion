@@ -23,16 +23,44 @@
             @csrf
             @method('PUT')
 
+            <!-- Parent Category (Hierarchy) -->
+            <div>
+                <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Parent Category</label>
+                <select name="parent_id" class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">
+                    <option value="">&mdash; None (Top-Level Parent Category) &mdash;</option>
+                    @foreach($parentCategories as $parent)
+                        <option value="{{ $parent->id }}" {{ old('parent_id', $category->parent_id) == $parent->id ? 'selected' : '' }}>
+                            📁 {{ $parent->name }} (Parent)
+                        </option>
+                        @foreach($parent->children as $sub)
+                            @if(!in_array($sub->id, $excludeIds ?? []))
+                                <option value="{{ $sub->id }}" {{ old('parent_id', $category->parent_id) == $sub->id ? 'selected' : '' }}>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&rdsh; {{ $sub->name }} (Subcategory)
+                                </option>
+                            @endif
+                        @endforeach
+                    @endforeach
+                </select>
+                <p class="text-[11px] text-gray-400 mt-1">Leave empty to keep as a top-level Parent Category, or pick a parent to make it a Subcategory or Child Category.</p>
+            </div>
+
             <div>
                 <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Category Name *</label>
                 <input type="text" name="name" required value="{{ old('name', $category->name) }}" 
                        class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">
             </div>
 
-            <div>
-<label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Alternative Name (optional)</label>
-                <input type="text" name="name_bn" placeholder="e.g. Alternative category name" value="{{ old('name_bn', $category->name_bn) }}"
-                       class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Alternative / Bengali Name (optional)</label>
+                    <input type="text" name="name_bn" placeholder="e.g. উৎসব পাঞ্জাবি" value="{{ old('name_bn', $category->name_bn) }}"
+                           class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Icon Class (optional)</label>
+                    <input type="text" name="icon" placeholder="e.g. fa-solid fa-shirt" value="{{ old('icon', $category->icon) }}"
+                           class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white font-mono">
+                </div>
             </div>
 
             <div class="p-3.5 rounded-xl bg-gray-50 dark:bg-[#14233c] border border-dashed border-gray-300 dark:border-[#192a43]">

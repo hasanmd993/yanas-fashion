@@ -93,19 +93,101 @@
             </div>
         </div>
 
-        <!-- Secondary Categories Nav Bar (Desktop) -->
+        <!-- Secondary Categories Nav Bar (Dynamic Mega-Menu) -->
         <nav class="main-nav">
-            <div class="container">
-                <ul>
-                    <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
+            <div class="container main-nav-inner">
+                <ul class="main-nav-list">
+                    <li>
+                        <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">
+                            <i class="fa-solid fa-house"></i>
+                            <span>Home</span>
+                        </a>
                     </li>
-                    <li><a href="{{ route('shop.index') }}"
-                            class="{{ request()->routeIs('shop.index') && !request('category') ? 'active' : '' }}">Shop
-                            All</a></li>
-                    <li><a href="{{ route('shop.index', ['category' => 'mens-fashion']) }}">Men's Fashion</a></li>
-                    <li><a href="{{ route('shop.index', ['category' => 'cargo-trousers']) }}">Cargo & Trousers</a></li>
-                    <li><a href="{{ route('tracking.index') }}">Order Tracking</a></li>
+                    <li>
+                        <a href="{{ route('shop.index') }}"
+                            class="{{ request()->routeIs('shop.index') && !request('category') ? 'active' : '' }}">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <span>Shop All</span>
+                        </a>
+                    </li>
+
+                    @php
+                        $navParents = get_nav_categories();
+                        $currentCatSlug = request('category');
+                    @endphp
+
+                    @foreach($navParents as $parent)
+                        @php
+                            $subSlugs = $parent->activeChildren->pluck('slug')->toArray();
+                            $childSlugs = $parent->activeChildren->flatMap->activeChildren->pluck('slug')->toArray();
+                            $allFamilySlugs = array_merge([$parent->slug], $subSlugs, $childSlugs);
+                            $isFamilyActive = in_array($currentCatSlug, $allFamilySlugs);
+                            $hasSubcategories = $parent->activeChildren->count() > 0;
+                        @endphp
+                        <li class="nav-item-dropdown {{ $hasSubcategories ? 'has-dropdown' : '' }}">
+                            <a href="{{ route('shop.index', ['category' => $parent->slug]) }}"
+                                class="{{ $isFamilyActive ? 'active' : '' }}">
+                                @if($parent->icon)
+                                    <i class="{{ $parent->icon }}"></i>
+                                @endif
+                                <span>{{ $parent->name }}</span>
+                                @if($hasSubcategories)
+                                    <i class="fa-solid fa-chevron-down nav-dropdown-arrow"></i>
+                                @endif
+                            </a>
+
+                            @if($hasSubcategories)
+                                <div class="nav-mega-dropdown">
+                                    <div class="nav-mega-grid">
+                                        @foreach($parent->activeChildren as $sub)
+                                            <div class="nav-mega-col">
+                                                <a href="{{ route('shop.index', ['category' => $sub->slug]) }}" class="nav-mega-heading {{ $currentCatSlug === $sub->slug ? 'active' : '' }}">
+                                                    @if($sub->icon)
+                                                        <i class="{{ $sub->icon }}"></i>
+                                                    @endif
+                                                    <span>{{ $sub->name }}</span>
+                                                </a>
+
+                                                @if($sub->activeChildren->count() > 0)
+                                                    <ul class="nav-mega-sublist">
+                                                        @foreach($sub->activeChildren as $child)
+                                                            <li>
+                                                                <a href="{{ route('shop.index', ['category' => $child->slug]) }}" class="{{ $currentCatSlug === $child->slug ? 'active' : '' }}">
+                                                                    {{ $child->name }}
+                                                                </a>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <div class="nav-mega-footer">
+                                        <a href="{{ route('shop.index', ['category' => $parent->slug]) }}">
+                                            <span>Explore All {{ $parent->name }}</span>
+                                            <i class="fa-solid fa-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            @endif
+                        </li>
+                    @endforeach
+
+                    <li>
+                        <a href="{{ route('tracking.index') }}"
+                            class="{{ request()->routeIs('tracking.index') ? 'active' : '' }}">
+                            <i class="fa-solid fa-truck-fast"></i>
+                            <span>Order Tracking</span>
+                        </a>
+                    </li>
                 </ul>
+
+                <div class="main-nav-right">
+                    <div class="nav-offer-tag">
+                        <i class="fa-solid fa-truck-ramp-box"></i>
+                        <span>Cash On Delivery Across 64 Districts</span>
+                    </div>
+                </div>
             </div>
         </nav>
     </header>
@@ -241,13 +323,13 @@
 
                 <!-- Quick Links -->
                 <div>
-                    <h4 class="footer-title">Quick Menu</h4>
+                    <h4 class="footer-title">Collections</h4>
                     <ul class="footer-links">
                         <li><a href="{{ route('home') }}">Home</a></li>
                         <li><a href="{{ route('shop.index') }}">Shop All</a></li>
-                        <li><a href="{{ route('shop.index', ['category' => 'mens-fashion']) }}">Men's Fashion</a></li>
-                        <li><a href="{{ route('shop.index', ['category' => 'cargo-trousers']) }}">Cargo & Trousers</a>
-                        </li>
+                        @foreach(get_nav_categories() as $pCat)
+                            <li><a href="{{ route('shop.index', ['category' => $pCat->slug]) }}">{{ $pCat->name }}</a></li>
+                        @endforeach
                         <li><a href="{{ route('tracking.index') }}">Order Tracking</a></li>
                     </ul>
                 </div>

@@ -44,7 +44,9 @@
                     <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Category *</label>
                     <select name="category_id" required class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">
                         @foreach($categories as $cat)
-                            <option value="{{ $cat->id }}" {{ old('category_id', $product->category_id) == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                            <option value="{{ $cat->id }}" {{ old('category_id', $product->category_id) == $cat->id ? 'selected' : '' }}>
+                                {{ $cat->hierarchy_path }}
+                            </option>
                         @endforeach
                     </select>
                 </div>

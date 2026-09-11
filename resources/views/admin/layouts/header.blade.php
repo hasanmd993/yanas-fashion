@@ -48,21 +48,49 @@
                 </button>
             </div>
 
-            <!-- Notifications Dropdown with Number Badge -->
+            <!-- Notifications Dropdown with Number Badge & Clear Action -->
             @php 
-                $pendingOrders = \App\Models\Order::where('order_status', 'pending')->latest()->take(6)->get(); 
+                $clearedAt = session('notifications_cleared_at');
+                $pendingOrdersQuery = \App\Models\Order::where('order_status', 'pending');
+                if ($clearedAt) {
+                    $pendingOrdersQuery->where('created_at', '>', $clearedAt);
+                }
+                $pendingOrders = $pendingOrdersQuery->latest()->take(6)->get(); 
             @endphp
-            <div class="relative" x-data="{ open: false }">
+            <div class="relative" x-data="{ 
+                open: false, 
+                cleared: false, 
+                count: {{ $pendingOrders->count() }},
+                isClearing: false,
+                clearNotifications() {
+                    if (this.isClearing || this.count === 0) return;
+                    this.isClearing = true;
+                    this.cleared = true;
+                    this.count = 0;
+                    fetch('{{ route('admin.notifications.clear') }}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    }).finally(() => {
+                        this.isClearing = false;
+                    });
+                }
+            }">
                 <button type="button" 
                         class="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-[#1b2e4b] dark:hover:bg-[#253d63] text-gray-700 dark:text-gray-300 transition-all"
                         @click="open = !open" @click.outside="open = false" title="Notifications">
                     <i class="fa-regular fa-bell text-sm sm:text-base"></i>
-                    @if($pendingOrders->count() > 0)
-                        <span class="absolute -top-1 -right-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-secondary px-1 text-[10px] font-black text-white shadow-sm ring-2 ring-white dark:ring-[#0e1726]">
-                            {{ $pendingOrders->count() }}
+                    <template x-if="count > 0 && !cleared">
+                        <span>
+                            <span class="absolute -top-1 -right-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-secondary px-1 text-[10px] font-black text-white shadow-sm ring-2 ring-white dark:ring-[#0e1726]" x-text="count">
+                                {{ $pendingOrders->count() }}
+                            </span>
+                            <span class="absolute -top-1 -right-1 h-[18px] min-w-[18px] rounded-full bg-secondary animate-ping opacity-75"></span>
                         </span>
-                        <span class="absolute -top-1 -right-1 h-[18px] min-w-[18px] rounded-full bg-secondary animate-ping opacity-75"></span>
-                    @endif
+                    </template>
                 </button>
 
                 <!-- Dropdown Menu -->
@@ -73,11 +101,19 @@
                         <div class="flex items-center gap-2">
                             <i class="fa-solid fa-bell text-secondary text-sm"></i>
                             <span class="font-extrabold text-xs text-gray-800 dark:text-white uppercase tracking-wider">Order Notifications</span>
+                            <span class="badge badge-secondary text-[10px]" x-show="count > 0 && !cleared" x-text="count + ' Pending'">{{ $pendingOrders->count() }} Pending</span>
                         </div>
-                        <span class="badge badge-secondary text-[10px]">{{ $pendingOrders->count() }} Pending</span>
+                        <button type="button" 
+                                x-show="count > 0 && !cleared" 
+                                @click="clearNotifications()" 
+                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold text-gray-500 hover:text-danger hover:bg-red-50 dark:hover:bg-red-950/40 dark:text-gray-400 dark:hover:text-red-300 transition-all cursor-pointer"
+                                title="Clear All Notifications">
+                            <i class="fa-solid fa-trash-can text-[10px]"></i>
+                            <span>Clear</span>
+                        </button>
                     </div>
                     
-                    <div class="max-h-72 overflow-y-auto divide-y divide-gray-100 dark:divide-[#192a43]">
+                    <div class="max-h-72 overflow-y-auto divide-y divide-gray-100 dark:divide-[#192a43]" x-show="!cleared">
                         @forelse($pendingOrders as $po)
                             <a href="{{ route('admin.orders.show', $po->id) }}" class="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-[#14233c] transition-all">
                                 <div class="flex items-center justify-between">
@@ -95,8 +131,23 @@
                         @endforelse
                     </div>
 
-                    <div class="p-2 border-t border-gray-100 dark:border-[#192a43] text-center bg-gray-50/50 dark:bg-[#14233c]/50">
-                        <a href="{{ route('admin.orders.index') }}" class="text-xs font-bold text-primary dark:text-primary-light hover:underline inline-flex items-center gap-1">
+                    <!-- Cleared State -->
+                    <div class="px-4 py-8 text-center text-xs text-gray-400" x-show="cleared" x-cloak>
+                        <i class="fa-solid fa-circle-check text-2xl mb-2 block text-emerald-500 opacity-70"></i>
+                        <span>Notifications cleared successfully.</span>
+                    </div>
+
+                    <div class="p-2 border-t border-gray-100 dark:border-[#192a43] flex items-center justify-between bg-gray-50/50 dark:bg-[#14233c]/50">
+                        <button type="button" 
+                                x-show="count > 0 && !cleared" 
+                                @click="clearNotifications()" 
+                                class="text-xs font-bold text-gray-500 hover:text-danger dark:hover:text-red-400 transition-all inline-flex items-center gap-1.5 px-2 py-1 cursor-pointer">
+                            <i class="fa-solid fa-broom text-[11px]"></i>
+                            <span>Clear All</span>
+                        </button>
+                        <span x-show="count === 0 || cleared"></span>
+
+                        <a href="{{ route('admin.orders.index') }}" class="text-xs font-bold text-primary dark:text-primary-light hover:underline inline-flex items-center gap-1 ml-auto">
                             <span>Manage All Orders</span>
                             <i class="fa-solid fa-arrow-right text-[10px]"></i>
                         </a>
