@@ -18,8 +18,8 @@ class OrderTrackingController extends Controller
             'order_number' => 'required|string',
             'phone' => 'required|string',
         ], [
-            'order_number.required' => 'অর্ডার নম্বর লিখুন (যেমন: YF-91024)',
-            'phone.required' => 'অর্ডার করার সময় ব্যবহৃত মোবাইল নম্বর লিখুন',
+            'order_number.required' => 'Please enter your order number (e.g. YF-91024)',
+            'phone.required' => 'Please enter the mobile number used for the order',
         ]);
 
         $orderNum = trim(strtoupper($request->order_number));
@@ -39,7 +39,7 @@ class OrderTrackingController extends Controller
         if (!$order) {
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'কোন অর্ডার পাওয়া যায়নি! অনুগ্রহ করে সঠিক অর্ডার নম্বর ও ফোন নম্বর যাচাই করুন।');
+                ->with('error', 'No order found! Please verify the correct order number and phone number.');
         }
 
         return view('tracking.index', compact('order'));

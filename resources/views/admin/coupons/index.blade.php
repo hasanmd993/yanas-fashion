@@ -7,11 +7,11 @@
     <!-- Header -->
     <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-extrabold text-gray-800 dark:text-white">Coupons & Campaigns (কুপন ও অফার)</h1>
+            <h1 class="text-2xl font-extrabold text-gray-800 dark:text-white">Coupons & Campaigns</h1>
             <p class="text-xs text-gray-500 dark:text-gray-400">Manage promotional discount codes, validity, and cart rules</p>
         </div>
         <a href="{{ route('admin.coupons.create') }}" class="btn inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-xs font-bold text-white shadow-md hover:bg-primary-hover transition-all">
-            <i class="fa-solid fa-plus"></i> Add New Coupon (নতুন কুপন যোগ করুন)
+            <i class="fa-solid fa-plus"></i> Add New Coupon
         </a>
     </div>
 
@@ -93,7 +93,7 @@
                                         <span class="badge badge-outline-danger text-[10px] ml-1">Expired</span>
                                     @endif
                                 @else
-                                    <span class="text-gray-400">Never (স্থায়ী)</span>
+                                    <span class="text-gray-400">Never</span>
                                 @endif
                             </td>
                             <td class="py-3 px-3">

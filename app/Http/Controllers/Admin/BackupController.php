@@ -57,9 +57,9 @@ class BackupController extends Controller
     {
         try {
             Artisan::call('backup:run', ['--only-db' => true]);
-            return redirect()->route('admin.backups.index')->with('success', 'ডাটাবেস ব্যাকআপ সফলভাবে সম্পন্ন হয়েছে!');
+            return redirect()->route('admin.backups.index')->with('success', 'Database backup completed successfully!');
         } catch (\Exception $e) {
-            return redirect()->route('admin.backups.index')->with('error', 'ব্যাকআপে সমস্যা হয়েছে: ' . $e->getMessage());
+            return redirect()->route('admin.backups.index')->with('error', 'Backup failed: ' . $e->getMessage());
         }
     }
 
@@ -67,9 +67,9 @@ class BackupController extends Controller
     {
         try {
             Artisan::call('backup:run');
-            return redirect()->route('admin.backups.index')->with('success', 'সম্পূর্ণ স্টোর ব্যাকআপ (ডাটাবেস + মিডিয়া) সফলভাবে তৈরি হয়েছে!');
+            return redirect()->route('admin.backups.index')->with('success', 'Full store backup (database + media) created successfully!');
         } catch (\Exception $e) {
-            return redirect()->route('admin.backups.index')->with('error', 'ব্যাকআপে সমস্যা হয়েছে: ' . $e->getMessage());
+            return redirect()->route('admin.backups.index')->with('error', 'Backup failed: ' . $e->getMessage());
         }
     }
 
@@ -88,7 +88,7 @@ class BackupController extends Controller
             return $disk->download($filePath, $fileName);
         }
 
-        return redirect()->route('admin.backups.index')->with('error', 'ব্যাকআপ ফাইলটি পাওয়া যায়নি।');
+        return redirect()->route('admin.backups.index')->with('error', 'Backup file not found.');
     }
 
     public function destroy(Request $request)
@@ -103,10 +103,10 @@ class BackupController extends Controller
 
         if ($disk->exists($filePath)) {
             $disk->delete($filePath);
-            return redirect()->route('admin.backups.index')->with('success', "ব্যাকআপ ফাইল '{$fileName}' মুছে ফেলা হয়েছে!");
+            return redirect()->route('admin.backups.index')->with('success', "Backup file '{$fileName}' has been deleted!");
         }
 
-        return redirect()->route('admin.backups.index')->with('error', 'ফাইলটি পাওয়া যায়নি।');
+        return redirect()->route('admin.backups.index')->with('error', 'File not found.');
     }
 
     protected function humanFileSize($bytes, $decimals = 2): string

@@ -46,7 +46,7 @@ class CategoryController extends Controller
 
         Category::create($validated);
 
-        return redirect()->route('admin.categories.index')->with('success', 'ক্যাটাগরি সফলভাবে তৈরি হয়েছে!');
+        return redirect()->route('admin.categories.index')->with('success', 'Category created successfully!');
     }
 
     public function edit($id)
@@ -82,7 +82,7 @@ class CategoryController extends Controller
 
         $category->update($validated);
 
-        return redirect()->route('admin.categories.index')->with('success', 'ক্যাটাগরি সফলভাবে আপডেট হয়েছে!');
+        return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully!');
     }
 
     public function destroy($id)
@@ -90,7 +90,7 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
         ImageService::delete($category->image);
         $category->delete();
-        return redirect()->route('admin.categories.index')->with('success', 'ক্যাটাগরি মুছে ফেলা হয়েছে!');
+        return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully!');
     }
 }
 

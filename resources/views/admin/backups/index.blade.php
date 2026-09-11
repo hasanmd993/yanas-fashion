@@ -7,14 +7,14 @@
     <!-- Header -->
     <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-extrabold text-gray-800 dark:text-white">System Backups (সিস্টেম ব্যাকআপ)</h1>
+            <h1 class="text-2xl font-extrabold text-gray-800 dark:text-white">System Backups</h1>
             <p class="text-xs text-gray-500 dark:text-gray-400">Automated and manual database & store asset backups</p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
             <form action="{{ route('admin.backups.create_db') }}" method="POST">
                 @csrf
                 <button type="submit" class="btn inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-xs font-bold text-white shadow-md hover:bg-primary-hover transition-all">
-                    <i class="fa-solid fa-database"></i> Create DB Backup (ডাটাবেস ব্যাকআপ)
+                    <i class="fa-solid fa-database"></i> Create DB Backup
                 </button>
             </form>
 

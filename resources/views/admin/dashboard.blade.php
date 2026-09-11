@@ -26,7 +26,7 @@
         <!-- Total Revenue -->
         <div class="panel flex items-center justify-between">
             <div>
-                <div class="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Total Sales (মোট বিক্রি)</div>
+                <div class="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Total Sales</div>
                 <div class="mt-2 text-2xl font-black text-primary dark:text-white">৳{{ number_format($stats['total_revenue']) }}</div>
                 <div class="mt-1 flex items-center text-xs text-success font-semibold">
                     <i class="fa-solid fa-arrow-trend-up mr-1"></i> Lifetime Gross
@@ -40,7 +40,7 @@
         <!-- Today's Sales -->
         <div class="panel flex items-center justify-between">
             <div>
-                <div class="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Today's Sales (আজকের বিক্রি)</div>
+                <div class="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Today's Sales</div>
                 <div class="mt-2 text-2xl font-black text-success">৳{{ number_format($stats['today_sales']) }}</div>
                 <div class="mt-1 flex items-center text-xs text-gray-400">
                     <span>{{ date('d M, Y') }}</span>
@@ -54,7 +54,7 @@
         <!-- Pending Orders -->
         <div class="panel flex items-center justify-between">
             <div>
-                <div class="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Pending Orders (নতুন অর্ডার)</div>
+                <div class="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Pending Orders</div>
                 <div class="mt-2 text-2xl font-black text-secondary">{{ $stats['pending_orders'] }}</div>
                 <div class="mt-1 flex items-center text-xs text-secondary font-semibold">
                     <i class="fa-solid fa-clock mr-1"></i> Requires fulfillment
@@ -104,7 +104,7 @@
                             @click="currentMetric = 'orders'; switchChartMetric('orders')" 
                             :class="currentMetric === 'orders' ? 'bg-secondary text-white shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'"
                             class="rounded-md px-3 py-1.5 font-bold transition-all">
-                        📦 Orders (সংখ্যা)
+                        📦 Orders
                     </button>
                     <button type="button" 
                             @click="currentMetric = 'both'; switchChartMetric('both')" 
@@ -146,7 +146,7 @@
     <div class="panel">
         <div class="mb-5 flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 dark:border-[#192a43] pb-4">
             <div>
-                <h3 class="text-base font-bold text-gray-800 dark:text-white">Recent Orders (সাম্প্রতিক অর্ডারসমূহ)</h3>
+                <h3 class="text-base font-bold text-gray-800 dark:text-white">Recent Orders</h3>
                 <p class="text-xs text-gray-400">Latest customer orders requiring review</p>
             </div>
             <a href="{{ route('admin.orders.index') }}" class="text-xs font-bold text-primary hover:underline">

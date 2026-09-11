@@ -39,7 +39,7 @@ class CouponController extends Controller
 
         Coupon::create($validated);
 
-        return redirect()->route('admin.coupons.index')->with('success', "কুপন '{$validated['code']}' সফলভাবে তৈরি করা হয়েছে!");
+        return redirect()->route('admin.coupons.index')->with('success', "Coupon '{$validated['code']}' created successfully!");
     }
 
     public function edit($id)
@@ -67,7 +67,7 @@ class CouponController extends Controller
 
         $coupon->update($validated);
 
-        return redirect()->route('admin.coupons.index')->with('success', "কুপন '{$coupon->code}' সফলভাবে আপডেট করা হয়েছে!");
+        return redirect()->route('admin.coupons.index')->with('success', "Coupon '{$coupon->code}' updated successfully!");
     }
 
     public function destroy($id)
@@ -76,7 +76,7 @@ class CouponController extends Controller
         $code = $coupon->code;
         $coupon->delete();
 
-        return redirect()->route('admin.coupons.index')->with('success', "কুপন '{$code}' সফলভাবে মুছে ফেলা হয়েছে!");
+        return redirect()->route('admin.coupons.index')->with('success', "Coupon '{$code}' deleted successfully!");
     }
 }
 

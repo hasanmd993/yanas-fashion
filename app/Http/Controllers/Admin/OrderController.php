@@ -59,7 +59,7 @@ class OrderController extends Controller
             'admin_notes' => $request->admin_notes,
         ]);
 
-        return redirect()->back()->with('success', "অর্ডার #{$order->order_number} স্ট্যাটাস আপডেট সফল হয়েছে!");
+        return redirect()->back()->with('success', "Order #{$order->order_number} status updated successfully!");
     }
 
     public function destroy($id)
@@ -68,7 +68,7 @@ class OrderController extends Controller
         $order->items()->delete();
         $order->delete();
 
-        return redirect()->route('admin.orders.index')->with('success', 'অর্ডার সফলভাবে মুছে ফেলা হয়েছে!');
+        return redirect()->route('admin.orders.index')->with('success', 'Order deleted successfully!');
     }
 
     public function downloadInvoice($id)
@@ -78,18 +78,68 @@ class OrderController extends Controller
         return $pdf->download("Invoice-{$order->order_number}.pdf");
     }
 
-    public function printInvoice($id)
+    public function streamInvoice($id)
     {
         $order = Order::with('items')->findOrFail($id);
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('invoices.order_pdf', compact('order'));
         return $pdf->stream("Invoice-{$order->order_number}.pdf");
     }
 
+    public function printInvoice($id)
+    {
+        return $this->streamInvoice($id);
+    }
+
     public function exportExcel(Request $request)
     {
         $status = $request->get('status', 'all');
+        $search = $request->get('search');
         $fileName = 'Yanas_Fashion_Orders_' . date('Y_m_d_His') . '.xlsx';
-        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\OrdersExport($status), $fileName);
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\OrdersExport($status, $search), $fileName);
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $status = $request->get('status', 'all');
+        $search = $request->get('search');
+
+        $query = Order::with('items')->latest();
+
+        if ($status && $status !== 'all') {
+            $query->where('order_status', $status);
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('order_number', 'like', "%{$search}%")
+                  ->orWhere('customer_name', 'like', "%{$search}%")
+                  ->orWhere('customer_phone', 'like', "%{$search}%");
+            });
+        }
+
+        $orders = $query->get();
+
+        $totalRevenue = $orders->sum('total_amount');
+        $statusCounts = [
+            'total' => $orders->count(),
+            'pending' => $orders->where('order_status', 'pending')->count(),
+            'processing' => $orders->where('order_status', 'processing')->count(),
+            'shipped' => $orders->where('order_status', 'shipped')->count(),
+            'delivered' => $orders->where('order_status', 'delivered')->count(),
+            'cancelled' => $orders->where('order_status', 'cancelled')->count(),
+        ];
+
+        $orientation = $request->get('orientation', 'portrait');
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.orders.pdf_report', compact('orders', 'status', 'search', 'totalRevenue', 'statusCounts'))
+            ->setPaper('a4', $orientation);
+
+        $fileName = 'Yanas_Fashion_Orders_Report_' . ($status !== 'all' ? ucfirst($status) . '_' : '') . date('Y_m_d_His') . '.pdf';
+
+        if ($request->has('download')) {
+            return $pdf->download($fileName);
+        }
+
+        return $pdf->stream($fileName);
     }
 
     public function exportCourierCsv(Request $request)

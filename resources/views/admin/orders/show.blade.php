@@ -7,18 +7,16 @@
     <!-- Header -->
     <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
-            <a href="{{ route('admin.orders.index') }}" class="text-xs font-bold text-gray-500 hover:text-primary transition-all">
-                &larr; Back to All Orders
-            </a>
-            <h1 class="text-2xl font-extrabold text-gray-800 dark:text-white mt-1">
+            <h1 class="text-2xl font-extrabold text-gray-800 dark:text-white">
                 Order #{{ $order->order_number }}
             </h1>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Placed on {{ $order->created_at->format('M d, Y h:i A') }}</p>
         </div>
-        <div class="flex items-center gap-2 sm:gap-3">
-            <a href="{{ route('admin.orders.print', $order->id) }}" target="_blank" class="btn inline-flex items-center gap-2 rounded-lg border border-gray-300 dark:border-[#192a43] bg-white dark:bg-[#1b2e4b] px-3.5 py-2 text-xs font-bold text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 transition-all" title="Open PDF Invoice in Browser">
-                <i class="fa-solid fa-print text-primary"></i> Print PDF
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+            <a href="{{ route('admin.orders.index') }}" class="btn inline-flex items-center gap-2 rounded-lg bg-gray-700 px-3.5 py-2 text-xs font-bold text-white shadow-md hover:bg-gray-800 transition-all">
+                <i class="fa-solid fa-arrow-left"></i> Back to Orders
             </a>
-            <a href="{{ route('admin.orders.invoice', $order->id) }}" class="btn inline-flex items-center gap-2 rounded-lg bg-primary px-3.5 py-2 text-xs font-bold text-white shadow-md hover:bg-primary-hover transition-all" title="Download PDF File">
+             <a href="{{ route('admin.orders.stream', $order->id) }}" target="_blank" class="btn inline-flex items-center gap-2 rounded-lg bg-primary px-3.5 py-2 text-xs font-bold text-white shadow-md hover:bg-primary-hover transition-all" title="Download PDF File">
                 <i class="fa-solid fa-file-arrow-down"></i> Download PDF
             </a>
             <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $order->customer_phone) }}?text=Hello%20{{ urlencode($order->customer_name) }},%20regarding%20your%20Yanas%20Fashion%20order%20%23{{ $order->order_number }}..." target="_blank" 
@@ -36,7 +34,7 @@
             
             <div class="panel">
                 <h3 class="text-base font-bold text-gray-800 dark:text-white border-b border-gray-100 dark:border-[#192a43] pb-3 mb-4">
-                    Ordered Items (ক্রয়কৃত পণ্যসমূহ)
+                    Ordered Items
                 </h3>
 
                 <div class="overflow-x-auto">
@@ -116,21 +114,21 @@
                     @csrf
 
                     <div>
-                        <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Fulfillment Status (ডেলিভারি অবস্থা)</label>
+                        <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Fulfillment Status</label>
                         <select name="order_status" class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] px-3.5 py-2 text-xs font-bold focus:border-primary focus:outline-none dark:text-white">
-                            <option value="pending" {{ $order->order_status == 'pending' ? 'selected' : '' }}>🟡 Pending (নতুন অর্ডার)</option>
-                            <option value="processing" {{ $order->order_status == 'processing' ? 'selected' : '' }}>🔵 Processing (প্যাকিং চলছে)</option>
-                            <option value="shipped" {{ $order->order_status == 'shipped' ? 'selected' : '' }}>🟣 In Transit (কুরিয়ারে হস্তান্তর)</option>
-                            <option value="delivered" {{ $order->order_status == 'delivered' ? 'selected' : '' }}>🟢 Delivered (ডেলিভারি সম্পন্ন)</option>
-                            <option value="cancelled" {{ $order->order_status == 'cancelled' ? 'selected' : '' }}>🔴 Cancelled (বাতিল)</option>
+<option value="pending" {{ $order->order_status == 'pending' ? 'selected' : '' }}>🟡 Pending</option>
+                            <option value="processing" {{ $order->order_status == 'processing' ? 'selected' : '' }}>🔵 Processing</option>
+                            <option value="shipped" {{ $order->order_status == 'shipped' ? 'selected' : '' }}>🟣 In Transit</option>
+                            <option value="delivered" {{ $order->order_status == 'delivered' ? 'selected' : '' }}>🟢 Delivered</option>
+                            <option value="cancelled" {{ $order->order_status == 'cancelled' ? 'selected' : '' }}>🔴 Cancelled</option>
                         </select>
                     </div>
 
                     <div>
                         <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Payment Status</label>
                         <select name="payment_status" class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] px-3.5 py-2 text-xs font-bold focus:border-primary focus:outline-none dark:text-white">
-                            <option value="pending" {{ $order->payment_status == 'pending' ? 'selected' : '' }}>Pending (বাকি)</option>
-                            <option value="paid" {{ $order->payment_status == 'paid' ? 'selected' : '' }}>Paid (পরিশোধিত)</option>
+<option value="pending" {{ $order->payment_status == 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="paid" {{ $order->payment_status == 'paid' ? 'selected' : '' }}>Paid</option>
                             <option value="failed" {{ $order->payment_status == 'failed' ? 'selected' : '' }}>Failed</option>
                         </select>
                     </div>

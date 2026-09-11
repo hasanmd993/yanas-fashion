@@ -150,8 +150,7 @@
         <div class="container">
             <div class="hp-section-head">
                 <div>
-                    <span class="eyebrow" style="color:var(--accent);"><i class="fa-solid fa-bolt"></i> LIMITED
-                        OFFERS</span>
+                    <span class="eyebrow eyebrow-accent"><i class="fa-solid fa-bolt"></i> LIMITED OFFERS</span>
                     <h2 class="hp-section-title">Hot Deals & Bestsellers</h2>
                 </div>
                 <a href="{{ route('shop.index') }}" class="hp-view-all">View All <i class="fa-solid fa-arrow-right"></i></a>
@@ -207,7 +206,7 @@
         <div class="container">
             <div class="hp-section-head">
                 <div>
-                    <span class="eyebrow"><i class="fa-solid fa-fire" style="color:var(--accent)"></i> HIGH DEMAND</span>
+                    <span class="eyebrow eyebrow-accent"><i class="fa-solid fa-fire"></i> HIGH DEMAND</span>
                     <h2 class="hp-section-title">Trending Now</h2>
                 </div>
                 <a href="{{ route('shop.index') }}" class="hp-view-all">View All <i class="fa-solid fa-arrow-right"></i></a>

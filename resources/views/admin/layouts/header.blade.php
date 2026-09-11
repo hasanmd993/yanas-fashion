@@ -5,7 +5,7 @@
         <!-- Left: Toggle Sidebar & Page Context -->
         <div class="flex items-center gap-3 sm:gap-4">
             <button type="button" 
-                    class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-[#1b2e4b] dark:hover:bg-[#253d63] text-gray-600 dark:text-gray-300 transition-all"
+                    class="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-[#1b2e4b] dark:hover:bg-[#253d63] text-gray-600 dark:text-gray-300 transition-all"
                     @click="$store.app.toggleSidebar()">
                 <i class="fa-solid fa-bars-staggered text-lg"></i>
             </button>
@@ -23,7 +23,7 @@
             <!-- Fullscreen Screen Mode Toggle -->
             <div x-data="{ isFullScreen: false }">
                 <button type="button" 
-                        class="p-2 sm:p-2.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-[#1b2e4b] dark:hover:bg-[#253d63] dark:text-gray-300 transition-all"
+                        class="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-[#1b2e4b] dark:hover:bg-[#253d63] dark:text-gray-300 transition-all"
                         @click="if (document.fullscreenElement) { document.exitFullscreen(); isFullScreen = false; } else { document.documentElement.requestFullscreen().catch(()=>{}); isFullScreen = true; }" 
                         title="Toggle Fullscreen Screen Mode">
                     <i x-show="!isFullScreen" class="fa-solid fa-expand text-sm sm:text-base"></i>
@@ -35,14 +35,14 @@
             <div>
                 <!-- When in Light mode, click to go Dark -->
                 <button type="button" x-show="!$store.app.isDarkMode" 
-                        class="p-2 sm:p-2.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-[#1b2e4b] dark:hover:bg-[#253d63] dark:text-gray-300 transition-all"
+                        class="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-[#1b2e4b] dark:hover:bg-[#253d63] dark:text-gray-300 transition-all"
                         @click="$store.app.toggleTheme('dark')" title="Switch to Dark Mode">
                     <i class="fa-solid fa-moon text-sm sm:text-base text-gray-700"></i>
                 </button>
 
                 <!-- When in Dark mode, click to go Light -->
                 <button type="button" x-show="$store.app.isDarkMode" 
-                        class="p-2 sm:p-2.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-[#1b2e4b] dark:hover:bg-[#253d63] dark:text-gray-300 transition-all"
+                        class="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-[#1b2e4b] dark:hover:bg-[#253d63] dark:text-gray-300 transition-all"
                         @click="$store.app.toggleTheme('light')" title="Switch to Light Mode">
                     <i class="fa-solid fa-sun text-sm sm:text-base text-amber-400"></i>
                 </button>
@@ -54,14 +54,14 @@
             @endphp
             <div class="relative" x-data="{ open: false }">
                 <button type="button" 
-                        class="relative p-2 sm:p-2.5 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-[#1b2e4b] dark:hover:bg-[#253d63] text-gray-700 dark:text-gray-300 transition-all"
+                        class="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-[#1b2e4b] dark:hover:bg-[#253d63] text-gray-700 dark:text-gray-300 transition-all"
                         @click="open = !open" @click.outside="open = false" title="Notifications">
                     <i class="fa-regular fa-bell text-sm sm:text-base"></i>
                     @if($pendingOrders->count() > 0)
-                        <span class="absolute -top-1 -right-1 flex h-4.5 min-w-[18px] items-center justify-center rounded-full bg-secondary px-1 text-[10px] font-black text-white shadow-sm ring-2 ring-white dark:ring-[#0e1726]">
+                        <span class="absolute -top-1 -right-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-secondary px-1 text-[10px] font-black text-white shadow-sm ring-2 ring-white dark:ring-[#0e1726]">
                             {{ $pendingOrders->count() }}
                         </span>
-                        <span class="absolute -top-1 -right-1 h-4.5 min-w-[18px] rounded-full bg-secondary animate-ping opacity-75"></span>
+                        <span class="absolute -top-1 -right-1 h-[18px] min-w-[18px] rounded-full bg-secondary animate-ping opacity-75"></span>
                     @endif
                 </button>
 
@@ -145,7 +145,7 @@
                         @csrf
                         <button type="submit" class="w-full flex items-center gap-2 px-4 py-2.5 text-xs text-danger hover:bg-danger-light dark:hover:bg-danger-dark-light transition-all text-left font-bold">
                             <i class="fa-solid fa-right-from-bracket text-xs"></i>
-                            <span>Sign Out (লগআউট)</span>
+                            <span>Sign Out</span>
                         </button>
                     </form>
                 </div>

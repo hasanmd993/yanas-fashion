@@ -147,17 +147,17 @@
                 </li>
                 <li>
                     <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
-                        <i class="fa-solid fa-box"></i> Orders (অর্ডারসমূহ)
+                        <i class="fa-solid fa-box"></i> Orders
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('admin.products.index') }}" class="{{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
-                        <i class="fa-solid fa-shirt"></i> Products (পণ্য তালিকা)
+                        <i class="fa-solid fa-shirt"></i> Products
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-                        <i class="fa-solid fa-folder-tree"></i> Categories (ক্যাটাগরি)
+                        <i class="fa-solid fa-folder-tree"></i> Categories
                     </a>
                 </li>
                 <li>

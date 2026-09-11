@@ -5,13 +5,17 @@
 @section('content')
 
     <!-- Header -->
-    <div class="mb-6">
-        <a href="{{ route('admin.sliders.index') }}" class="text-xs font-bold text-gray-500 hover:text-primary transition-all">
-            &larr; Back to Sliders
+    <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-extrabold text-gray-800 dark:text-white">
+                Edit Hero Slide: {{ $slider->title }}
+            </h1>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Update promotional banner imagery and CTA actions</p>
+        </div>
+        <a href="{{ route('admin.sliders.index') }}" 
+           class="btn inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-xs font-bold text-white shadow-md hover:bg-primary-hover transition-all">
+            <i class="fa-solid fa-arrow-left"></i> Back to Sliders
         </a>
-        <h1 class="text-2xl font-extrabold text-gray-800 dark:text-white mt-1">
-            Edit Hero Slide: {{ $slider->title }}
-        </h1>
     </div>
 
     <div class="panel max-w-3xl">
@@ -31,14 +35,14 @@
                 <!-- Main Heading -->
                 <div class="sm:col-span-2">
                     <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Main Heading (Title) *</label>
-                    <input type="text" name="title" required placeholder="যেমন: বাংলার ঐতিহ্য, আধুনিক আভিজাত্য" value="{{ old('title', $slider->title) }}" 
+                    <input type="text" name="title" required placeholder="e.g. Heritage Craft, Modern Elegance" value="{{ old('title', $slider->title) }}" 
                            class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white text-base">
                 </div>
 
                 <!-- Subtitle -->
                 <div class="sm:col-span-2">
                     <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Subtitle / Description</label>
-                    <textarea name="subtitle" rows="3" placeholder="বর্ণনা বা বিশেষ অফারের বিবরণ..." 
+                    <textarea name="subtitle" rows="3" placeholder="Description or special offer details..." 
                               class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">{{ old('subtitle', $slider->subtitle) }}</textarea>
                 </div>
 
@@ -46,7 +50,7 @@
                 <div class="sm:col-span-2 p-4 rounded-xl bg-gray-50 dark:bg-[#14233c] border border-dashed border-gray-300 dark:border-[#192a43]">
                     <div class="flex items-center justify-between mb-2">
                         <label class="block font-bold text-gray-800 dark:text-white">
-                            Background Banner Image (নতুন ব্যানার ছবি আপলোড করুন)
+                            Background Banner Image
                         </label>
                         <span class="badge badge-success text-[10px]">✨ Auto WebP 1920px Optimized</span>
                     </div>
@@ -71,7 +75,7 @@
                 <!-- Primary Button Text -->
                 <div>
                     <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Primary Button Text *</label>
-                    <input type="text" name="button_text" required placeholder="কালেকশন দেখুন (Explore Collection)" value="{{ old('button_text', $slider->button_text) }}" 
+                    <input type="text" name="button_text" required placeholder="Explore Collection" value="{{ old('button_text', $slider->button_text) }}" 
                            class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">
                 </div>
 
@@ -85,7 +89,7 @@
                 <!-- Secondary Button Text -->
                 <div>
                     <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Secondary Button Text (Optional)</label>
-                    <input type="text" name="secondary_button_text" placeholder="পাঞ্জাবি কালেকশন" value="{{ old('secondary_button_text', $slider->secondary_button_text) }}" 
+                    <input type="text" name="secondary_button_text" placeholder="Panjabi Collection" value="{{ old('secondary_button_text', $slider->secondary_button_text) }}" 
                            class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">
                 </div>
 
@@ -107,7 +111,7 @@
                 <div class="flex items-center pt-6">
                     <label class="inline-flex items-center gap-2 cursor-pointer">
                         <input type="checkbox" name="is_active" value="1" {{ $slider->is_active ? 'checked' : '' }} class="rounded text-primary focus:ring-primary h-4 w-4">
-                        <span class="font-bold text-gray-700 dark:text-gray-300">Active (প্রচ্ছদে দেখান)</span>
+                        <span class="font-bold text-gray-700 dark:text-gray-300">Active</span>
                     </label>
                 </div>
 

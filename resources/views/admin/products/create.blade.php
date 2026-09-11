@@ -5,13 +5,17 @@
 @section('content')
 
     <!-- Header -->
-    <div class="mb-6">
-        <a href="{{ route('admin.products.index') }}" class="text-xs font-bold text-gray-500 hover:text-primary transition-all">
-            &larr; Back to Products
+    <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-extrabold text-gray-800 dark:text-white">
+                Add New Product
+            </h1>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Create a new item in your store inventory</p>
+        </div>
+        <a href="{{ route('admin.products.index') }}" 
+           class="btn inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-xs font-bold text-white shadow-md hover:bg-primary-hover transition-all">
+            <i class="fa-solid fa-arrow-left"></i> Back to Products
         </a>
-        <h1 class="text-2xl font-extrabold text-gray-800 dark:text-white mt-1">
-            Add New Product
-        </h1>
     </div>
 
     <div class="panel max-w-4xl">
@@ -22,15 +26,15 @@
                 
                 <!-- Title (EN) -->
                 <div class="sm:col-span-2">
-                    <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Product Title (English) *</label>
+                    <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Product Title *</label>
                     <input type="text" name="title" required placeholder="e.g. Royal Embroidered Cotton Panjabi" value="{{ old('title') }}" 
                            class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">
                 </div>
 
                 <!-- Title (BN) -->
                 <div class="sm:col-span-2">
-                    <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Product Title (বাংলা)</label>
-                    <input type="text" name="title_bn" placeholder="যেমন: রয়্যাল এমব্রয়ডারি কটন পাঞ্জাবি" value="{{ old('title_bn') }}" 
+<label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Alternative Title (optional)</label>
+                    <input type="text" name="title_bn" placeholder="e.g. Alternative product title" value="{{ old('title_bn') }}"
                            class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">
                 </div>
 
@@ -84,7 +88,7 @@
                 <div class="sm:col-span-2 p-4 rounded-xl bg-gray-50 dark:bg-[#14233c] border border-dashed border-gray-300 dark:border-[#192a43]">
                     <div class="flex items-center justify-between mb-2">
                         <label class="block font-bold text-gray-800 dark:text-white">
-                            Thumbnail Image (প্রধান ছবি আপলোড করুন)
+                            Thumbnail Image
                         </label>
                         <span class="badge badge-success text-[10px]">✨ Auto WebP Optimized</span>
                     </div>
@@ -102,7 +106,7 @@
                 <!-- Gallery Upload -->
                 <div class="sm:col-span-2 p-4 rounded-xl bg-gray-50 dark:bg-[#14233c] border border-dashed border-gray-300 dark:border-[#192a43]">
                     <label class="block font-bold text-gray-800 dark:text-white mb-1">
-                        Gallery Extra Images (গ্যালারি অতিরিক্ত ছবিসমূহ - একাধিক সিলেক্ট করতে পারেন)
+                        Gallery Extra Images (you may select multiple)
                     </label>
                     <input type="file" name="gallery_files[]" multiple accept="image/*" 
                            class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-2 text-xs font-semibold file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-secondary file:text-white hover:file:bg-secondary-hover">
@@ -133,7 +137,7 @@
                 <div class="sm:col-span-2 flex flex-wrap gap-6 pt-2">
                     <label class="inline-flex items-center gap-2 cursor-pointer">
                         <input type="checkbox" name="is_featured" value="1" {{ old('is_featured') ? 'checked' : '' }} class="rounded text-primary focus:ring-primary h-4 w-4">
-                        <span class="font-bold text-gray-700 dark:text-gray-300">Featured (প্রচ্ছদে দেখান)</span>
+                        <span class="font-bold text-gray-700 dark:text-gray-300">Featured</span>
                     </label>
                     <label class="inline-flex items-center gap-2 cursor-pointer">
                         <input type="checkbox" name="is_trending" value="1" {{ old('is_trending') ? 'checked' : '' }} class="rounded text-primary focus:ring-primary h-4 w-4">

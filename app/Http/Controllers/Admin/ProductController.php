@@ -90,7 +90,7 @@ class ProductController extends Controller
 
         Product::create($validated);
 
-        return redirect()->route('admin.products.index')->with('success', 'নতুন পণ্য সফলভাবে তৈরি হয়েছে!');
+        return redirect()->route('admin.products.index')->with('success', 'New product created successfully!');
     }
 
     public function edit($id)
@@ -151,7 +151,7 @@ class ProductController extends Controller
 
         $product->update($validated);
 
-        return redirect()->route('admin.products.index')->with('success', 'পণ্য সফলভাবে আপডেট করা হয়েছে!');
+        return redirect()->route('admin.products.index')->with('success', 'Product updated successfully!');
     }
 
     public function destroy($id)
@@ -165,7 +165,7 @@ class ProductController extends Controller
         }
         $product->delete();
 
-        return redirect()->route('admin.products.index')->with('success', 'পণ্য সফলভাবে মুছে ফেলা হয়েছে!');
+        return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully!');
     }
 }
 

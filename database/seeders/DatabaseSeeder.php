@@ -66,7 +66,7 @@ class DatabaseSeeder extends Seeder
         // Categories
         $catMen = Category::updateOrCreate(['slug' => 'mens-fashion'], [
             'name' => "Men's Collection",
-            'name_bn' => 'মেনস ফ্যাশন',
+            'name_bn' => null,
             'image' => '/assets/category-men.jpg',
             'icon' => 'fa-solid fa-shirt',
             'description' => 'Festive Panjabis, Tailored Kablis, Twel-Stitch Cargo Trousers & PK Polos',
@@ -76,7 +76,7 @@ class DatabaseSeeder extends Seeder
 
         $catWomen = Category::updateOrCreate(['slug' => 'womens-ethnic'], [
             'name' => "Women's Ethnic & Fusion",
-            'name_bn' => 'ওমেন্স এথনিক ও ফিউশন',
+            'name_bn' => null,
             'image' => '/assets/category-women.jpg',
             'icon' => 'fa-solid fa-person-dress',
             'description' => 'Dhakai Jamdani Sarees, Pure Silk Kurtis & Designer 3-Piece Sets',
@@ -86,7 +86,7 @@ class DatabaseSeeder extends Seeder
 
         $catPanjabi = Category::updateOrCreate(['slug' => 'festive-panjabi'], [
             'name' => 'Festive Panjabi',
-            'name_bn' => 'ফেস্টিভ পাঞ্জাবি',
+            'name_bn' => null,
             'image' => '/assets/product-embroidered-panjabi.jpg',
             'icon' => 'fa-solid fa-vest',
             'description' => 'Embroidered Cotton, Silk, and Jacquard Panjabis for Eid and Occasions',
@@ -96,7 +96,7 @@ class DatabaseSeeder extends Seeder
 
         $catTrousers = Category::updateOrCreate(['slug' => 'cargo-trousers'], [
             'name' => 'Twel Stitch & Cargo Pants',
-            'name_bn' => 'কার্গো ও ট্রাউজার',
+            'name_bn' => null,
             'image' => '/assets/product-trousers.jpg',
             'icon' => 'fa-solid fa-socks',
             'description' => 'Heavy Twill Stretch Cargo Pants, Baggy Trousers & Casual Chinos',
@@ -106,7 +106,7 @@ class DatabaseSeeder extends Seeder
 
         $catAccessories = Category::updateOrCreate(['slug' => 'artisanal-accessories'], [
             'name' => 'Artisanal Accessories',
-            'name_bn' => 'হ্যান্ডক্রাফটেড অ্যাক্সেসরিজ',
+            'name_bn' => null,
             'image' => '/assets/category-accessories.jpg',
             'icon' => 'fa-solid fa-gem',
             'description' => 'Handcrafted Clutches, Embroidered Mojaris & Silver Filigree Jewelry',
@@ -119,7 +119,7 @@ class DatabaseSeeder extends Seeder
             [
                 'category_id' => $catWomen->id,
                 'title' => 'Heritage Dhakai Jamdani Saree',
-                'title_bn' => 'ঐতিহ্যবাহী ঢাকাই জামদানি শাড়ি',
+                'title_bn' => null,
                 'slug' => 'heritage-dhakai-jamdani-saree',
                 'sku' => 'YF-JMD-01',
                 'regular_price' => 14500,
@@ -141,7 +141,7 @@ class DatabaseSeeder extends Seeder
             [
                 'category_id' => $catPanjabi->id,
                 'title' => 'Royal Embroidered Cotton Panjabi',
-                'title_bn' => 'রয়্যাল এমব্রয়ডারি কটন পাঞ্জাবি',
+                'title_bn' => null,
                 'slug' => 'royal-embroidered-cotton-panjabi',
                 'sku' => 'YF-PNJ-02',
                 'regular_price' => 4500,
@@ -163,7 +163,7 @@ class DatabaseSeeder extends Seeder
             [
                 'category_id' => $catWomen->id,
                 'title' => 'Silk Fusion Kurti & Trouser Set',
-                'title_bn' => 'সিল্ক ফিউশন কুর্তি ও ট্রাউজার সেট',
+                'title_bn' => null,
                 'slug' => 'silk-fusion-kurti-trouser-set',
                 'sku' => 'YF-KRT-03',
                 'regular_price' => 6200,
@@ -185,7 +185,7 @@ class DatabaseSeeder extends Seeder
             [
                 'category_id' => $catMen->id,
                 'title' => 'Tailored Semi-Fitted Kabli Suit',
-                'title_bn' => 'টেইলর্ড সেমি-ফিটেড কাবলি স্যুট',
+                'title_bn' => null,
                 'slug' => 'tailored-semi-fitted-kabli-suit',
                 'sku' => 'YF-KBL-04',
                 'regular_price' => 5800,
@@ -207,7 +207,7 @@ class DatabaseSeeder extends Seeder
             [
                 'category_id' => $catTrousers->id,
                 'title' => 'Twel Stitch 6-Pocket Tactical Cargo Pant',
-                'title_bn' => 'টুয়েল স্টিচ ৬-পকেট কার্গো প্যান্ট',
+                'title_bn' => null,
                 'slug' => 'twel-stitch-6-pocket-cargo-pant',
                 'sku' => 'YF-CRG-05',
                 'regular_price' => 2250,
@@ -229,7 +229,7 @@ class DatabaseSeeder extends Seeder
             [
                 'category_id' => $catMen->id,
                 'title' => 'Fine Knit Cashmere-Touch Sweater',
-                'title_bn' => 'ফাইন নিট ক্যাশমিয়ার-টাচ সোয়েটার',
+                'title_bn' => null,
                 'slug' => 'fine-knit-cashmere-touch-sweater',
                 'sku' => 'YF-SWT-06',
                 'regular_price' => 3200,

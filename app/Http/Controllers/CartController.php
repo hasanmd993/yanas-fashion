@@ -75,7 +75,7 @@ class CartController extends Controller
             return $this->getCart();
         }
 
-        return redirect()->back()->with('success', 'পণ্যটি কার্ট-এ যুক্ত হয়েছে!');
+        return redirect()->back()->with('success', 'Product added to cart!');
     }
 
     public function update(Request $request)
@@ -96,7 +96,7 @@ class CartController extends Controller
             return $this->getCart();
         }
 
-        return redirect()->back()->with('success', 'কার্ট আপডেট হয়েছে!');
+        return redirect()->back()->with('success', 'Cart updated!');
     }
 
     public function remove(Request $request)
@@ -116,13 +116,13 @@ class CartController extends Controller
             return $this->getCart();
         }
 
-        return redirect()->back()->with('success', 'পণ্যটি কার্ট থেকে সরানো হয়েছে!');
+        return redirect()->back()->with('success', 'Product removed from cart!');
     }
 
     public function clear()
     {
         session()->forget('cart');
-        return redirect()->back()->with('success', 'কার্ট খালি করা হয়েছে!');
+        return redirect()->back()->with('success', 'Cart cleared!');
     }
 }
 

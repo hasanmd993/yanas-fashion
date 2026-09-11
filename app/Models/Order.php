@@ -53,9 +53,9 @@ class Order extends Model
     public function getZoneLabelAttribute(): string
     {
         return match($this->delivery_zone) {
-            'inside_dhaka' => 'ঢাকা সিটি (Inside Dhaka)',
-            'dhaka_suburbs' => 'ঢাকা উপশহর (Dhaka Suburbs)',
-            'outside_dhaka' => 'ঢাকার বাইরে (Outside Dhaka)',
+            'inside_dhaka' => 'Inside Dhaka',
+            'dhaka_suburbs' => 'Dhaka Suburbs',
+            'outside_dhaka' => 'Outside Dhaka',
             default => ucfirst(str_replace('_', ' ', $this->delivery_zone)),
         };
     }

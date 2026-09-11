@@ -38,7 +38,7 @@ class CheckoutController extends Controller
         }
 
         if (empty($cart)) {
-            return redirect()->route('shop.index')->with('warning', 'আপনার কার্ট খালি! অনুগ্রহ করে আগে পণ্য নির্বাচন করুন।');
+            return redirect()->route('shop.index')->with('warning', 'Your cart is empty! Please select products first.');
         }
 
         $subtotal = 0;
@@ -83,7 +83,7 @@ class CheckoutController extends Controller
         $coupon = Coupon::where('code', $code)->first();
 
         if (!$coupon) {
-            return response()->json(['success' => false, 'message' => 'অকার্যকর কুপন কোড (Invalid coupon code)'], 422);
+            return response()->json(['success' => false, 'message' => 'Invalid coupon code'], 422);
         }
 
         $cart = session()->get('cart', []);
@@ -94,8 +94,8 @@ class CheckoutController extends Controller
 
         if (!$coupon->isValidFor($subtotal)) {
             $msg = $coupon->min_order > 0
-                ? "এই কুপন ব্যবহার করতে ন্যূনতম ৳{$coupon->min_order} এর অর্ডার প্রয়োজন।"
-                : "কুপনটির মেয়াদ শেষ হয়ে গেছে।";
+                ? "A minimum order of ৳{$coupon->min_order} is required to use this coupon."
+                : "This coupon has expired.";
             return response()->json(['success' => false, 'message' => $msg], 422);
         }
 
@@ -110,7 +110,7 @@ class CheckoutController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => "কুপন প্রয়োগ করা হয়েছে! আপনি ৳{$discount} ছাড় পেয়েছেন।",
+            'message' => "Coupon applied! You received a discount of ৳{$discount}.",
             'discount' => $discount,
             'coupon' => $coupon->code,
         ]);
@@ -130,11 +130,11 @@ class CheckoutController extends Controller
             'payment_method' => 'required|in:cod,bkash,nagad',
             'customer_note' => 'nullable|string|max:300',
         ], [
-            'customer_name.required' => 'আপনার সম্পূর্ণ নাম লিখুন',
-            'customer_phone.required' => 'সঠিক মোবাইল নম্বর দিন (যেমন: 01712345678)',
-            'customer_phone.regex' => '১১ ডিজিটের সঠিক বাংলাদেশি মোবাইল নম্বর দিন (01XXXXXXXXX)',
-            'customer_address.required' => 'আপনার সম্পূর্ণ ডেলিভারি ঠিকানা লিখুন',
-            'delivery_zone.required' => 'ডেলিভারি এরিয়া নির্বাচন করুন',
+            'customer_name.required' => 'Please enter your full name',
+            'customer_phone.required' => 'Please enter your mobile number (e.g. 01712345678)',
+            'customer_phone.regex' => 'Please enter a valid 11-digit Bangladeshi mobile number (01XXXXXXXXX)',
+            'customer_address.required' => 'Please enter your full delivery address',
+            'delivery_zone.required' => 'Please select a delivery area',
         ]);
 
         // Clean phone number
@@ -158,7 +158,7 @@ class CheckoutController extends Controller
         } else {
             $sessionCart = session()->get('cart', []);
             if (empty($sessionCart)) {
-                return redirect()->route('shop.index')->with('error', 'আপনার কার্ট খালি!');
+                return redirect()->route('shop.index')->with('error', 'Your cart is empty!');
             }
             $cart = array_values($sessionCart);
         }

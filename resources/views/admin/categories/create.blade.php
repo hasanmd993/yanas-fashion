@@ -5,13 +5,17 @@
 @section('content')
 
     <!-- Header -->
-    <div class="mb-6">
-        <a href="{{ route('admin.categories.index') }}" class="text-xs font-bold text-gray-500 hover:text-primary transition-all">
-            &larr; Back to Categories
+    <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-extrabold text-gray-800 dark:text-white">
+                Add New Category
+            </h1>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Create a new product collection</p>
+        </div>
+        <a href="{{ route('admin.categories.index') }}" 
+           class="btn inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-xs font-bold text-white shadow-md hover:bg-primary-hover transition-all">
+            <i class="fa-solid fa-arrow-left"></i> Back to Categories
         </a>
-        <h1 class="text-2xl font-extrabold text-gray-800 dark:text-white mt-1">
-            Add New Category
-        </h1>
     </div>
 
     <div class="panel max-w-xl">
@@ -19,21 +23,21 @@
             @csrf
 
             <div>
-                <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Category Name (English) *</label>
+                <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Category Name *</label>
                 <input type="text" name="name" required placeholder="e.g. Festive Panjabi" value="{{ old('name') }}" 
                        class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">
             </div>
 
             <div>
-                <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Category Name (বাংলা)</label>
-                <input type="text" name="name_bn" placeholder="যেমন: ফেস্টিভ পাঞ্জাবি" value="{{ old('name_bn') }}" 
+<label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Alternative Name (optional)</label>
+                <input type="text" name="name_bn" placeholder="e.g. Alternative category name" value="{{ old('name_bn') }}"
                        class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">
             </div>
 
             <div class="p-3.5 rounded-xl bg-gray-50 dark:bg-[#14233c] border border-dashed border-gray-300 dark:border-[#192a43]">
                 <div class="flex items-center justify-between mb-1.5">
                     <label class="block font-bold text-gray-800 dark:text-white">
-                        Category Image (ছবি আপলোড করুন)
+                        Category Image
                     </label>
                     <span class="badge badge-success text-[10px]">✨ Auto WebP</span>
                 </div>

@@ -56,9 +56,11 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // Orders
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/export/excel', [AdminOrderController::class, 'exportExcel'])->name('orders.export_excel');
+    Route::get('/orders/export/pdf', [AdminOrderController::class, 'exportPdf'])->name('orders.export_pdf');
     Route::get('/orders/export/courier', [AdminOrderController::class, 'exportCourierCsv'])->name('orders.export_courier');
     Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::get('/orders/{id}/invoice', [AdminOrderController::class, 'downloadInvoice'])->name('orders.invoice');
+    Route::get('/orders/{id}/stream', [AdminOrderController::class, 'streamInvoice'])->name('orders.stream');
     Route::get('/orders/{id}/print', [AdminOrderController::class, 'printInvoice'])->name('orders.print');
     Route::post('/orders/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update_status');
     Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');

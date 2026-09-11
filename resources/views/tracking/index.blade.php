@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', "লাইভ অর্ডার ট্র্যাকিং — Yanas Fashion")
+@section('title', "Order Tracking - Yanas Fashion")
 
 @section('content')
 
     <div style="background: var(--bg-light); border-bottom: 1px solid var(--line); padding: 28px 0;">
         <div class="container" style="text-align: center; max-width: 600px;">
-            <span class="eyebrow"><i class="fa-solid fa-location-crosshairs"></i> রিয়েল-টাইম ট্র্যাকিং</span>
-            <h1 style="font-size: 2.2rem; margin-bottom: 8px;">আপনার অর্ডার ট্র্যাক করুন</h1>
+            <span class="eyebrow"><i class="fa-solid fa-location-crosshairs"></i> Real-Time Tracking</span>
+            <h1 style="font-size: 2.2rem; margin-bottom: 8px;">Track Your Order</h1>
             <p style="color: var(--text-muted); font-size: 0.95rem;">
-                অর্ডার নিশ্চিতকরণের পর প্রাপ্ত অর্ডার নম্বর ও মোবাইল নম্বর দিয়ে আপনার পার্সেলের সর্বশেষ অবস্থা জানুন।
+                Enter your order number and mobile number to check the latest status of your parcel.
             </p>
         </div>
     </div>
@@ -22,17 +22,17 @@
                 @csrf
                 <div style="display: grid; grid-template-columns: 1fr; gap: 16px;">
                     <div class="form-group">
-                        <label for="order_number">অর্ডার নম্বর (Order Number) *</label>
-                        <input type="text" name="order_number" id="order_number" class="form-control" placeholder="যেমন: YF-91024" required value="{{ old('order_number', request('order_number')) }}">
+                        <label for="order_number">Order Number *</label>
+                        <input type="text" name="order_number" id="order_number" class="form-control" placeholder="e.g. YF-91024" required value="{{ old('order_number', request('order_number')) }}">
                     </div>
 
                     <div class="form-group">
-                        <label for="phone">মোবাইল নম্বর (Phone Number) *</label>
+                        <label for="phone">Phone Number *</label>
                         <input type="tel" name="phone" id="phone" class="form-control" placeholder="01712345678" required value="{{ old('phone', request('phone')) }}">
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-block" style="padding: 14px; font-size: 1rem;">
-                        <i class="fa-solid fa-magnifying-glass"></i> অর্ডার ট্র্যাক করুন (Track Now)
+                        <i class="fa-solid fa-magnifying-glass"></i> Track Now
                     </button>
                 </div>
             </form>
@@ -44,8 +44,8 @@
                 
                 <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); padding-bottom: 16px; margin-bottom: 24px;">
                     <div>
-                        <h2 style="font-size: 1.4rem; color: var(--dark);">অর্ডার #{{ $order->order_number }}</h2>
-                        <span style="font-size: 0.82rem; color: var(--text-muted);">তারিখ: {{ $order->created_at->format('d M, Y h:i A') }}</span>
+                        <h2 style="font-size: 1.4rem; color: var(--dark);">Order #{{ $order->order_number }}</h2>
+                        <span style="font-size: 0.82rem; color: var(--text-muted);">Date: {{ $order->created_at->format('d M, Y h:i A') }}</span>
                     </div>
 
                     <div>
@@ -59,11 +59,11 @@
                                 default => '#666',
                             };
                             $statusText = match($order->order_status) {
-                                'pending' => 'অর্ডার গৃহীত হয়েছে (Pending)',
-                                'processing' => 'প্যাকিং ও প্রসেসিং চলছে (Processing)',
-                                'shipped' => 'কুরিয়ারে হস্তান্তর করা হয়েছে (In Transit)',
-                                'delivered' => 'ডেলিভারি সম্পন্ন হয়েছে (Delivered)',
-                                'cancelled' => 'অর্ডার বাতিল হয়েছে (Cancelled)',
+                                'pending' => 'Pending',
+                                'processing' => 'Processing',
+                                'shipped' => 'In Transit',
+                                'delivered' => 'Delivered',
+                                'cancelled' => 'Cancelled',
                                 default => ucfirst($order->order_status),
                             };
                         @endphp
@@ -76,10 +76,10 @@
                 <!-- Timeline Stages -->
                 @php
                     $steps = [
-                        'pending' => ['title' => 'অর্ডার প্লেসড', 'desc' => 'অর্ডার সিস্টেম ভেরিফাই হয়েছে', 'icon' => 'fa-clipboard-check'],
-                        'processing' => ['title' => 'প্রসেসিং ও প্যাকিং', 'desc' => 'পণ্য ওয়্যারহাউসে প্যাক করা হচ্ছে', 'icon' => 'fa-box-open'],
-                        'shipped' => ['title' => 'কুরিয়ারে ডেলিভারি চলছে', 'desc' => 'পার্সেল কুরিয়ার রাইডারের কাছে', 'icon' => 'fa-truck-fast'],
-                        'delivered' => ['title' => 'ডেলিভারি সম্পন্ন', 'desc' => 'গ্রাহকের হাতে পার্সেল পৌঁছেছে', 'icon' => 'fa-circle-check'],
+                        'pending' => ['title' => 'Order Placed', 'desc' => 'Order received and verified', 'icon' => 'fa-clipboard-check'],
+                        'processing' => ['title' => 'Processing & Packing', 'desc' => 'Products are being packed in the warehouse', 'icon' => 'fa-box-open'],
+                        'shipped' => ['title' => 'In Transit', 'desc' => 'Parcel handed over to the courier', 'icon' => 'fa-truck-fast'],
+                        'delivered' => ['title' => 'Delivered', 'desc' => 'Parcel delivered to the customer', 'icon' => 'fa-circle-check'],
                     ];
                     $currentIdx = match($order->order_status) {
                         'pending' => 1,
@@ -108,9 +108,9 @@
 
                 <!-- Order Details Brief -->
                 <div style="background: var(--bg-light); border-radius: var(--radius-sm); padding: 16px; margin-top: 24px; font-size: 0.9rem;">
-                    <div style="margin-bottom: 6px;"><strong>গ্রাহক:</strong> {{ $order->customer_name }} ({{ $order->customer_phone }})</div>
-                    <div style="margin-bottom: 6px;"><strong>ঠিকানা:</strong> {{ $order->customer_address }}</div>
-                    <div><strong>মোট মূল্য (COD):</strong> <span style="color:var(--primary); font-weight:800;">৳{{ number_format($order->total_amount) }}</span></div>
+                    <div style="margin-bottom: 6px;"><strong>Customer:</strong> {{ $order->customer_name }} ({{ $order->customer_phone }})</div>
+                    <div style="margin-bottom: 6px;"><strong>Address:</strong> {{ $order->customer_address }}</div>
+                    <div><strong>Total (COD):</strong> <span style="color:var(--primary); font-weight:800;">৳{{ number_format($order->total_amount) }}</span></div>
                 </div>
 
             </div>
@@ -119,4 +119,3 @@
     </section>
 
 @endsection
-

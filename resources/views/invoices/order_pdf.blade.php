@@ -150,14 +150,28 @@
     <!-- Header -->
     <table class="invoice-header">
         <tr>
-            <td>
-                <div class="brand-title">Yanas Fashion</div>
-                <div class="brand-subtitle">Bangladeshi Luxury & Contemporary Ethnic Wear</div>
-                <div style="font-size: 10px; color: #666; margin-top: 4px;">
-                    Hotline: +880 1700-000000 | Web: www.yanasfashion.com
-                </div>
+            <td style="vertical-align: middle;">
+                <table style="border-collapse: collapse; margin: 0; padding: 0;">
+                    <tr>
+                        @php
+                            $logoData = get_logo_base64();
+                        @endphp
+                        @if($logoData)
+                            <td style="vertical-align: middle; padding-right: 12px; width: 44px;">
+                                <img src="{{ $logoData }}" style="width: 44px; height: 44px; display: block;" alt="Logo">
+                            </td>
+                        @endif
+                        <td style="vertical-align: middle;">
+                            <div class="brand-title">{{ get_setting('site_name', 'Yanas Fashion') }}</div>
+                            <div class="brand-subtitle">{{ get_setting('tagline', 'Bangladeshi Luxury & Contemporary Ethnic Wear') }}</div>
+                            <div style="font-size: 10px; color: #666; margin-top: 4px;">
+                                Hotline: {{ get_setting('hotline', '01713580400') }} | Web: {{ url('/') }}
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </td>
-            <td style="text-align: right;">
+            <td style="text-align: right; vertical-align: middle;">
                 <div class="invoice-title">INVOICE</div>
                 <div style="font-weight: bold; font-size: 12px; color: #333;">#{{ $order->order_number }}</div>
                 <div style="font-size: 10px; color: #888;">Date: {{ $order->created_at->format('d M, Y h:i A') }}</div>
@@ -212,7 +226,7 @@
                     </td>
                     <td class="text-center">{{ $item->size ?? 'Standard' }}</td>
                     <td class="text-center">{{ $item->quantity }}</td>
-                    <td class="text-right">৳{{ number_format($item->subtotal) }}</td>
+                    <td class="text-right">{{ number_format($item->subtotal) }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -223,12 +237,12 @@
         <table class="summary-table">
             <tr>
                 <td>Subtotal:</td>
-                <td class="text-right">৳{{ number_format($order->subtotal) }}</td>
+                <td class="text-right">{{ number_format($order->subtotal) }}</td>
             </tr>
             @if($order->discount > 0)
                 <tr style="color: #28a745;">
                     <td>Coupon Discount:</td>
-                    <td class="text-right">-৳{{ number_format($order->discount) }}</td>
+                    <td class="text-right">-{{ number_format($order->discount) }}</td>
                 </tr>
             @endif
             <tr>
@@ -237,13 +251,13 @@
                     @if($order->delivery_charge == 0)
                         <span style="color: #28a745; font-weight: bold;">FREE</span>
                     @else
-                        ৳{{ number_format($order->delivery_charge) }}
+                        {{ number_format($order->delivery_charge) }}
                     @endif
                 </td>
             </tr>
             <tr class="total-row">
                 <td>Total Payable:</td>
-                <td class="text-right">৳{{ number_format($order->total_amount) }}</td>
+                <td class="text-right">{{ number_format($order->total_amount) }}</td>
             </tr>
         </table>
         <div style="clear: both;"></div>

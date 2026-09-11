@@ -11,10 +11,12 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 class OrdersExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize
 {
     protected $status;
+    protected $search;
 
-    public function __construct($status = null)
+    public function __construct($status = null, $search = null)
     {
         $this->status = $status;
+        $this->search = $search;
     }
 
     public function collection(): \Illuminate\Support\Enumerable
@@ -22,6 +24,14 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping, ShouldA
         $query = Order::with('items')->latest();
         if ($this->status && $this->status !== 'all') {
             $query->where('order_status', $this->status);
+        }
+        if ($this->search) {
+            $search = $this->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('order_number', 'like', "%{$search}%")
+                  ->orWhere('customer_name', 'like', "%{$search}%")
+                  ->orWhere('customer_phone', 'like', "%{$search}%");
+            });
         }
         return $query->get();
     }

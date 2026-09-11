@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>@yield('title', 'Admin Dashboard') | {{ get_setting('app_name', "Yanas Fashion Admin") }}</title>
+    <title>@yield('title', 'Admin Dashboard') | {{ get_setting('site_name', 'Yanas Fashion') }} Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ get_favicon_url() }}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Google Font: Nunito -->
@@ -33,11 +33,13 @@
                     colors: {
                         primary: {
                             DEFAULT: '#730163',
+                            hover: '#5b014e',
                             light: '#fbeaf7',
                             'dark-light': 'rgba(115, 1, 99, 0.15)',
                         },
                         secondary: {
                             DEFAULT: '#F68625',
+                            hover: '#e07314',
                             light: '#fff4ea',
                             'dark-light': 'rgba(246, 134, 37, 0.15)',
                         },
@@ -121,6 +123,30 @@
         .badge-danger { background-color: #fdeeed; color: #e7515a; }
         .badge-info { background-color: #e7f7ff; color: #2196f3; }
         .badge-secondary { background-color: #fff4ea; color: #F68625; }
+
+        /* Admin Sidebar Layout & Responsive Toggle */
+        .sidebar {
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @media (min-width: 1024px) {
+            .sidebar {
+                left: 0;
+            }
+            .sidebar.sidebar-collapsed-desktop {
+                left: -260px !important;
+            }
+            .main-content.sidebar-collapsed-desktop {
+                margin-left: 0 !important;
+            }
+        }
+        @media (max-width: 1023px) {
+            .sidebar {
+                left: -260px;
+            }
+            .sidebar.sidebar-open-mobile {
+                left: 0 !important;
+            }
+        }
     </style>
     @stack('styles')
 </head>
@@ -128,14 +154,14 @@
 <body class="relative overflow-x-hidden font-nunito text-sm font-normal antialiased bg-[#fafafa] text-[#0e1726] dark:bg-[#060818] dark:text-[#888ea8]">
 
     <!-- Sidebar Overlay for Mobile -->
-    <div x-cloak class="fixed inset-0 z-50 bg-[black]/60 lg:hidden" :class="{'hidden' : !$store.app.sidebar}" @click="$store.app.toggleSidebar()"></div>
+    <div x-cloak class="fixed inset-0 z-40 bg-[black]/60 lg:hidden" :class="{'hidden' : !$store.app.sidebar}" @click="$store.app.toggleSidebar()"></div>
 
     <div class="main-container min-h-screen">
         <!-- Sidebar Navigation -->
         @include('admin.layouts.sidebar')
 
         <!-- Main Content Area -->
-        <div class="main-content flex min-h-screen flex-col transition-all duration-300" :class="[$store.app.sidebar ? 'lg:ltr:ml-0 lg:rtl:mr-0' : 'lg:ltr:ml-[260px] lg:rtl:mr-[260px]']">
+        <div class="main-content flex min-h-screen flex-col transition-all duration-300" :class="[$store.app.sidebar ? 'lg:ltr:ml-0 lg:rtl:mr-0 sidebar-collapsed-desktop' : 'lg:ltr:ml-[260px] lg:rtl:mr-[260px]']">
             <!-- Header Top Bar -->
             @include('admin.layouts.header')
 
