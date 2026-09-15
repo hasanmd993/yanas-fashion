@@ -28,7 +28,7 @@
 
     <!-- Top Announcement Bar -->
     <div class="announcement-bar">
-        <div>
+        <div class="announcement-promo">
             ✨ <span class="highlight">Free Delivery in Dhaka City</span> on orders over ৳2,500 &nbsp;|&nbsp; 🚚 Express
             Delivery across 64 Districts
         </div>
@@ -47,24 +47,35 @@
     <header class="site-header">
         <div class="container">
             <div class="header-inner">
-                <!-- Brand Logo -->
-                <div class="logo-wrapper">
-                    <a href="{{ route('home') }}" style="display:inline-flex; align-items:center; gap:10px; text-decoration:none;">
-                        <img src="{{ get_logo_url() }}" alt="{{ get_setting('site_name', 'Yanas Fashion') }}" style="height:38px; width:auto; max-width:44px; object-fit:contain; border-radius:6px;">
-                        <div class="brand-logo">{{ get_setting('site_name', 'Yanas Fashion') }}</div>
-                    </a>
+                <!-- Left Header Group (Mobile Hamburger & Brand Logo) -->
+                <div class="header-left-group">
+                    <button type="button" class="mobile-menu-toggle-btn" id="mobileMenuToggle"
+                        aria-label="Open Navigation Menu" title="Open Menu">
+                        <i class="fa-solid fa-bars-staggered"></i>
+                    </button>
+                    <div class="logo-wrapper">
+                        <a href="{{ route('home') }}"
+                            style="display:inline-flex; align-items:center; gap:10px; text-decoration:none;">
+                            <img src="{{ get_logo_url() }}" alt="{{ get_setting('site_name', 'Yanas Fashion') }}"
+                                style="height:38px; width:auto; max-width:44px; object-fit:contain; border-radius:6px;">
+                            <div class="brand-logo">{{ get_setting('site_name', 'Yanas Fashion') }}</div>
+                        </a>
+                    </div>
                 </div>
 
-                <!-- Live Search Bar -->
+                <!-- Live Search Bar (Desktop) -->
                 <div class="search-container">
-                    <div class="search-input-wrap">
-                        <input type="text" id="global-search-input"
-                            placeholder="Search shirts, panjabi, trousers, jackets..." autocomplete="off">
-                        <button class="search-btn" aria-label="Search">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </button>
-                    </div>
-                    <div class="search-results-dropdown" id="search-results-dropdown"></div>
+                    <form action="{{ route('shop.index') }}" method="GET" class="desktop-search-form">
+                        <div class="search-input-wrap">
+                            <input type="text" name="q" id="global-search-input" class="live-search-input"
+                                placeholder="Search shirts, panjabi, trousers, jackets..."
+                                value="{{ request('q') }}" autocomplete="off">
+                            <button type="submit" class="search-btn" aria-label="Search">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                        </div>
+                        <div class="search-results-dropdown" id="search-results-dropdown"></div>
+                    </form>
                 </div>
 
                 <!-- Actions / Hotline -->
@@ -93,7 +104,24 @@
             </div>
         </div>
 
-        <!-- Secondary Categories Nav Bar (Dynamic Mega-Menu) -->
+        <!-- Mobile Search Bar (Displayed on Mobile instead of Category Nav) -->
+        <div class="mobile-search-bar-wrap">
+            <div class="container">
+                <form action="{{ route('shop.index') }}" method="GET" class="mobile-search-form">
+                    <div class="search-input-wrap">
+                        <input type="text" name="q" id="mobile-search-input" class="live-search-input"
+                            placeholder="Search shirts, panjabi, trousers, jackets..." value="{{ request('q') }}"
+                            autocomplete="off">
+                        <button type="submit" class="search-btn" aria-label="Search">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </div>
+                    <div class="search-results-dropdown" id="mobile-search-results-dropdown"></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Secondary Categories Nav Bar (Dynamic Mega-Menu on Desktop) -->
         <nav class="main-nav">
             <div class="container main-nav-inner">
                 <ul class="main-nav-list">
@@ -101,13 +129,6 @@
                         <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">
                             <i class="fa-solid fa-house"></i>
                             <span>Home</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('shop.index') }}"
-                            class="{{ request()->routeIs('shop.index') && !request('category') ? 'active' : '' }}">
-                            <i class="fa-solid fa-layer-group"></i>
-                            <span>Shop All</span>
                         </a>
                     </li>
 
@@ -141,7 +162,8 @@
                                     <div class="nav-mega-grid">
                                         @foreach($parent->activeChildren as $sub)
                                             <div class="nav-mega-col">
-                                                <a href="{{ route('shop.index', ['category' => $sub->slug]) }}" class="nav-mega-heading {{ $currentCatSlug === $sub->slug ? 'active' : '' }}">
+                                                <a href="{{ route('shop.index', ['category' => $sub->slug]) }}"
+                                                    class="nav-mega-heading {{ $currentCatSlug === $sub->slug ? 'active' : '' }}">
                                                     @if($sub->icon)
                                                         <i class="{{ $sub->icon }}"></i>
                                                     @endif
@@ -152,7 +174,8 @@
                                                     <ul class="nav-mega-sublist">
                                                         @foreach($sub->activeChildren as $child)
                                                             <li>
-                                                                <a href="{{ route('shop.index', ['category' => $child->slug]) }}" class="{{ $currentCatSlug === $child->slug ? 'active' : '' }}">
+                                                                <a href="{{ route('shop.index', ['category' => $child->slug]) }}"
+                                                                    class="{{ $currentCatSlug === $child->slug ? 'active' : '' }}">
                                                                     {{ $child->name }}
                                                                 </a>
                                                             </li>
@@ -182,12 +205,7 @@
                     </li>
                 </ul>
 
-                <div class="main-nav-right">
-                    <div class="nav-offer-tag">
-                        <i class="fa-solid fa-truck-ramp-box"></i>
-                        <span>Cash On Delivery Across 64 Districts</span>
-                    </div>
-                </div>
+
             </div>
         </nav>
     </header>
@@ -214,6 +232,166 @@
     <main>
         @yield('content')
     </main>
+
+    <!-- Slide-out Mobile Navigation Drawer -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+    <div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile Navigation Menu">
+        <!-- Drawer Header -->
+        <div class="mobile-nav-header">
+            <a href="{{ route('home') }}" class="mobile-nav-brand">
+                <img src="{{ get_logo_url() }}" alt="{{ get_setting('site_name', 'Yanas Fashion') }}">
+                <span>{{ get_setting('site_name', 'Yanas Fashion') }}</span>
+            </a>
+            <button type="button" class="mobile-nav-close-btn" id="closeMobileNav"
+                aria-label="Close Navigation">&times;</button>
+        </div>
+
+        <!-- Quick Live Search Wrap inside Drawer -->
+        <div class="mobile-nav-search-wrap">
+            <form action="{{ route('shop.index') }}" method="GET" class="mobile-nav-search-form">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" name="q" placeholder="Search luxury panjabi, shirts..." value="{{ request('q') }}" autocomplete="off">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        <!-- Scrollable Category & Navigation Body -->
+        <div class="mobile-nav-body">
+            <div class="mobile-nav-section-title">Collections & Categories</div>
+            <ul class="mobile-nav-menu">
+                <!-- Home -->
+                <li class="mobile-nav-li">
+                    <a href="{{ route('home') }}"
+                        class="mobile-nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
+                        <span class="nav-icon-box"><i class="fa-solid fa-house"></i></span>
+                        <span class="nav-text">Home</span>
+                    </a>
+                </li>
+
+                <!-- Dynamic 3-Tier Category Accordions -->
+                @foreach(get_nav_categories() as $parent)
+                    @php
+                        $hasSubs = $parent->activeChildren->count() > 0;
+                        $subSlugs = $parent->activeChildren->pluck('slug')->toArray();
+                        $childSlugs = $parent->activeChildren->flatMap->activeChildren->pluck('slug')->toArray();
+                        $allFamilySlugs = array_merge([$parent->slug], $subSlugs, $childSlugs);
+                        $isFamilyActive = in_array(request('category'), $allFamilySlugs);
+                    @endphp
+                    <li class="mobile-nav-li {{ $hasSubs ? 'has-accordion' : '' }} {{ $isFamilyActive ? 'open' : '' }}">
+                        <div class="mobile-nav-row">
+                            <a href="{{ route('shop.index', ['category' => $parent->slug]) }}"
+                                class="mobile-nav-link {{ $isFamilyActive ? 'active' : '' }}">
+                                <span class="nav-icon-box">
+                                    <i class="{{ $parent->icon ?: 'fa-solid fa-folder' }}"></i>
+                                </span>
+                                <span class="nav-text">{{ $parent->name }}</span>
+                            </a>
+                            @if($hasSubs)
+                                <button type="button" class="mobile-accordion-btn"
+                                    aria-label="Toggle {{ $parent->name }} subcategories">
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </button>
+                            @endif
+                        </div>
+
+                        @if($hasSubs)
+                            <div class="mobile-accordion-content" style="{{ $isFamilyActive ? 'display: block;' : '' }}">
+                                <a href="{{ route('shop.index', ['category' => $parent->slug]) }}" class="mobile-sub-explore">
+                                    <span>Explore All {{ $parent->name }}</span>
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </a>
+
+                                <ul class="mobile-sub-list">
+                                    @foreach($parent->activeChildren as $sub)
+                                        @php
+                                            $hasChildren = $sub->activeChildren->count() > 0;
+                                            $subChildSlugs = $sub->activeChildren->pluck('slug')->toArray();
+                                            $isSubActive = request('category') === $sub->slug || in_array(request('category'), $subChildSlugs);
+                                        @endphp
+                                        <li
+                                            class="mobile-sub-li {{ $hasChildren ? 'has-child-accordion' : '' }} {{ $isSubActive ? 'open' : '' }}">
+                                            <div class="mobile-sub-row">
+                                                <a href="{{ route('shop.index', ['category' => $sub->slug]) }}"
+                                                    class="mobile-sub-link {{ request('category') === $sub->slug ? 'active' : '' }}">
+                                                    @if($sub->icon)
+                                                        <i class="{{ $sub->icon }}"></i>
+                                                    @endif
+                                                    <span>{{ $sub->name }}</span>
+                                                </a>
+                                                @if($hasChildren)
+                                                    <button type="button" class="mobile-child-accordion-btn"
+                                                        aria-label="Toggle {{ $sub->name }} child categories">
+                                                        <i class="fa-solid fa-plus"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+
+                                            @if($hasChildren)
+                                                <ul class="mobile-child-list" style="{{ $isSubActive ? 'display: block;' : '' }}">
+                                                    @foreach($sub->activeChildren as $child)
+                                                        <li>
+                                                            <a href="{{ route('shop.index', ['category' => $child->slug]) }}"
+                                                                class="mobile-child-link {{ request('category') === $child->slug ? 'active' : '' }}">
+                                                                <i class="fa-solid fa-angle-right"></i>
+                                                                <span>{{ $child->name }}</span>
+                                                            </a>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                    </li>
+                @endforeach
+
+                <!-- Order Tracking -->
+                <li class="mobile-nav-li">
+                    <a href="{{ route('tracking.index') }}"
+                        class="mobile-nav-link {{ request()->routeIs('tracking.index') ? 'active' : '' }}">
+                        <span class="nav-icon-box"><i class="fa-solid fa-truck-fast"></i></span>
+                        <span class="nav-text">Order Tracking</span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Direct Hotline & Support -->
+            <div class="mobile-nav-section-title" style="margin-top: 24px;">Support & Hotline</div>
+            <div class="mobile-nav-support-box">
+                <a href="tel:01713580400" class="mobile-support-btn phone">
+                    <i class="fa-solid fa-phone"></i>
+                    <div>
+                        <small>Customer Hotline</small>
+                        <strong>01713-580400</strong>
+                    </div>
+                </a>
+                <a href="https://wa.me/8801713580400?text={{ urlencode('Hello Yana\'s Fashion, I would like to inquire about an order.') }}"
+                    target="_blank" class="mobile-support-btn whatsapp">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <div>
+                        <small>WhatsApp Orders</small>
+                        <strong>Chat Directly</strong>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Drawer Footer -->
+        <div class="mobile-nav-footer">
+            <div class="mobile-nav-socials">
+                <a href="https://facebook.com" target="_blank" aria-label="Facebook"><i
+                        class="fa-brands fa-facebook"></i></a>
+                <a href="https://instagram.com" target="_blank" aria-label="Instagram"><i
+                        class="fa-brands fa-instagram"></i></a>
+                <a href="https://tiktok.com" target="_blank" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="https://wa.me/8801713580400" target="_blank" aria-label="WhatsApp"><i
+                        class="fa-brands fa-whatsapp"></i></a>
+            </div>
+            <p class="mobile-nav-copyright">© 2026 Yanas Fashion. Dhaka, Bangladesh.</p>
+        </div>
+    </div>
 
     <!-- Slide-out Cart Drawer -->
     <div class="cart-drawer-overlay" id="cart-drawer-overlay"></div>
@@ -275,8 +453,13 @@
             <i class="fa-solid fa-house"></i>
             <span>Home</span>
         </a>
+        <button type="button" class="mobile-nav-item" id="mobileBottomMenuToggle"
+            style="background:none; border:none; cursor:pointer;">
+            <i class="fa-solid fa-bars-staggered"></i>
+            <span>Menu</span>
+        </button>
         <a href="{{ route('shop.index') }}"
-            class="mobile-nav-item {{ request()->routeIs('shop.index') ? 'active' : '' }}">
+            class="mobile-nav-item {{ request()->routeIs('shop.index') && !request('category') ? 'active' : '' }}">
             <i class="fa-solid fa-border-all"></i>
             <span>Shop</span>
         </a>
@@ -291,10 +474,6 @@
             <i class="fa-solid fa-truck-fast"></i>
             <span>Tracking</span>
         </a>
-        <a href="tel:01713580400" class="mobile-nav-item">
-            <i class="fa-solid fa-phone"></i>
-            <span>Call</span>
-        </a>
     </nav>
 
     <!-- Footer -->
@@ -304,8 +483,10 @@
                 <!-- Brand Info -->
                 <div class="footer-brand">
                     <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-                        <img src="{{ get_logo_url() }}" alt="{{ get_setting('site_name', 'Yanas Fashion') }}" style="height:36px; width:auto; max-width:40px; object-fit:contain; border-radius:6px;">
-                        <div class="brand-logo" style="color:#ffffff;">{{ get_setting('site_name', 'Yanas Fashion') }}</div>
+                        <img src="{{ get_logo_url() }}" alt="{{ get_setting('site_name', 'Yanas Fashion') }}"
+                            style="height:36px; width:auto; max-width:40px; object-fit:contain; border-radius:6px;">
+                        <div class="brand-logo" style="color:#ffffff;">{{ get_setting('site_name', 'Yanas Fashion') }}
+                        </div>
                     </div>
                     <p>Premium contemporary fashion crafted with fine tailoring, luxury fabrics, and modern aesthetics.
                         Fast express delivery with Cash on Delivery nationwide across Bangladesh.</p>

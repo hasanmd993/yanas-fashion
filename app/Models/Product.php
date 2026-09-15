@@ -64,6 +64,11 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class)->where('is_approved', true)->latest();
+    }
+
     public function getEffectivePriceAttribute()
     {
         return $this->sale_price ?? $this->regular_price;
@@ -75,6 +80,26 @@ class Product extends Model
             return round((($this->regular_price - $this->sale_price) / $this->regular_price) * 100);
         }
         return 0;
+    }
+
+    public function getAverageRatingAttribute()
+    {
+        if ($this->relationLoaded('reviews') && $this->reviews->isNotEmpty()) {
+            return round($this->reviews->avg('rating'), 1);
+        }
+        $dbAvg = $this->reviews()->avg('rating');
+        if ($dbAvg) {
+            return round($dbAvg, 1);
+        }
+        return (float) ($this->rating ?? 0);
+    }
+
+    public function getTotalReviewsCountAttribute()
+    {
+        if ($this->relationLoaded('reviews')) {
+            return $this->reviews->count();
+        }
+        return $this->reviews()->count();
     }
 }
 

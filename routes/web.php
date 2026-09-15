@@ -25,6 +25,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/sitemap.xml', [HomeController::class, 'sitemap'])->name('sitemap');
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
+Route::post('/product/{id}/review', [ProductController::class, 'storeReview'])->name('product.review.store');
 
 // Live AJAX Search & Quick-view
 Route::get('/api/search-products', [ShopController::class, 'searchApi'])->name('api.search');

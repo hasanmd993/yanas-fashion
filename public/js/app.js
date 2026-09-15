@@ -11,7 +11,10 @@ document.addEventListener('DOMContentLoaded', function () {
     initCheckoutCalculator();
     initProductGallery();
     initSizeChartModal();
+    initPdpTabs();
+    initPdpStickyBar();
     initFloatingCommunicationWidget();
+    initMobileNavDrawer();
 });
 
 // =========================================================================
@@ -130,59 +133,63 @@ function initHeroSlider() {
 }
 
 // =========================================================================
-// 1. Live Autocomplete Header Search
+// 1. Live Autocomplete Header & Mobile Search
 // =========================================================================
 function initLiveSearch() {
-    const searchInput = document.getElementById('global-search-input');
-    const dropdown = document.getElementById('search-results-dropdown');
-    let debounceTimer;
+    const searchPairs = [
+        { input: document.getElementById('global-search-input'), dropdown: document.getElementById('search-results-dropdown') },
+        { input: document.getElementById('mobile-search-input'), dropdown: document.getElementById('mobile-search-results-dropdown') }
+    ];
 
-    if (!searchInput || !dropdown) return;
+    searchPairs.forEach(({ input, dropdown }) => {
+        if (!input || !dropdown) return;
+        let debounceTimer;
 
-    searchInput.addEventListener('input', function () {
-        clearTimeout(debounceTimer);
-        const query = this.value.trim();
+        input.addEventListener('input', function () {
+            clearTimeout(debounceTimer);
+            const query = this.value.trim();
 
-        if (query.length < 2) {
-            dropdown.style.display = 'none';
-            dropdown.innerHTML = '';
-            return;
-        }
+            if (query.length < 2) {
+                dropdown.style.display = 'none';
+                dropdown.innerHTML = '';
+                return;
+            }
 
-        debounceTimer = setTimeout(() => {
-            fetch(`/api/search-products?q=${encodeURIComponent(query)}`)
-                .then(res => res.json())
-                .then(products => {
-                    if (products.length === 0) {
-                        dropdown.innerHTML = '<div style="padding:14px; text-align:center; color:#888; font-size:0.88rem;">No products found</div>';
+            debounceTimer = setTimeout(() => {
+                fetch(`/api/search-products?q=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(products => {
+                        if (products.length === 0) {
+                            dropdown.innerHTML = '<div style="padding:14px; text-align:center; color:#888; font-size:0.88rem;">No products found</div>';
+                            dropdown.style.display = 'block';
+                            return;
+                        }
+
+                        let html = '';
+                        products.forEach(p => {
+                            const price = p.sale_price ? `৳${Number(p.sale_price).toLocaleString()}` : `৳${Number(p.regular_price).toLocaleString()}`;
+                            html += `
+                                <a href="/product/${p.slug}" class="search-result-item">
+                                    <img src="${p.thumbnail}" alt="${p.title}">
+                                    <div>
+                                        <div class="item-title">${p.title}</div>
+                                        <div class="item-price">${price}</div>
+                                    </div>
+                                </a>
+                            `;
+                        });
+                        dropdown.innerHTML = html;
                         dropdown.style.display = 'block';
-                        return;
-                    }
+                    })
+                    .catch(err => console.error(err));
+            }, 250);
+        });
 
-                    let html = '';
-                    products.forEach(p => {
-                        const price = p.sale_price ? `৳${Number(p.sale_price).toLocaleString()}` : `৳${Number(p.regular_price).toLocaleString()}`;
-                        html += `
-                            <a href="/product/${p.slug}" class="search-result-item">
-                                <img src="${p.thumbnail}" alt="${p.title}">
-                                <div>
-                                    <div class="item-title">${p.title}</div>
-                                    <div class="item-price">${price}</div>
-                                </div>
-                            </a>
-                        `;
-                    });
-                    dropdown.innerHTML = html;
-                    dropdown.style.display = 'block';
-                })
-                .catch(err => console.error(err));
-        }, 250);
-    });
-
-    document.addEventListener('click', function (e) {
-        if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
-            dropdown.style.display = 'none';
-        }
+        document.addEventListener('click', function (e) {
+            if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
     });
 }
 
@@ -423,22 +430,52 @@ function applyCouponCode() {
 }
 
 // =========================================================================
-// 4. Single Product Gallery & Zoom
+// 4. Single Product Gallery & Fullscreen Lightbox
 // =========================================================================
 function initProductGallery() {
-    const mainImg = document.getElementById('product-main-image');
-    const thumbBtns = document.querySelectorAll('.thumb-btn');
+    const mainImg = document.getElementById('pdp-main-img') || document.getElementById('product-main-image');
+    const thumbBtns = document.querySelectorAll('.pdp-thumb-btn, .thumb-btn');
+    const fullscreenBtn = document.getElementById('pdpFullscreenBtn');
+    const lightboxModal = document.getElementById('pdp-lightbox-modal');
+    const lightboxImg = document.getElementById('pdp-lightbox-img');
+    const lightboxClose = document.getElementById('pdp-lightbox-close');
 
-    if (!mainImg || !thumbBtns.length) return;
-
-    thumbBtns.forEach(btn => {
-        btn.addEventListener('click', function () {
-            thumbBtns.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            const targetSrc = this.dataset.src;
-            if (targetSrc) mainImg.src = targetSrc;
+    if (thumbBtns.length && mainImg) {
+        thumbBtns.forEach(btn => {
+            btn.addEventListener('click', function () {
+                thumbBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const targetSrc = this.dataset.src;
+                if (targetSrc) {
+                    mainImg.src = targetSrc;
+                    if (mainImg.dataset) mainImg.dataset.zoom = targetSrc;
+                }
+            });
         });
-    });
+    }
+
+    if (fullscreenBtn && lightboxModal && lightboxImg && mainImg) {
+        fullscreenBtn.addEventListener('click', () => {
+            lightboxImg.src = mainImg.src;
+            lightboxModal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        });
+
+        const closeLightbox = () => {
+            lightboxModal.classList.remove('open');
+            document.body.style.overflow = '';
+        };
+
+        if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+        lightboxModal.addEventListener('click', (e) => {
+            if (e.target === lightboxModal) closeLightbox();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightboxModal.classList.contains('open')) {
+                closeLightbox();
+            }
+        });
+    }
 }
 
 // =========================================================================
@@ -451,31 +488,116 @@ function initSizeChartModal() {
 
     if (!modal) return;
 
-    if (openBtn) {
-        openBtn.addEventListener('click', () => {
-            modal.style.display = 'flex';
-        });
-    }
+    const openModal = () => {
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    };
 
-    if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-    }
+    const closeModal = () => {
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+    };
 
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
+    if (openBtn) openBtn.addEventListener('click', openModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('open')) {
+            closeModal();
         }
     });
+}
+
+// =========================================================================
+// 5b. PDP Tab & Mobile Luxury Accordion System
+// =========================================================================
+function initPdpTabs() {
+    const tabBtns = document.querySelectorAll('.pdp-tab-btn');
+    const tabPanels = document.querySelectorAll('.pdp-tab-panel');
+    const mobileToggles = document.querySelectorAll('.pdp-accordion-toggle');
+
+    // Desktop Tab Switching
+    if (tabBtns.length) {
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const targetId = this.dataset.tab;
+                if (!targetId) return;
+
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabPanels.forEach(p => p.classList.remove('active'));
+
+                this.classList.add('active');
+                const targetPanel = document.getElementById(targetId);
+                if (targetPanel) {
+                    targetPanel.classList.add('active');
+                    const toggle = targetPanel.querySelector('.pdp-accordion-toggle');
+                    if (toggle) toggle.classList.add('active');
+                }
+            });
+        });
+    }
+
+    // Mobile Accordion Toggle
+    if (mobileToggles.length) {
+        mobileToggles.forEach(toggle => {
+            toggle.addEventListener('click', function (e) {
+                e.preventDefault();
+                const panel = this.closest('.pdp-tab-panel');
+                if (!panel) return;
+
+                const isOpen = panel.classList.contains('active');
+
+                // Toggle this panel
+                if (isOpen) {
+                    panel.classList.remove('active');
+                    this.classList.remove('active');
+                } else {
+                    panel.classList.add('active');
+                    this.classList.add('active');
+                }
+            });
+        });
+    }
+}
+
+// =========================================================================
+// 5c. PDP Mobile Floating Sticky CTA Bar (Scroll-Triggered)
+// =========================================================================
+function initPdpStickyBar() {
+    const stickyBar = document.getElementById('pdpMobileStickyBar');
+    const triggerArea = document.getElementById('pdpBuyTriggerArea');
+
+    if (!stickyBar || !triggerArea) return;
+
+    let ticking = false;
+
+    window.addEventListener('scroll', function () {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                const rect = triggerArea.getBoundingClientRect();
+                // When buy trigger area is scrolled past the top of the viewport
+                if (rect.bottom < 0) {
+                    stickyBar.classList.add('visible');
+                } else {
+                    stickyBar.classList.remove('visible');
+                }
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }, { passive: true });
 }
 
 // =========================================================================
 // 6. Typewriter Animated Search Placeholder (Wasitex BD Style)
 // =========================================================================
 function initTypewriterSearch() {
-    const input = document.getElementById('global-search-input');
-    if (!input) return;
+    const inputs = document.querySelectorAll('.live-search-input, #global-search-input, #mobile-search-input');
+    if (!inputs.length) return;
 
     const phrases = [
         'Search shirts, t-shirts...',
@@ -495,12 +617,17 @@ function initTypewriterSearch() {
         if (isPaused) return;
 
         const currentPhrase = phrases[phraseIdx];
+        const currentText = isDeleting 
+            ? currentPhrase.substring(0, charIdx - 1) 
+            : currentPhrase.substring(0, charIdx + 1);
+
+        inputs.forEach(input => {
+            input.setAttribute('placeholder', currentText);
+        });
 
         if (isDeleting) {
-            input.setAttribute('placeholder', currentPhrase.substring(0, charIdx - 1));
             charIdx--;
         } else {
-            input.setAttribute('placeholder', currentPhrase.substring(0, charIdx + 1));
             charIdx++;
         }
 
@@ -518,16 +645,18 @@ function initTypewriterSearch() {
         typingTimer = setTimeout(typeLoop, typeSpeed);
     }
 
-    input.addEventListener('focus', function () {
-        isPaused = true;
-        clearTimeout(typingTimer);
-    });
+    inputs.forEach(input => {
+        input.addEventListener('focus', function () {
+            isPaused = true;
+            clearTimeout(typingTimer);
+        });
 
-    input.addEventListener('blur', function () {
-        if (!this.value.trim()) {
-            isPaused = false;
-            typeLoop();
-        }
+        input.addEventListener('blur', function () {
+            if (!this.value.trim()) {
+                isPaused = false;
+                typeLoop();
+            }
+        });
     });
 
     // Start typewriter loop
@@ -554,5 +683,101 @@ function initFloatingCommunicationWidget() {
         }
     });
 }
+
+// =========================================================================
+// 8. Mobile Slide-out Navigation Drawer & Accordion Engine
+// =========================================================================
+function initMobileNavDrawer() {
+    const drawer = document.getElementById('mobileNavDrawer');
+    const overlay = document.getElementById('mobileNavOverlay');
+    const openBtns = document.querySelectorAll('#mobileMenuToggle, #mobileBottomMenuToggle, .trigger-mobile-menu');
+    const closeBtn = document.getElementById('closeMobileNav');
+
+    if (!drawer || !overlay) return;
+
+    function openDrawer() {
+        drawer.classList.add('open');
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+        drawer.classList.remove('open');
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    openBtns.forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            openDrawer();
+        });
+    });
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeDrawer);
+    }
+
+    overlay.addEventListener('click', closeDrawer);
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && drawer.classList.contains('open')) {
+            closeDrawer();
+        }
+    });
+
+    // Close drawer when clicking a child category link (smooth navigation)
+    const navLinks = drawer.querySelectorAll('.mobile-nav-link:not(.has-accordion), .mobile-sub-link:not(.has-child-accordion), .mobile-child-link, .mobile-sub-explore');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function () {
+            closeDrawer();
+        });
+    });
+
+    // Tier 1 Accordions: Parent -> Subcategories
+    const parentAccordions = drawer.querySelectorAll('.mobile-nav-li.has-accordion');
+    parentAccordions.forEach(li => {
+        const btn = li.querySelector('.mobile-accordion-btn');
+        const content = li.querySelector('.mobile-accordion-content');
+        if (!btn || !content) return;
+
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const isOpen = li.classList.contains('open');
+            if (isOpen) {
+                li.classList.remove('open');
+                content.style.display = 'none';
+            } else {
+                li.classList.add('open');
+                content.style.display = 'block';
+            }
+        });
+    });
+
+    // Tier 2 Accordions: Subcategory -> Child categories
+    const childAccordions = drawer.querySelectorAll('.mobile-sub-li.has-child-accordion');
+    childAccordions.forEach(li => {
+        const btn = li.querySelector('.mobile-child-accordion-btn');
+        const list = li.querySelector('.mobile-child-list');
+        if (!btn || !list) return;
+
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const isOpen = li.classList.contains('open');
+            if (isOpen) {
+                li.classList.remove('open');
+                list.style.display = 'none';
+                btn.innerHTML = '<i class="fa-solid fa-plus"></i>';
+            } else {
+                li.classList.add('open');
+                list.style.display = 'block';
+                btn.innerHTML = '<i class="fa-solid fa-minus"></i>';
+            }
+        });
+    });
+}
+
 
 

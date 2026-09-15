@@ -37,9 +37,9 @@ class ShopController extends Controller
             $search = $request->query('q');
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('title_bn', 'like', "%{$search}%")
-                  ->orWhere('sku', 'like', "%{$search}%")
-                  ->orWhere('short_desc', 'like', "%{$search}%");
+                    ->orWhere('title_bn', 'like', "%{$search}%")
+                    ->orWhere('sku', 'like', "%{$search}%")
+                    ->orWhere('short_desc', 'like', "%{$search}%");
             });
         }
 
@@ -83,8 +83,8 @@ class ShopController extends Controller
         $products = Product::where('is_active', true)
             ->where(function ($q) use ($keyword) {
                 $q->where('title', 'like', "%{$keyword}%")
-                  ->orWhere('title_bn', 'like', "%{$keyword}%")
-                  ->orWhere('sku', 'like', "%{$keyword}%");
+                    ->orWhere('title_bn', 'like', "%{$keyword}%")
+                    ->orWhere('sku', 'like', "%{$keyword}%");
             })
             ->take(6)
             ->get(['id', 'title', 'title_bn', 'slug', 'thumbnail', 'regular_price', 'sale_price', 'badge']);
