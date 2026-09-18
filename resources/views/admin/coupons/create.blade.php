@@ -15,7 +15,7 @@
         </a>
     </div>
 
-    <div class="panel max-w-xxl">
+    <div class="panel">
         <form action="{{ route('admin.coupons.store') }}" method="POST" class="space-y-5 text-xs">
             @csrf
 

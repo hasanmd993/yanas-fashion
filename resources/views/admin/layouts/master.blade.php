@@ -147,6 +147,118 @@
                 left: 0 !important;
             }
         }
+
+        /* =====================================================
+           MOBILE RESPONSIVE: Card-style Tables & Layout Fixes
+           ===================================================== */
+
+        /* Mobile Card Table Transformation */
+        @media (max-width: 767px) {
+            .admin-card-table thead {
+                display: none !important;
+            }
+            .admin-card-table tbody {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .admin-card-table tbody tr {
+                display: flex;
+                flex-direction: column;
+                background: #ffffff;
+                border: 1px solid #eef0f3;
+                border-radius: 12px;
+                padding: 14px 16px;
+                gap: 6px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            }
+            .dark .admin-card-table tbody tr {
+                background: #1b2e4b;
+                border-color: #192a43;
+            }
+            .admin-card-table tbody tr:hover {
+                background: #f9fafb;
+            }
+            .dark .admin-card-table tbody tr:hover {
+                background: #14233c;
+            }
+            .admin-card-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 5px 0 !important;
+                border: none !important;
+                font-size: 12px;
+                gap: 10px;
+            }
+            .admin-card-table td::before {
+                content: attr(data-label);
+                font-weight: 800;
+                font-size: 10px;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                color: #9ca3af;
+                flex-shrink: 0;
+                min-width: 90px;
+            }
+            .dark .admin-card-table td::before {
+                color: #6b7280;
+            }
+            .admin-card-table td:last-child {
+                border-top: 1px solid #f3f4f6 !important;
+                padding-top: 10px !important;
+                margin-top: 4px;
+                justify-content: flex-end;
+            }
+            .dark .admin-card-table td:last-child {
+                border-top-color: #192a43 !important;
+            }
+            /* Hide columns marked as mobile-hidden */
+            .admin-card-table td.mobile-hide {
+                display: none !important;
+            }
+        }
+
+        /* Mobile Footer Table (order show tfoot) */
+        @media (max-width: 767px) {
+            .admin-card-table tfoot td {
+                display: block !important;
+                text-align: right !important;
+                padding: 4px 8px !important;
+            }
+            .admin-card-table tfoot td::before {
+                display: none;
+            }
+        }
+
+        /* Action button rows — stack vertically on small screens */
+        @media (max-width: 480px) {
+            .admin-actions-wrap {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 8px !important;
+            }
+            .admin-actions-wrap > a,
+            .admin-actions-wrap > button {
+                width: 100% !important;
+                justify-content: center !important;
+                text-align: center;
+            }
+        }
+
+        /* Chart container overflow protection */
+        @media (max-width: 767px) {
+            #revenue-chart {
+                min-height: 220px !important;
+            }
+        }
+
+        /* Panel padding on very small screens */
+        @media (max-width: 480px) {
+            .panel {
+                padding: 14px 12px;
+            }
+        }
     </style>
     @stack('styles')
 </head>

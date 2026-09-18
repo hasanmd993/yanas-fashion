@@ -116,7 +116,7 @@
             </div>
 
             <!-- Chart Container with overflow control -->
-            <div class="w-full overflow-hidden relative">
+            <div class="w-full overflow-hidden relative" style="min-width: 0;">
                 <div id="revenue-chart" class="w-full" style="min-height: 310px;"></div>
             </div>
         </div>
@@ -155,7 +155,7 @@
         </div>
 
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+            <table class="w-full text-left text-xs admin-card-table">
                 <thead>
                     <tr class="border-b border-gray-200 dark:border-[#192a43] text-gray-400 font-bold uppercase text-[10px]">
                         <th class="py-3 px-4">Order #</th>
@@ -171,12 +171,12 @@
                 <tbody class="divide-y divide-gray-100 dark:divide-[#192a43]">
                     @forelse($recentOrders as $ro)
                         <tr class="hover:bg-gray-50 dark:hover:bg-[#14233c] transition-all">
-                            <td class="py-3.5 px-4 font-bold text-primary dark:text-primary-light">#{{ $ro->order_number }}</td>
-                            <td class="py-3.5 px-4 font-semibold text-gray-800 dark:text-white">{{ $ro->customer_name }}</td>
-                            <td class="py-3.5 px-4 text-gray-500 font-mono">{{ $ro->customer_phone }}</td>
-                            <td class="py-3.5 px-4">{{ $ro->zone_label }}</td>
-                            <td class="py-3.5 px-4 font-black text-gray-800 dark:text-white">৳{{ number_format($ro->total_amount) }}</td>
-                            <td class="py-3.5 px-4">
+                            <td class="py-3.5 px-4 font-bold text-primary dark:text-primary-light" data-label="Order">#{{ $ro->order_number }}</td>
+                            <td class="py-3.5 px-4 font-semibold text-gray-800 dark:text-white" data-label="Customer">{{ $ro->customer_name }}</td>
+                            <td class="py-3.5 px-4 text-gray-500 font-mono mobile-hide" data-label="Phone">{{ $ro->customer_phone }}</td>
+                            <td class="py-3.5 px-4 mobile-hide" data-label="Zone">{{ $ro->zone_label }}</td>
+                            <td class="py-3.5 px-4 font-black text-gray-800 dark:text-white" data-label="Total">৳{{ number_format($ro->total_amount) }}</td>
+                            <td class="py-3.5 px-4" data-label="Status">
                                 @php
                                     $badgeClass = match($ro->order_status) {
                                         'pending' => 'badge-warning',
@@ -189,8 +189,8 @@
                                 @endphp
                                 <span class="badge {{ $badgeClass }}">{{ ucfirst($ro->order_status) }}</span>
                             </td>
-                            <td class="py-3.5 px-4 text-gray-400">{{ $ro->created_at->format('d M, Y') }}</td>
-                            <td class="py-3.5 px-4 text-center">
+                            <td class="py-3.5 px-4 text-gray-400 mobile-hide" data-label="Date">{{ $ro->created_at->format('d M, Y') }}</td>
+                            <td class="py-3.5 px-4 text-center" data-label="">
                                 <a href="{{ route('admin.orders.show', $ro->id) }}" class="inline-flex items-center gap-1 px-3 py-1 rounded bg-primary-light text-primary font-bold text-[11px] hover:bg-primary hover:text-white transition-all">
                                     Manage &rarr;
                                 </a>

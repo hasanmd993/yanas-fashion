@@ -14,7 +14,14 @@ class HomeController extends Controller
     {
         $sliders = Slider::active()->get();
 
+        // Only show child categories on homepage category grid
         $categories = Category::where('is_active', true)
+            ->whereNotNull('parent_id')
+            ->where(function ($query) {
+                $query->whereHas('parent', function ($q) {
+                    $q->whereNotNull('parent_id');
+                })->orWhereDoesntHave('children');
+            })
             ->orderBy('sort_order', 'asc')
             ->get();
 

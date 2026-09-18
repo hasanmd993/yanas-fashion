@@ -169,47 +169,61 @@
             @else
                 <div class="product-grid">
                     @foreach($products as $product)
+                        @php
+                            $effectivePrice = $product->sale_price ?? $product->regular_price;
+                            $hasDiscount = $product->sale_price && $product->sale_price < $product->regular_price;
+                            $discountPercent = $hasDiscount ? round((($product->regular_price - $product->sale_price) / $product->regular_price) * 100) : 0;
+                            $savings = $hasDiscount ? ($product->regular_price - $product->sale_price) : 0;
+                        @endphp
                         <div class="product-card">
                             <div class="product-thumb">
-                                <a href="{{ route('product.show', $product->slug) }}">
-                                    <img src="{{ asset($product->thumbnail) }}" alt="{{ $product->title }}" loading="lazy">
-                                </a>
                                 @if($product->badge)
                                     <span class="product-badge">{{ $product->badge }}</span>
                                 @endif
-                                <div class="product-actions">
-                                    <a href="{{ route('product.show', $product->slug) }}" class="btn-action" title="View Details">
+                                @if($discountPercent > 0)
+                                    <span class="discount-tag">-{{ $discountPercent }}%</span>
+                                @endif
+
+                                <a href="{{ route('product.show', $product->slug) }}" class="product-thumb-link">
+                                    <img src="{{ asset($product->thumbnail) }}" alt="{{ $product->title }}" loading="lazy">
+                                </a>
+
+                                <div class="product-thumb-actions">
+                                    <a href="{{ route('product.show', $product->slug) }}" class="thumb-action-btn" title="View Details">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
                                 </div>
                             </div>
+
                             <div class="product-info">
-                                <div class="product-cat">
-                                    {{ $product->category ? $product->category->name : 'Uncategorized' }}
-                                </div>
+                                @if($product->category)
+                                    <a href="{{ route('shop.index', ['category' => $product->category->slug]) }}" class="product-cat">
+                                        {{ $product->category->name }}
+                                    </a>
+                                @else
+                                    <span class="product-cat">Collection</span>
+                                @endif
+
                                 <h3 class="product-title">
                                     <a href="{{ route('product.show', $product->slug) }}">{{ $product->title }}</a>
                                 </h3>
-                                <div class="product-price">
-                                    @if($product->sale_price)
-                                        <span class="price-current">৳{{ number_format($product->sale_price) }}</span>
+
+                                <div class="product-price-row">
+                                    <span class="price-current">৳{{ number_format($effectivePrice) }}</span>
+                                    @if($hasDiscount)
                                         <span class="price-old">৳{{ number_format($product->regular_price) }}</span>
-                                    @else
-                                        <span class="price-current">৳{{ number_format($product->regular_price) }}</span>
+                                        <span class="price-save">Save ৳{{ number_format($savings) }}</span>
                                     @endif
                                 </div>
 
-                                <div class="product-card-btns"
-                                    style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                                    <button type="button" class="btn btn-outline btn-sm quick-add-cart" data-id="{{ $product->id }}"
-                                        data-title="{{ $product->title }}"
-                                        data-price="{{ $product->sale_price ?? $product->regular_price }}"
-                                        data-thumb="{{ asset($product->thumbnail) }}">
-                                        <i class="fa-solid fa-bag-shopping"></i> Add
+                                <div class="product-card-btns">
+                                    <button type="button" class="btn-card-add" onclick="addToCartAjax({{ $product->id }})">
+                                        <i class="fa-solid fa-bag-shopping"></i>
+                                        <span>Add</span>
                                     </button>
-                                    <a href="{{ route('checkout.index', ['buy_now_product_id' => $product->id]) }}"
-                                        class="btn btn-primary btn-sm" style="text-align: center;">
-                                        Buy Now
+                                    <a href="{{ route('checkout.index', ['buy_now_product_id' => $product->id]) }}" class="btn-card-buy">
+                                        <i class="fa-solid fa-bolt"></i>
+                                        <span>Buy Now</span>
                                     </a>
                                 </div>
                             </div>

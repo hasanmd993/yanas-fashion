@@ -43,7 +43,7 @@
     <!-- Products Datatable Panel -->
     <div class="panel">
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+            <table class="w-full text-left text-xs admin-card-table">
                 <thead>
                     <tr class="border-b border-gray-200 dark:border-[#192a43] text-gray-400 font-bold uppercase text-[10px]">
                         <th class="py-3.5 px-4">Product</th>
@@ -57,7 +57,7 @@
                 <tbody class="divide-y divide-gray-100 dark:divide-[#192a43]">
                     @forelse($products as $product)
                         <tr class="hover:bg-gray-50 dark:hover:bg-[#14233c] transition-all">
-                            <td class="py-3.5 px-4">
+                            <td class="py-3.5 px-4" data-label="Product">
                                 <div class="flex items-center gap-3">
                                     <img src="{{ asset($product->thumbnail) }}" alt="{{ $product->title }}" class="h-12 w-12 rounded-lg object-cover">
                                     <div>
@@ -68,26 +68,26 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="py-3.5 px-4 font-semibold text-gray-600 dark:text-gray-300">
+                            <td class="py-3.5 px-4 font-semibold text-gray-600 dark:text-gray-300 mobile-hide" data-label="Category">
                                 {{ $product->category->name ?? 'Uncategorized' }}
                             </td>
-                            <td class="py-3.5 px-4">
+                            <td class="py-3.5 px-4" data-label="Price">
                                 <span class="font-black text-gray-800 dark:text-white block">৳{{ number_format($product->effective_price) }}</span>
                                 @if($product->sale_price)
                                     <span class="text-[11px] text-gray-400 line-through">৳{{ number_format($product->regular_price) }}</span>
                                 @endif
                             </td>
-                            <td class="py-3.5 px-4">
+                            <td class="py-3.5 px-4" data-label="Stock">
                                 <span class="font-bold {{ $product->stock_qty <= 5 ? 'text-danger' : 'text-success' }}">
                                     {{ $product->stock_qty }} pcs
                                 </span>
                             </td>
-                            <td class="py-3.5 px-4">
+                            <td class="py-3.5 px-4" data-label="Status">
                                 <span class="badge {{ $product->is_active ? 'badge-success' : 'badge-danger' }}">
                                     {{ $product->is_active ? 'Active' : 'Draft' }}
                                 </span>
                             </td>
-                            <td class="py-3.5 px-4 text-center">
+                            <td class="py-3.5 px-4 text-center" data-label="">
                                 <div class="inline-flex items-center gap-1.5">
                                     <a href="{{ route('product.show', $product->slug) }}" target="_blank" 
                                        class="p-1.5 rounded-lg bg-gray-100 dark:bg-[#14233c] text-gray-600 hover:text-primary dark:text-gray-300 transition-all" title="View Live">
@@ -124,4 +124,5 @@
     </div>
 
 @endsection
+
 

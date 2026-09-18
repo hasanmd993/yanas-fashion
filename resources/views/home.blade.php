@@ -126,19 +126,31 @@
                     <span class="eyebrow">CURATED SELECTION</span>
                     <h2 class="hp-section-title">Shop by Category</h2>
                 </div>
-                <a href="{{ route('shop.index') }}" class="hp-view-all">View All <i class="fa-solid fa-arrow-right"></i></a>
+                <div class="hp-cats-nav-wrap">
+                    <button type="button" class="hp-cat-nav-btn prev" id="hpCatPrev" aria-label="Previous Categories">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button type="button" class="hp-cat-nav-btn next" id="hpCatNext" aria-label="Next Categories">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    <a href="{{ route('shop.index') }}" class="hp-view-all">View All <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
             </div>
 
-            <div class="hp-cat-grid">
-                @foreach($categories as $category)
-                    <a href="{{ route('shop.index', ['category' => $category->slug]) }}" class="hp-cat-card">
-                        <div class="hp-cat-img">
-                            <img src="{{ asset($category->image ?? 'assets/category-men.jpg') }}" alt="{{ $category->name }}">
+            <div class="hp-cat-carousel-wrapper" id="hpCatCarouselWrapper">
+                <div class="hp-cat-carousel-track" id="hpCatTrack">
+                    @foreach($categories as $category)
+                        <div class="hp-cat-slide">
+                            <a href="{{ route('shop.index', ['category' => $category->slug]) }}" class="hp-cat-card">
+                                <div class="hp-cat-img">
+                                    <img src="{{ asset($category->image ?? 'assets/category-men.jpg') }}" alt="{{ $category->name }}">
+                                </div>
+                                <span class="hp-cat-name">{{ $category->name }}</span>
+                                <span class="hp-cat-cta">Shop <i class="fa-solid fa-arrow-right"></i></span>
+                            </a>
                         </div>
-                        <span class="hp-cat-name">{{ $category->name }}</span>
-                        <span class="hp-cat-cta">Shop <i class="fa-solid fa-arrow-right"></i></span>
-                    </a>
-                @endforeach
+                    @endforeach
+                </div>
             </div>
         </div>
     </section>
@@ -156,41 +168,64 @@
                 <a href="{{ route('shop.index') }}" class="hp-view-all">View All <i class="fa-solid fa-arrow-right"></i></a>
             </div>
 
-            <div class="hp-product-grid">
+            <div class="product-grid">
                 @foreach($featuredProducts as $product)
-                    <div class="hp-product-card">
-                        <div class="hp-product-media">
+                    @php
+                        $effectivePrice = $product->sale_price ?? $product->regular_price;
+                        $hasDiscount = $product->sale_price && $product->sale_price < $product->regular_price;
+                        $discountPercent = $hasDiscount ? round((($product->regular_price - $product->sale_price) / $product->regular_price) * 100) : 0;
+                        $savings = $hasDiscount ? ($product->regular_price - $product->sale_price) : 0;
+                    @endphp
+                    <div class="product-card">
+                        <div class="product-thumb">
                             @if($product->badge)
-                                <span class="hp-badge">{{ $product->badge }}</span>
+                                <span class="product-badge">{{ $product->badge }}</span>
                             @endif
-                            @if($product->discount_percent > 0)
-                                <span class="hp-discount">-{{ $product->discount_percent }}%</span>
+                            @if($discountPercent > 0)
+                                <span class="discount-tag">-{{ $discountPercent }}%</span>
                             @endif
-                            <a href="{{ route('product.show', $product->slug) }}" class="hp-media-link">
+
+                            <a href="{{ route('product.show', $product->slug) }}" class="product-thumb-link">
                                 <img src="{{ asset($product->thumbnail) }}" alt="{{ $product->title }}" loading="lazy">
-                                <div class="hp-media-overlay">
-                                    <span>Quick View</span>
-                                </div>
                             </a>
+
+                            <div class="product-thumb-actions">
+                                <a href="{{ route('product.show', $product->slug) }}" class="thumb-action-btn" title="View Details">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                            </div>
                         </div>
-                        <div class="hp-product-body">
-                            <span class="hp-product-cat">{{ $product->category->name ?? 'Collection' }}</span>
-                            <a href="{{ route('product.show', $product->slug) }}"
-                                class="hp-product-name">{{ $product->title }}</a>
-                            <div class="hp-stars">★★★★★ <span>({{ $product->reviews_count }})</span></div>
-                            <div class="hp-price-row">
-                                <span class="hp-price">৳{{ number_format($product->effective_price) }}</span>
-                                @if($product->sale_price)
-                                    <span class="hp-old-price">৳{{ number_format($product->regular_price) }}</span>
+
+                        <div class="product-info">
+                            @if($product->category)
+                                <a href="{{ route('shop.index', ['category' => $product->category->slug]) }}" class="product-cat">
+                                    {{ $product->category->name }}
+                                </a>
+                            @else
+                                <span class="product-cat">Collection</span>
+                            @endif
+
+                            <h3 class="product-title">
+                                <a href="{{ route('product.show', $product->slug) }}">{{ $product->title }}</a>
+                            </h3>
+
+                            <div class="product-price-row">
+                                <span class="price-current">৳{{ number_format($effectivePrice) }}</span>
+                                @if($hasDiscount)
+                                    <span class="price-old">৳{{ number_format($product->regular_price) }}</span>
+                                    <span class="price-save">Save ৳{{ number_format($savings) }}</span>
                                 @endif
                             </div>
-                            <div class="hp-card-actions">
-                                <a href="{{ route('checkout.index', ['buy_now' => $product->id]) }}" class="hp-btn-order">
-                                    <i class="fa-solid fa-bolt"></i> Order Now
-                                </a>
-                                <button type="button" class="hp-btn-cart" onclick="addToCartAjax({{ $product->id }})">
-                                    <i class="fa-solid fa-cart-plus"></i>
+
+                            <div class="product-card-btns">
+                                <button type="button" class="btn-card-add" onclick="addToCartAjax({{ $product->id }})">
+                                    <i class="fa-solid fa-bag-shopping"></i>
+                                    <span>Add</span>
                                 </button>
+                                <a href="{{ route('checkout.index', ['buy_now_product_id' => $product->id]) }}" class="btn-card-buy">
+                                    <i class="fa-solid fa-bolt"></i>
+                                    <span>Buy Now</span>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -212,41 +247,64 @@
                 <a href="{{ route('shop.index') }}" class="hp-view-all">View All <i class="fa-solid fa-arrow-right"></i></a>
             </div>
 
-            <div class="hp-product-grid">
+            <div class="product-grid">
                 @foreach($trendingProducts as $product)
-                    <div class="hp-product-card">
-                        <div class="hp-product-media">
+                    @php
+                        $effectivePrice = $product->sale_price ?? $product->regular_price;
+                        $hasDiscount = $product->sale_price && $product->sale_price < $product->regular_price;
+                        $discountPercent = $hasDiscount ? round((($product->regular_price - $product->sale_price) / $product->regular_price) * 100) : 0;
+                        $savings = $hasDiscount ? ($product->regular_price - $product->sale_price) : 0;
+                    @endphp
+                    <div class="product-card">
+                        <div class="product-thumb">
                             @if($product->badge)
-                                <span class="hp-badge">{{ $product->badge }}</span>
+                                <span class="product-badge">{{ $product->badge }}</span>
                             @endif
-                            @if($product->discount_percent > 0)
-                                <span class="hp-discount">-{{ $product->discount_percent }}%</span>
+                            @if($discountPercent > 0)
+                                <span class="discount-tag">-{{ $discountPercent }}%</span>
                             @endif
-                            <a href="{{ route('product.show', $product->slug) }}" class="hp-media-link">
+
+                            <a href="{{ route('product.show', $product->slug) }}" class="product-thumb-link">
                                 <img src="{{ asset($product->thumbnail) }}" alt="{{ $product->title }}" loading="lazy">
-                                <div class="hp-media-overlay">
-                                    <span>Quick View</span>
-                                </div>
                             </a>
+
+                            <div class="product-thumb-actions">
+                                <a href="{{ route('product.show', $product->slug) }}" class="thumb-action-btn" title="View Details">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                            </div>
                         </div>
-                        <div class="hp-product-body">
-                            <span class="hp-product-cat">{{ $product->category->name ?? 'Collection' }}</span>
-                            <a href="{{ route('product.show', $product->slug) }}"
-                                class="hp-product-name">{{ $product->title }}</a>
-                            <div class="hp-stars">★★★★★ <span>({{ $product->reviews_count }})</span></div>
-                            <div class="hp-price-row">
-                                <span class="hp-price">৳{{ number_format($product->effective_price) }}</span>
-                                @if($product->sale_price)
-                                    <span class="hp-old-price">৳{{ number_format($product->regular_price) }}</span>
+
+                        <div class="product-info">
+                            @if($product->category)
+                                <a href="{{ route('shop.index', ['category' => $product->category->slug]) }}" class="product-cat">
+                                    {{ $product->category->name }}
+                                </a>
+                            @else
+                                <span class="product-cat">Collection</span>
+                            @endif
+
+                            <h3 class="product-title">
+                                <a href="{{ route('product.show', $product->slug) }}">{{ $product->title }}</a>
+                            </h3>
+
+                            <div class="product-price-row">
+                                <span class="price-current">৳{{ number_format($effectivePrice) }}</span>
+                                @if($hasDiscount)
+                                    <span class="price-old">৳{{ number_format($product->regular_price) }}</span>
+                                    <span class="price-save">Save ৳{{ number_format($savings) }}</span>
                                 @endif
                             </div>
-                            <div class="hp-card-actions">
-                                <a href="{{ route('checkout.index', ['buy_now' => $product->id]) }}" class="hp-btn-order">
-                                    <i class="fa-solid fa-bolt"></i> Order Now
-                                </a>
-                                <button type="button" class="hp-btn-cart" onclick="addToCartAjax({{ $product->id }})">
-                                    <i class="fa-solid fa-cart-plus"></i>
+
+                            <div class="product-card-btns">
+                                <button type="button" class="btn-card-add" onclick="addToCartAjax({{ $product->id }})">
+                                    <i class="fa-solid fa-bag-shopping"></i>
+                                    <span>Add</span>
                                 </button>
+                                <a href="{{ route('checkout.index', ['buy_now_product_id' => $product->id]) }}" class="btn-card-buy">
+                                    <i class="fa-solid fa-bolt"></i>
+                                    <span>Buy Now</span>
+                                </a>
                             </div>
                         </div>
                     </div>

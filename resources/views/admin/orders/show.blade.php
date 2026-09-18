@@ -12,7 +12,7 @@
             </h1>
             <p class="text-xs text-gray-500 dark:text-gray-400">Placed on {{ $order->created_at->format('M d, Y h:i A') }}</p>
         </div>
-        <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3 admin-actions-wrap">
             <a href="{{ route('admin.orders.index') }}" class="btn inline-flex items-center gap-2 rounded-lg bg-gray-700 px-3.5 py-2 text-xs font-bold text-white shadow-md hover:bg-gray-800 transition-all">
                 <i class="fa-solid fa-arrow-left"></i> Back to Orders
             </a>
@@ -38,7 +38,7 @@
                 </h3>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs">
+                    <table class="w-full text-left text-xs admin-card-table">
                         <thead>
                             <tr class="border-b border-gray-200 dark:border-[#192a43] text-gray-400 font-bold uppercase text-[10px]">
                                 <th class="py-3 px-3">Item</th>
@@ -51,7 +51,7 @@
                         <tbody class="divide-y divide-gray-100 dark:divide-[#192a43]">
                             @foreach($order->items as $item)
                                 <tr>
-                                    <td class="py-3.5 px-3">
+                                    <td class="py-3.5 px-3" data-label="Item">
                                         <div class="flex items-center gap-3">
                                             @if($item->product_thumbnail)
                                                 <img src="{{ asset($item->product_thumbnail) }}" alt="{{ $item->product_name }}" class="h-11 w-11 rounded-lg object-cover">
@@ -61,10 +61,10 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="py-3.5 px-3 font-semibold">{{ $item->size ?? 'Standard' }}</td>
-                                    <td class="py-3.5 px-3">৳{{ number_format($item->unit_price) }}</td>
-                                    <td class="py-3.5 px-3 text-center font-bold">{{ $item->quantity }}</td>
-                                    <td class="py-3.5 px-3 text-right font-black text-gray-800 dark:text-white">৳{{ number_format($item->total_price) }}</td>
+                                    <td class="py-3.5 px-3 font-semibold" data-label="Size">{{ $item->size ?? 'Standard' }}</td>
+                                    <td class="py-3.5 px-3" data-label="Unit Price">৳{{ number_format($item->unit_price) }}</td>
+                                    <td class="py-3.5 px-3 text-center font-bold" data-label="Qty">{{ $item->quantity }}</td>
+                                    <td class="py-3.5 px-3 text-right font-black text-gray-800 dark:text-white" data-label="Total">৳{{ number_format($item->total_price) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

@@ -84,3 +84,11 @@ if (!function_exists('get_nav_categories')) {
     }
 }
 
+if (!function_exists('get_whatsapp_number')) {
+    function get_whatsapp_number()
+    {
+        $num = Setting::get('whatsapp_number', '8801713580400');
+        return preg_replace('/[^0-9]/', '', (string)$num) ?: '8801713580400';
+    }
+}
+

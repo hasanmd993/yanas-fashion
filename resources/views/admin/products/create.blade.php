@@ -18,7 +18,7 @@
         </a>
     </div>
 
-    <div class="panel max-w-xxl">
+    <div class="panel">
         <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data"
             class="space-y-6 text-xs">
             @csrf
@@ -138,12 +138,22 @@
                         class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white">{{ old('short_desc') }}</textarea>
                 </div>
 
-                <!-- Full HTML Description -->
+                <!-- Full HTML Description (Quill Rich Text Editor) -->
                 <div class="sm:col-span-2">
-                    <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Full Description & Specs
-                        (HTML)</label>
-                    <textarea name="description" rows="4" placeholder="<p>Detailed product specifications...</p>"
-                        class="w-full rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] p-3 text-xs font-semibold focus:border-primary focus:outline-none dark:text-white font-mono">{{ old('description') }}</textarea>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="block font-bold text-gray-700 dark:text-gray-300">
+                            Full Description & Specifications
+                        </label>
+                        <span class="text-[11px] text-gray-400 dark:text-gray-500 font-medium">
+                            <i class="fa-solid fa-feather-pointed text-primary mr-1"></i>Rich Text (Visual Editor)
+                        </span>
+                    </div>
+
+                    <input type="hidden" name="description" id="hidden_description" value="{{ old('description') }}">
+                    
+                    <div class="quill-editor-wrapper">
+                        <div id="quill-editor" class="min-h-[200px] text-sm">{!! old('description') !!}</div>
+                    </div>
                 </div>
 
                 <!-- Checkboxes -->
@@ -177,3 +187,88 @@
     </div>
 
 @endsection
+
+@push('styles')
+    <!-- Quill.js CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
+    <style>
+        .ql-toolbar.ql-snow {
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            border-color: #e2e8f0;
+            background-color: #f8fafc;
+        }
+        .ql-container.ql-snow {
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+            border-color: #e2e8f0;
+            background-color: #ffffff;
+            font-family: inherit;
+            font-size: 0.8125rem;
+            min-height: 220px;
+        }
+        .ql-editor {
+            min-height: 220px;
+        }
+        /* Dark Theme overrides */
+        .dark .ql-toolbar.ql-snow {
+            background-color: #14233c;
+            border-color: #192a43;
+        }
+        .dark .ql-container.ql-snow {
+            background-color: #0e1726;
+            border-color: #192a43;
+            color: #e0e6ed;
+        }
+        .dark .ql-snow .ql-stroke {
+            stroke: #94a3b8;
+        }
+        .dark .ql-snow .ql-fill {
+            fill: #94a3b8;
+        }
+        .dark .ql-snow .ql-picker {
+            color: #94a3b8;
+        }
+        .dark .ql-snow .ql-picker-options {
+            background-color: #14233c;
+            border-color: #192a43;
+            color: #e0e6ed;
+        }
+        .dark .ql-editor.ql-blank::before {
+            color: #64748b;
+        }
+    </style>
+@endpush
+
+@push('scripts')
+    <!-- Quill.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const quill = new Quill('#quill-editor', {
+                theme: 'snow',
+                placeholder: 'Write detailed product specifications, fabric highlights, care instructions...',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [2, 3, 4, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        ['blockquote', 'code-block'],
+                        [{ 'color': [] }, { 'background': [] }],
+                        ['link', 'clean']
+                    ]
+                }
+            });
+
+            // Sync editor HTML on form submission
+            const form = document.querySelector('form');
+            const hiddenInput = document.getElementById('hidden_description');
+
+            form.addEventListener('submit', function() {
+                // If editor is just empty line, save empty string
+                const html = quill.root.innerHTML;
+                hiddenInput.value = (html === '<p><br></p>') ? '' : html;
+            });
+        });
+    </script>
+@endpush

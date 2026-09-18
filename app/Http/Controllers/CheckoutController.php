@@ -18,9 +18,10 @@ class CheckoutController extends Controller
         $cart = session()->get('cart', []);
 
         // If direct product checkout requested
-        if ($request->filled('buy_now')) {
-            $product = Product::findOrFail($request->buy_now);
-            $size = $request->size ?? ($product->sizes ? $product->sizes[0] : null);
+        $buyNowId = $request->input('buy_now') ?? $request->input('buy_now_product_id');
+        if ($buyNowId) {
+            $product = Product::findOrFail($buyNowId);
+            $size = $request->size ?? $request->buy_now_size ?? ($product->sizes ? $product->sizes[0] : null);
             $cart = [
                 'direct' => [
                     'key' => 'direct',

@@ -18,7 +18,7 @@
         </a>
     </div>
 
-    <div class="panel max-w-xxl">
+    <div class="panel">
         <form action="{{ route('admin.sliders.store') }}" method="POST" enctype="multipart/form-data"
             class="space-y-5 text-xs">
             @csrf

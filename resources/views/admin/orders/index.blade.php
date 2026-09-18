@@ -10,7 +10,7 @@
             <h1 class="text-2xl font-extrabold text-gray-800 dark:text-white">Orders Management</h1>
             <p class="text-xs text-gray-500 dark:text-gray-400">Track, process, export and fulfill customer orders</p>
         </div>
-        <div class="flex flex-wrap items-center gap-2">
+        <div class="flex flex-wrap items-center gap-2 admin-actions-wrap">
             <a href="{{ route('admin.orders.export_excel', ['status' => request('status', 'all'), 'search' => request('search')]) }}"
                 class="btn inline-flex items-center gap-2 rounded-lg bg-[#107c41] px-3.5 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#0b5c30] transition-all"
                 title="Export all filtered orders to Excel (.xlsx)">
@@ -78,7 +78,7 @@
     <!-- Orders Datatable Panel -->
     <div class="panel">
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+            <table class="w-full text-left text-xs admin-card-table">
                 <thead>
                     <tr
                         class="border-b border-gray-200 dark:border-[#192a43] text-gray-400 font-bold uppercase text-[10px]">
@@ -94,18 +94,19 @@
                 <tbody class="divide-y divide-gray-100 dark:divide-[#192a43]">
                     @forelse($orders as $order)
                         <tr class="hover:bg-gray-50 dark:hover:bg-[#14233c] transition-all">
-                            <td class="py-3.5 px-4 font-bold text-primary dark:text-primary-light">
+                            <td class="py-3.5 px-4 font-bold text-primary dark:text-primary-light" data-label="Order">
                                 <a href="{{ route('admin.orders.show', $order->id) }}" class="hover:underline">
                                     #{{ $order->order_number }}
                                 </a>
                             </td>
-                            <td class="py-3.5 px-4 font-semibold text-gray-800 dark:text-white">{{ $order->customer_name }}
+                            <td class="py-3.5 px-4 font-semibold text-gray-800 dark:text-white" data-label="Customer">
+                                {{ $order->customer_name }}
                                 <p class="font-mono text-gray-500">{{ $order->customer_phone }}</p>
                             </td>
-                            <td class="py-3.5 px-4">{{ $order->zone_label }}</td>
-                            <td class="py-3.5 px-4 font-black text-gray-800 dark:text-white">
+                            <td class="py-3.5 px-4 mobile-hide" data-label="Zone">{{ $order->zone_label }}</td>
+                            <td class="py-3.5 px-4 font-black text-gray-800 dark:text-white" data-label="Total">
                                 ৳{{ number_format($order->total_amount) }}</td>
-                            <td class="py-3.5 px-4">
+                            <td class="py-3.5 px-4" data-label="Status">
                                 @php
                                     $badgeClass = match ($order->order_status) {
                                         'pending' => 'badge-warning',
@@ -118,8 +119,8 @@
                                 @endphp
                                 <span class="badge {{ $badgeClass }}">{{ ucfirst($order->order_status) }}</span>
                             </td>
-                            <td class="py-3.5 px-4 text-gray-400">{{ $order->created_at->format('d M, Y') }}</td>
-                            <td class="py-3.5 px-4 text-center">
+                            <td class="py-3.5 px-4 text-gray-400 mobile-hide" data-label="Date">{{ $order->created_at->format('d M, Y') }}</td>
+                            <td class="py-3.5 px-4 text-center" data-label="">
                                 <a href="{{ route('admin.orders.show', $order->id) }}"
                                     class="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-primary-light text-primary font-bold text-xs hover:bg-primary hover:text-white transition-all">
                                     Manage &rarr;

@@ -20,7 +20,7 @@
     <link rel="icon" type="image/x-icon" href="{{ get_favicon_url() }}">
 
     <!-- Custom Design System -->
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ file_exists(public_path('css/app.css')) ? filemtime(public_path('css/app.css')) : time() }}">
     @stack('styles')
 </head>
 
@@ -34,7 +34,7 @@
         </div>
         <div class="announcement-nav">
             <a href="{{ route('tracking.index') }}"><i class="fa-solid fa-location-dot"></i> Order Tracking</a>
-            <a href="tel:01713580400"><i class="fa-solid fa-phone"></i> Helpline: 01713-580400</a>
+            <a href="tel:{{ preg_replace('/[^0-9+]/', '', get_setting('hotline', 'N/A')) }}"><i class="fa-solid fa-phone"></i> Helpline: {{ get_setting('hotline', '01713-580400') }}</a>
             @auth
                 <a href="{{ route('admin.dashboard') }}"><i class="fa-solid fa-gauge"></i> Admin Dashboard</a>
             @else
@@ -80,11 +80,11 @@
 
                 <!-- Actions / Hotline -->
                 <div class="header-actions">
-                    <a href="tel:01713580400" class="hotline-pill">
+                    <a href="tel:{{ preg_replace('/[^0-9+]/', '', get_setting('hotline', 'N/A')) }}" class="hotline-pill">
                         <div class="hotline-icon"><i class="fa-solid fa-phone"></i></div>
                         <div class="hotline-text">
                             <small>Call Us Directly</small>
-                            <strong>01713580400</strong>
+                            <strong>{{ get_setting('hotline', 'N/A') }}</strong>
                         </div>
                     </a>
 
@@ -158,7 +158,11 @@
                             </a>
 
                             @if($hasSubcategories)
-                                <div class="nav-mega-dropdown">
+                                @php
+                                    $subCount = $parent->activeChildren->count();
+                                    $navCols = $subCount === 1 ? 1 : 2;
+                                @endphp
+                                <div class="nav-mega-dropdown {{ $navCols === 1 ? 'single-col' : '' }}" style="--nav-cols: {{ $navCols }};">
                                     <div class="nav-mega-grid">
                                         @foreach($parent->activeChildren as $sub)
                                             <div class="nav-mega-col">
@@ -360,14 +364,14 @@
             <!-- Direct Hotline & Support -->
             <div class="mobile-nav-section-title" style="margin-top: 24px;">Support & Hotline</div>
             <div class="mobile-nav-support-box">
-                <a href="tel:01713580400" class="mobile-support-btn phone">
+                <a href="tel:{{ preg_replace('/[^0-9+]/', '', get_setting('hotline', '01713580400')) }}" class="mobile-support-btn phone">
                     <i class="fa-solid fa-phone"></i>
                     <div>
                         <small>Customer Hotline</small>
-                        <strong>01713-580400</strong>
+                        <strong>{{ get_setting('hotline', '01713-580400') }}</strong>
                     </div>
                 </a>
-                <a href="https://wa.me/8801713580400?text={{ urlencode('Hello Yana\'s Fashion, I would like to inquire about an order.') }}"
+                <a href="https://wa.me/{{ get_whatsapp_number() }}?text={{ urlencode('Hello Yana\'s Fashion, I would like to inquire about an order.') }}"
                     target="_blank" class="mobile-support-btn whatsapp">
                     <i class="fa-brands fa-whatsapp"></i>
                     <div>
@@ -381,15 +385,18 @@
         <!-- Drawer Footer -->
         <div class="mobile-nav-footer">
             <div class="mobile-nav-socials">
-                <a href="https://facebook.com" target="_blank" aria-label="Facebook"><i
-                        class="fa-brands fa-facebook"></i></a>
-                <a href="https://instagram.com" target="_blank" aria-label="Instagram"><i
-                        class="fa-brands fa-instagram"></i></a>
-                <a href="https://tiktok.com" target="_blank" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
-                <a href="https://wa.me/8801713580400" target="_blank" aria-label="WhatsApp"><i
-                        class="fa-brands fa-whatsapp"></i></a>
+                @if(get_setting('facebook_url'))
+                    <a href="{{ get_setting('facebook_url') }}" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+                @endif
+                @if(get_setting('instagram_url'))
+                    <a href="{{ get_setting('instagram_url') }}" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                @endif
+                @if(get_setting('tiktok_url'))
+                    <a href="{{ get_setting('tiktok_url') }}" target="_blank" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                @endif
+                <a href="https://wa.me/{{ get_whatsapp_number() }}" target="_blank" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
             </div>
-            <p class="mobile-nav-copyright">© 2026 Yanas Fashion. Dhaka, Bangladesh.</p>
+            <p class="mobile-nav-copyright">© 2026 {{ get_setting('site_name', 'Yanas Fashion') }}. Dhaka, Bangladesh.</p>
         </div>
     </div>
 
@@ -426,12 +433,12 @@
     <!-- Expandable Floating 3-in-1 Communication Widget -->
     <div class="floating-communication-widget" id="floatingCommunicationWidget">
         <div class="communication-channels">
-            <a href="https://wa.me/8801713580400?text={{ urlencode('Hello Yana\'s Fashion, I would like to inquire about an order.') }}"
+            <a href="https://wa.me/{{ get_whatsapp_number() }}?text={{ urlencode('Hello Yana\'s Fashion, I would like to inquire about an order.') }}"
                 target="_blank" class="channel-btn whatsapp-channel" title="WhatsApp Chat">
                 <i class="fa-brands fa-whatsapp"></i>
                 <span class="channel-tooltip">Chat on WhatsApp</span>
             </a>
-            <a href="tel:01713580400" class="channel-btn phone-channel" title="Call Us">
+            <a href="tel:{{ preg_replace('/[^0-9+]/', '', get_setting('hotline', '01713580400')) }}" class="channel-btn phone-channel" title="Call Us">
                 <i class="fa-solid fa-phone"></i>
                 <span class="channel-tooltip">Call Us Directly</span>
             </a>
@@ -491,13 +498,19 @@
                     <p>Premium contemporary fashion crafted with fine tailoring, luxury fabrics, and modern aesthetics.
                         Fast express delivery with Cash on Delivery nationwide across Bangladesh.</p>
                     <div style="display:flex; gap:12px; font-size:1.2rem;">
-                        <a href="https://facebook.com" target="_blank" style="color:#fff;"><i
-                                class="fa-brands fa-facebook"></i></a>
-                        <a href="https://instagram.com" target="_blank" style="color:#fff;"><i
-                                class="fa-brands fa-instagram"></i></a>
-                        <a href="https://tiktok.com" target="_blank" style="color:#fff;"><i
-                                class="fa-brands fa-tiktok"></i></a>
-                        <a href="https://wa.me/8801713580400" target="_blank" style="color:#25D366;"><i
+                        @if(get_setting('facebook_url'))
+                            <a href="{{ get_setting('facebook_url') }}" target="_blank" style="color:#fff;"><i
+                                    class="fa-brands fa-facebook"></i></a>
+                        @endif
+                        @if(get_setting('instagram_url'))
+                            <a href="{{ get_setting('instagram_url') }}" target="_blank" style="color:#fff;"><i
+                                    class="fa-brands fa-instagram"></i></a>
+                        @endif
+                        @if(get_setting('tiktok_url'))
+                            <a href="{{ get_setting('tiktok_url') }}" target="_blank" style="color:#fff;"><i
+                                    class="fa-brands fa-tiktok"></i></a>
+                        @endif
+                        <a href="https://wa.me/{{ get_whatsapp_number() }}" target="_blank" style="color:#25D366;"><i
                                 class="fa-brands fa-whatsapp"></i></a>
                     </div>
                 </div>
@@ -521,9 +534,8 @@
                     <ul class="footer-links">
                         <li><a href="{{ route('tracking.index') }}">Track Your Order</a></li>
                         <li><a href="{{ route('checkout.index') }}">Checkout</a></li>
-                        <li><a href="tel:01713580400">Hotline Support</a></li>
-                        <li><a href="https://wa.me/8801713580400">WhatsApp Order</a></li>
-                        <!-- <li><a href="{{ route('admin.dashboard') }}">Admin Portal</a></li> -->
+                        <li><a href="tel:{{ preg_replace('/[^0-9+]/', '', get_setting('hotline', '01713580400')) }}">Hotline Support</a></li>
+                        <li><a href="https://wa.me/{{ get_whatsapp_number() }}">WhatsApp Order</a></li>
                     </ul>
                 </div>
 
@@ -531,16 +543,14 @@
                 <div>
                     <h4 class="footer-title">Contact & Support</h4>
                     <p style="font-size:0.88rem; color:#b7ab9c; margin-bottom:8px;">
-                        <i class="fa-solid fa-location-dot" style="color:var(--accent); margin-right:6px;"></i> House
-                        42, Road 11, Banani, Dhaka-1213
+                        <i class="fa-solid fa-location-dot" style="color:var(--accent); margin-right:6px;"></i> {{ get_setting('address', 'House 42, Road 11, Banani, Dhaka-1213') }}
                     </p>
                     <p style="font-size:0.88rem; color:#b7ab9c; margin-bottom:8px;">
-                        <i class="fa-solid fa-phone" style="color:var(--accent); margin-right:6px;"></i> +880
-                        1713-580400
+                        <i class="fa-solid fa-phone" style="color:var(--accent); margin-right:6px;"></i> {{ get_setting('hotline', '+880 1713-580400') }}
                     </p>
                     <p style="font-size:0.88rem; color:#b7ab9c;">
                         <i class="fa-solid fa-envelope" style="color:var(--accent); margin-right:6px;"></i>
-                        support@yanasfashion.com
+                        {{ get_setting('email', 'support@yanasfashion.com') }}
                     </p>
                 </div>
             </div>
@@ -552,7 +562,7 @@
     </footer>
 
     <!-- Client Script -->
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}?v={{ file_exists(public_path('js/app.js')) ? filemtime(public_path('js/app.js')) : time() }}"></script>
     @stack('scripts')
 </body>
 

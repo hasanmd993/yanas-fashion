@@ -18,7 +18,7 @@
         </a>
     </div>
 
-    <div class="panel max-w-xl">
+    <div class="panel">
         <form action="{{ route('admin.categories.update', $category->id) }}" method="POST" enctype="multipart/form-data" class="space-y-4 text-xs">
             @csrf
             @method('PUT')

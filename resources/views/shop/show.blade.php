@@ -241,7 +241,7 @@
                             @php
                                 $waMsg = "Hello Yanas Fashion! I would like to purchase:\n• Product: {$product->title}\n• SKU: {$product->sku}\n• Price: ৳" . number_format($product->effective_price);
                             @endphp
-                            <a href="https://wa.me/8801713580400?text={{ urlencode($waMsg) }}" target="_blank"
+                            <a href="https://wa.me/{{ get_whatsapp_number() }}?text={{ urlencode($waMsg) }}" target="_blank"
                                 class="pdp-wa-link">
                                 <i class="fa-brands fa-whatsapp"></i>
                                 <span>Order via WhatsApp</span>
@@ -529,25 +529,62 @@
                 </div>
                 <div class="product-grid">
                     @foreach($relatedProducts as $rel)
+                        @php
+                            $relEffectivePrice = $rel->sale_price ?? $rel->regular_price;
+                            $relHasDiscount = $rel->sale_price && $rel->sale_price < $rel->regular_price;
+                            $relDiscountPercent = $relHasDiscount ? round((($rel->regular_price - $rel->sale_price) / $rel->regular_price) * 100) : 0;
+                            $relSavings = $relHasDiscount ? ($rel->regular_price - $rel->sale_price) : 0;
+                        @endphp
                         <div class="product-card">
-                            <div class="product-media">
-                                @if($rel->discount_percent > 0)
-                                    <span class="discount-tag">-{{ $rel->discount_percent }}%</span>
+                            <div class="product-thumb">
+                                @if($rel->badge)
+                                    <span class="product-badge">{{ $rel->badge }}</span>
                                 @endif
-                                <a href="{{ route('product.show', $rel->slug) }}">
+                                @if($relDiscountPercent > 0)
+                                    <span class="discount-tag">-{{ $relDiscountPercent }}%</span>
+                                @endif
+
+                                <a href="{{ route('product.show', $rel->slug) }}" class="product-thumb-link">
                                     <img src="{{ asset($rel->thumbnail) }}" alt="{{ $rel->title }}" loading="lazy">
                                 </a>
+
+                                <div class="product-thumb-actions">
+                                    <a href="{{ route('product.show', $rel->slug) }}" class="thumb-action-btn" title="View Details">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                </div>
                             </div>
-                            <div class="product-body">
-                                <a href="{{ route('product.show', $rel->slug) }}" class="product-title">{{ $rel->title }}</a>
-                                <div class="price-box">
-                                    <span class="current-price">৳{{ number_format($rel->effective_price) }}</span>
-                                    @if($rel->sale_price)
-                                        <span class="old-price">৳{{ number_format($rel->regular_price) }}</span>
+
+                            <div class="product-info">
+                                @if($rel->category)
+                                    <a href="{{ route('shop.index', ['category' => $rel->category->slug]) }}" class="product-cat">
+                                        {{ $rel->category->name }}
+                                    </a>
+                                @else
+                                    <span class="product-cat">Collection</span>
+                                @endif
+
+                                <h3 class="product-title">
+                                    <a href="{{ route('product.show', $rel->slug) }}">{{ $rel->title }}</a>
+                                </h3>
+
+                                <div class="product-price-row">
+                                    <span class="price-current">৳{{ number_format($relEffectivePrice) }}</span>
+                                    @if($relHasDiscount)
+                                        <span class="price-old">৳{{ number_format($rel->regular_price) }}</span>
+                                        <span class="price-save">Save ৳{{ number_format($relSavings) }}</span>
                                     @endif
                                 </div>
-                                <div class="card-actions">
-                                    <a href="{{ route('product.show', $rel->slug) }}" class="btn-order-now">View Details</a>
+
+                                <div class="product-card-btns">
+                                    <button type="button" class="btn-card-add" onclick="addToCartAjax({{ $rel->id }})">
+                                        <i class="fa-solid fa-bag-shopping"></i>
+                                        <span>Add</span>
+                                    </button>
+                                    <a href="{{ route('checkout.index', ['buy_now_product_id' => $rel->id]) }}" class="btn-card-buy">
+                                        <i class="fa-solid fa-bolt"></i>
+                                        <span>Buy Now</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>

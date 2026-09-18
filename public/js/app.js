@@ -5,6 +5,7 @@
 
 document.addEventListener('DOMContentLoaded', function () {
     initHeroSlider();
+    initCategorySlider();
     initTypewriterSearch();
     initLiveSearch();
     initCartDrawer();
@@ -777,6 +778,138 @@ function initMobileNavDrawer() {
             }
         });
     });
+}
+
+// =========================================================================
+// 9. True Infinite Category Carousel Engine (Auto-Slide, Touch & Loops)
+// =========================================================================
+function initCategorySlider() {
+    const wrapper = document.getElementById('hpCatCarouselWrapper');
+    const track = document.getElementById('hpCatTrack');
+    const prevBtn = document.getElementById('hpCatPrev');
+    const nextBtn = document.getElementById('hpCatNext');
+
+    if (!track || !wrapper) return;
+
+    let slides = track.querySelectorAll('.hp-cat-slide');
+    if (slides.length < 2) return;
+
+    // Clone slides if fewer than 10 to ensure seamless continuous looping
+    if (slides.length < 10) {
+        const originalHtml = track.innerHTML;
+        track.innerHTML = originalHtml + originalHtml;
+    }
+
+    let isAnimating = false;
+    let autoSlideTimer = null;
+    const intervalMs = 2800;
+
+    const getSlideWidthWithGap = () => {
+        const firstSlide = track.querySelector('.hp-cat-slide');
+        if (!firstSlide) return 200;
+        const style = window.getComputedStyle(track);
+        const gap = parseFloat(style.gap) || 16;
+        return firstSlide.getBoundingClientRect().width + gap;
+    };
+
+    const nextSlide = () => {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        const distance = getSlideWidthWithGap();
+        track.style.transition = 'transform 0.45s cubic-bezier(0.25, 1, 0.5, 1)';
+        track.style.transform = `translateX(-${distance}px)`;
+
+        const onTransitionEnd = () => {
+            track.removeEventListener('transitionend', onTransitionEnd);
+            track.style.transition = 'none';
+            const first = track.firstElementChild;
+            if (first) track.appendChild(first);
+            track.style.transform = 'translateX(0)';
+            void track.offsetHeight; // Force browser layout recalculation
+            isAnimating = false;
+        };
+
+        track.addEventListener('transitionend', onTransitionEnd);
+    };
+
+    const prevSlide = () => {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        const distance = getSlideWidthWithGap();
+        track.style.transition = 'none';
+        const last = track.lastElementChild;
+        if (last) track.insertBefore(last, track.firstElementChild);
+        track.style.transform = `translateX(-${distance}px)`;
+        void track.offsetHeight; // Force browser layout recalculation
+
+        track.style.transition = 'transform 0.45s cubic-bezier(0.25, 1, 0.5, 1)';
+        track.style.transform = 'translateX(0)';
+
+        const onTransitionEnd = () => {
+            track.removeEventListener('transitionend', onTransitionEnd);
+            isAnimating = false;
+        };
+
+        track.addEventListener('transitionend', onTransitionEnd);
+    };
+
+    const startAutoPlay = () => {
+        stopAutoPlay();
+        autoSlideTimer = setInterval(nextSlide, intervalMs);
+    };
+
+    const stopAutoPlay = () => {
+        if (autoSlideTimer) {
+            clearInterval(autoSlideTimer);
+            autoSlideTimer = null;
+        }
+    };
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            nextSlide();
+            startAutoPlay();
+        });
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            prevSlide();
+            startAutoPlay();
+        });
+    }
+
+    // Pause auto-sliding when hovering or interacting
+    const container = wrapper.closest('.hp-cats') || wrapper;
+    container.addEventListener('mouseenter', stopAutoPlay);
+    container.addEventListener('mouseleave', startAutoPlay);
+
+    // Mobile touch swipe gestures
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    wrapper.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        stopAutoPlay();
+    }, { passive: true });
+
+    wrapper.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+        if (diff > 35) {
+            nextSlide();
+        } else if (diff < -35) {
+            prevSlide();
+        }
+        startAutoPlay();
+    }, { passive: true });
+
+    // Start auto carousel immediately
+    startAutoPlay();
 }
 
 
