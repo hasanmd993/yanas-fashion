@@ -280,16 +280,74 @@
             <!-- Main Dynamic Content -->
             <div class="p-4 sm:p-6 flex-1">
                 @if(session('success'))
-                    <div class="mb-5 flex items-center rounded bg-success-light p-3.5 text-success dark:bg-success-dark-light">
-                        <span class="ltr:pr-2 rtl:pl-2 text-lg"><i class="fa-solid fa-circle-check"></i></span>
-                        <span class="font-semibold">{{ session('success') }}</span>
+                    <div x-data="{ show: true }" 
+                         x-show="show" 
+                         x-init="setTimeout(() => show = false, 3000)" 
+                         x-transition:leave="transition ease-in duration-500" 
+                         x-transition:leave-start="opacity-100 transform scale-100" 
+                         x-transition:leave-end="opacity-0 transform -translate-y-2 scale-95" 
+                         class="mb-5 flex items-center justify-between rounded-lg bg-success-light p-3.5 text-success dark:bg-success-dark-light border border-success/20 shadow-sm">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-lg"><i class="fa-solid fa-circle-check"></i></span>
+                            <span class="font-semibold text-xs">{{ session('success') }}</span>
+                        </div>
+                        <button type="button" @click="show = false" class="text-success hover:opacity-75 text-sm ml-auto pl-3" title="Dismiss">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
                     </div>
                 @endif
 
                 @if(session('error'))
-                    <div class="mb-5 flex items-center rounded bg-danger-light p-3.5 text-danger dark:bg-danger-dark-light">
-                        <span class="ltr:pr-2 rtl:pl-2 text-lg"><i class="fa-solid fa-circle-xmark"></i></span>
-                        <span class="font-semibold">{{ session('error') }}</span>
+                    <div x-data="{ show: true }" 
+                         x-show="show" 
+                         x-init="setTimeout(() => show = false, 3000)" 
+                         x-transition:leave="transition ease-in duration-500" 
+                         x-transition:leave-start="opacity-100 transform scale-100" 
+                         x-transition:leave-end="opacity-0 transform -translate-y-2 scale-95" 
+                         class="mb-5 flex items-center justify-between rounded-lg bg-danger-light p-3.5 text-danger dark:bg-danger-dark-light border border-danger/20 shadow-sm">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-lg"><i class="fa-solid fa-circle-xmark"></i></span>
+                            <span class="font-semibold text-xs">{{ session('error') }}</span>
+                        </div>
+                        <button type="button" @click="show = false" class="text-danger hover:opacity-75 text-sm ml-auto pl-3" title="Dismiss">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                @endif
+
+                @if(session('warning'))
+                    <div x-data="{ show: true }" 
+                         x-show="show" 
+                         x-init="setTimeout(() => show = false, 3000)" 
+                         x-transition:leave="transition ease-in duration-500" 
+                         x-transition:leave-start="opacity-100 transform scale-100" 
+                         x-transition:leave-end="opacity-0 transform -translate-y-2 scale-95" 
+                         class="mb-5 flex items-center justify-between rounded-lg bg-warning-light p-3.5 text-warning dark:bg-warning-dark-light border border-warning/20 shadow-sm">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-lg"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                            <span class="font-semibold text-xs">{{ session('warning') }}</span>
+                        </div>
+                        <button type="button" @click="show = false" class="text-warning hover:opacity-75 text-sm ml-auto pl-3" title="Dismiss">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                @endif
+
+                @if(session('info'))
+                    <div x-data="{ show: true }" 
+                         x-show="show" 
+                         x-init="setTimeout(() => show = false, 3000)" 
+                         x-transition:leave="transition ease-in duration-500" 
+                         x-transition:leave-start="opacity-100 transform scale-100" 
+                         x-transition:leave-end="opacity-0 transform -translate-y-2 scale-95" 
+                         class="mb-5 flex items-center justify-between rounded-lg bg-info-light p-3.5 text-info dark:bg-info-dark-light border border-info/20 shadow-sm">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-lg"><i class="fa-solid fa-circle-info"></i></span>
+                            <span class="font-semibold text-xs">{{ session('info') }}</span>
+                        </div>
+                        <button type="button" @click="show = false" class="text-info hover:opacity-75 text-sm ml-auto pl-3" title="Dismiss">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
                     </div>
                 @endif
 

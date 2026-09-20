@@ -11,17 +11,35 @@
             <p class="text-xs text-gray-500 dark:text-gray-400">Automated and manual database & store asset backups</p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
-            <form action="{{ route('admin.backups.create_db') }}" method="POST">
+            <form action="{{ route('admin.backups.create_db') }}" method="POST" x-data="{ loading: false }" @submit="loading = true">
                 @csrf
-                <button type="submit" class="btn inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-xs font-bold text-white shadow-md hover:bg-primary-hover transition-all">
-                    <i class="fa-solid fa-database"></i> Create DB Backup
+                <button type="submit" :disabled="loading" class="btn inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-xs font-bold text-white shadow-md hover:bg-primary-hover transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+                    <template x-if="!loading">
+                        <span class="inline-flex items-center gap-2">
+                            <i class="fa-solid fa-database"></i> Create DB Backup
+                        </span>
+                    </template>
+                    <template x-if="loading">
+                        <span class="inline-flex items-center gap-2">
+                            <i class="fa-solid fa-circle-notch fa-spin"></i> Dumping Database...
+                        </span>
+                    </template>
                 </button>
             </form>
 
-            <form action="{{ route('admin.backups.create_full') }}" method="POST">
+            <form action="{{ route('admin.backups.create_full') }}" method="POST" x-data="{ loading: false }" @submit="loading = true">
                 @csrf
-                <button type="submit" class="btn inline-flex items-center gap-2 rounded-lg bg-secondary px-4 py-2.5 text-xs font-bold text-white shadow-md hover:bg-secondary-hover transition-all">
-                    <i class="fa-solid fa-file-zipper"></i> Full Backup (DB + Media)
+                <button type="submit" :disabled="loading" class="btn inline-flex items-center gap-2 rounded-lg bg-secondary px-4 py-2.5 text-xs font-bold text-white shadow-md hover:bg-secondary-hover transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+                    <template x-if="!loading">
+                        <span class="inline-flex items-center gap-2">
+                            <i class="fa-solid fa-file-zipper"></i> Full Backup (DB + Media)
+                        </span>
+                    </template>
+                    <template x-if="loading">
+                        <span class="inline-flex items-center gap-2">
+                            <i class="fa-solid fa-circle-notch fa-spin"></i> Creating Full Archive...
+                        </span>
+                    </template>
                 </button>
             </form>
         </div>
@@ -33,9 +51,9 @@
             <i class="fa-solid fa-shield-halved"></i>
         </div>
         <div>
-            <h4 class="text-xs font-bold text-gray-800 dark:text-white">Secure Automated Backups Powered by Spatie</h4>
+            <h4 class="text-xs font-bold text-gray-800 dark:text-white">High-Performance Database & Asset Backup Engine</h4>
             <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
-                All database tables (products, orders, customers, coupons) and uploaded WebP product catalog assets are zipped safely. You can download archives directly or keep them stored on disk.
+                Full SQL schema and data dumps along with uploaded product catalog images and banners are compressed securely into standalone .zip archives. You can download archives directly or safely delete old backups.
             </p>
         </div>
     </div>
@@ -48,6 +66,7 @@
                     <tr class="border-b border-gray-100 dark:border-[#192a43] text-gray-400 uppercase font-semibold">
                         <th class="pb-3 px-3">#</th>
                         <th class="pb-3 px-3">Archive File Name</th>
+                        <th class="pb-3 px-3">Type</th>
                         <th class="pb-3 px-3">Archive Size</th>
                         <th class="pb-3 px-3">Created Date</th>
                         <th class="pb-3 px-3">Age</th>
@@ -60,8 +79,15 @@
                             <td class="py-3 px-3 text-gray-400 font-mono">{{ $index + 1 }}</td>
                             <td class="py-3 px-3">
                                 <span class="inline-flex items-center gap-2 font-mono font-bold text-gray-800 dark:text-white">
-                                    <i class="fa-solid fa-file-zipper text-primary"></i> {{ $backup['file_name'] }}
+                                    <i class="fa-solid fa-file-zipper {{ str_contains($backup['file_name'], 'full') ? 'text-secondary' : 'text-primary' }}"></i> {{ $backup['file_name'] }}
                                 </span>
+                            </td>
+                            <td class="py-3 px-3">
+                                @if(str_contains($backup['file_name'], 'full'))
+                                    <span class="badge bg-secondary/10 text-secondary border border-secondary/20 text-[9px] font-bold uppercase tracking-wider">Full</span>
+                                @else
+                                    <span class="badge bg-primary/10 text-primary border border-primary/20 text-[9px] font-bold uppercase tracking-wider">DB Only</span>
+                                @endif
                             </td>
                             <td class="py-3 px-3">
                                 <span class="badge badge-outline-primary text-[11px] font-mono">{{ $backup['file_size'] }}</span>
@@ -91,7 +117,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="py-8 text-center text-gray-400">
+                            <td colspan="7" class="py-8 text-center text-gray-400">
                                 <i class="fa-solid fa-file-zipper text-3xl mb-2 block"></i>
                                 No backups found. Click "Create DB Backup" to create your first backup archive.
                             </td>

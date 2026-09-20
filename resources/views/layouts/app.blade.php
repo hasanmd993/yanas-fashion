@@ -216,21 +216,35 @@
 
     <!-- Flash Alerts / Messages -->
     @if(session('success'))
-        <div class="container" style="margin-top: 16px;">
-            <div
-                style="background: #e8f7ed; border-left: 4px solid var(--success); padding: 12px 18px; border-radius: var(--radius-sm); color: #0a632b; font-weight: 600;">
-                <i class="fa-solid fa-circle-check"></i> {{ session('success') }}
+        <div class="container auto-dismiss-alert" style="margin-top: 16px; transition: all 0.5s ease;">
+            <div style="background: #e8f7ed; border-left: 4px solid var(--success); padding: 12px 18px; border-radius: var(--radius-sm); color: #0a632b; font-weight: 600; display: flex; align-items: center; justify-content: space-between;">
+                <div><i class="fa-solid fa-circle-check"></i> {{ session('success') }}</div>
+                <button type="button" onclick="this.closest('.auto-dismiss-alert').remove();" style="border:none; background:transparent; cursor:pointer; color:#0a632b; font-size:16px;">&times;</button>
             </div>
         </div>
     @endif
     @if(session('error'))
-        <div class="container" style="margin-top: 16px;">
-            <div
-                style="background: #fdeeed; border-left: 4px solid var(--danger); padding: 12px 18px; border-radius: var(--radius-sm); color: #a51d24; font-weight: 600;">
-                <i class="fa-solid fa-circle-exclamation"></i> {{ session('error') }}
+        <div class="container auto-dismiss-alert" style="margin-top: 16px; transition: all 0.5s ease;">
+            <div style="background: #fdeeed; border-left: 4px solid var(--danger); padding: 12px 18px; border-radius: var(--radius-sm); color: #a51d24; font-weight: 600; display: flex; align-items: center; justify-content: space-between;">
+                <div><i class="fa-solid fa-circle-exclamation"></i> {{ session('error') }}</div>
+                <button type="button" onclick="this.closest('.auto-dismiss-alert').remove();" style="border:none; background:transparent; cursor:pointer; color:#a51d24; font-size:16px;">&times;</button>
             </div>
         </div>
     @endif
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.auto-dismiss-alert');
+            if (alerts.length > 0) {
+                setTimeout(function() {
+                    alerts.forEach(function(alert) {
+                        alert.style.opacity = '0';
+                        alert.style.transform = 'translateY(-8px)';
+                        setTimeout(function() { alert.remove(); }, 500);
+                    });
+                }, 3500);
+            }
+        });
+    </script>
 
     <!-- Main Body Content -->
     <main>
