@@ -59,6 +59,40 @@ class Product extends Model
         });
     }
 
+    protected $appends = [
+        'effective_price',
+        'discount_percent',
+        'primary_image',
+        'gallery_urls',
+        'name',
+    ];
+
+    public function getNameAttribute(): string
+    {
+        return $this->title ?? '';
+    }
+
+    public function getPrimaryImageAttribute(): string
+    {
+        if ($this->thumbnail) {
+            return resolve_image_url($this->thumbnail, 'images/placeholder.jpg');
+        }
+        if (!empty($this->gallery) && is_array($this->gallery) && count($this->gallery) > 0) {
+            return resolve_image_url($this->gallery[0], 'images/placeholder.jpg');
+        }
+        return asset('images/placeholder.jpg');
+    }
+
+    public function getGalleryUrlsAttribute(): array
+    {
+        if (empty($this->gallery) || !is_array($this->gallery)) {
+            return [];
+        }
+        return array_map(function ($img) {
+            return resolve_image_url($img, 'images/placeholder.jpg');
+        }, $this->gallery);
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -71,7 +105,7 @@ class Product extends Model
 
     public function getEffectivePriceAttribute()
     {
-        return $this->sale_price ?? $this->regular_price;
+        return (float) ($this->sale_price ?? $this->regular_price ?? 0);
     }
 
     public function getDiscountPercentAttribute()

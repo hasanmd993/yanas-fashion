@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\File;
 use PDO;
 use ZipArchive;
 
+use Inertia\Inertia;
+
 class BackupController extends Controller
 {
     /**
@@ -65,7 +67,9 @@ class BackupController extends Controller
             return strcmp($b['file_name'], $a['file_name']);
         });
 
-        return view('admin.backups.index', compact('backups'));
+        return Inertia::render('Admin/Backups/Index', [
+            'backups' => $backups
+        ]);
     }
 
     /**

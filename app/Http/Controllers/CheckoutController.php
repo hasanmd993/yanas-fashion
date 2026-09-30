@@ -64,16 +64,16 @@ class CheckoutController extends Controller
             }
         }
 
-        return view('checkout.index', compact(
-            'cart',
-            'subtotal',
-            'insideDhaka',
-            'suburbs',
-            'outsideDhaka',
-            'freeShippingThreshold',
-            'appliedCoupon',
-            'discount'
-        ));
+        return \Inertia\Inertia::render('Checkout/Index', [
+            'cart' => array_values($cart),
+            'subtotal' => $subtotal,
+            'insideDhaka' => $insideDhaka,
+            'suburbs' => $suburbs,
+            'outsideDhaka' => $outsideDhaka,
+            'freeShippingThreshold' => $freeShippingThreshold,
+            'appliedCoupon' => $appliedCoupon,
+            'discount' => $discount,
+        ]);
     }
 
     public function applyCoupon(Request $request)
@@ -158,6 +158,23 @@ class CheckoutController extends Controller
             ];
         } else {
             $sessionCart = session()->get('cart', []);
+            if (empty($sessionCart) && $request->filled('items') && is_array($request->items)) {
+                $sessionCart = [];
+                foreach ($request->items as $item) {
+                    $pid = $item['id'] ?? $item['product_id'] ?? null;
+                    if (!$pid) continue;
+                    $prod = Product::find($pid);
+                    if (!$prod) continue;
+                    $sessionCart[] = [
+                        'product_id' => $prod->id,
+                        'title' => $prod->title,
+                        'thumbnail' => $prod->thumbnail,
+                        'size' => $item['size'] ?? null,
+                        'price' => (float) ($prod->sale_price ?? $prod->regular_price),
+                        'quantity' => max(1, (int) ($item['quantity'] ?? 1)),
+                    ];
+                }
+            }
             if (empty($sessionCart)) {
                 return redirect()->route('shop.index')->with('error', 'Your cart is empty!');
             }
@@ -259,7 +276,10 @@ class CheckoutController extends Controller
 
         $whatsappUrl = "https://wa.me/{$whatsappNumber}?text={$waMessage}";
 
-        return view('checkout.success', compact('order', 'whatsappUrl'));
+        return \Inertia\Inertia::render('Checkout/Success', [
+            'order' => $order,
+            'whatsappUrl' => $whatsappUrl,
+        ]);
     }
 
     public function downloadInvoice($order_number)

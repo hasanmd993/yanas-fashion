@@ -21,7 +21,10 @@ class ProductController extends Controller
             ->take(4)
             ->get();
 
-        return view('shop.show', compact('product', 'relatedProducts'));
+        return \Inertia\Inertia::render('Shop/Show', [
+            'product' => $product,
+            'relatedProducts' => $relatedProducts,
+        ]);
     }
 
     public function storeReview(Request $request, $id)

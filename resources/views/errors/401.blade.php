@@ -25,7 +25,7 @@
 
         <!-- Admin Quick Shortcuts -->
         <div class="flex flex-wrap items-center justify-center gap-3">
-            <a href="{{ route('tyro-login.login') }}" class="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-primary-hover transition-all">
+            <a href="{{ route('login') }}" class="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-primary-hover transition-all">
                 <i class="fa-solid fa-right-to-bracket"></i> Login to Admin
             </a>
             <a href="{{ route('home') }}" class="inline-flex items-center gap-2 rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] px-5 py-2.5 text-xs font-bold text-gray-700 dark:text-gray-300 hover:border-primary hover:text-primary transition-all">
@@ -61,7 +61,7 @@
 
                     <!-- Action Buttons -->
                     <div class="error-actions-group">
-                        <a href="{{ route('tyro-login.login') }}" class="btn-error-primary">
+                        <a href="{{ route('login') }}" class="btn-error-primary">
                             <i class="fa-solid fa-arrow-right-to-bracket"></i> Login Now
                         </a>
                         <a href="{{ route('home') }}" class="btn-error-secondary">

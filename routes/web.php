@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\SliderController as AdminSliderController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
@@ -19,6 +20,13 @@ use Illuminate\Support\Facades\Route;
 | Web Routes (Yanas Fashion E-Commerce)
 |--------------------------------------------------------------------------
 */
+
+// Authentication Routes (Vue 3 / Inertia)
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
+});
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
 // Public Storefront Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -38,6 +46,7 @@ Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+Route::post('/cart/sync', [CartController::class, 'sync'])->name('cart.sync');
 
 // 1-Page Bangladeshi Fast Checkout
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
@@ -61,6 +70,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/orders/export/courier', [AdminOrderController::class, 'exportCourierCsv'])->name('orders.export_courier');
     Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::get('/orders/{id}/invoice', [AdminOrderController::class, 'downloadInvoice'])->name('orders.invoice');
+    Route::get('/orders/{id}/download-invoice', [AdminOrderController::class, 'downloadInvoice'])->name('orders.download_invoice');
     Route::get('/orders/{id}/stream', [AdminOrderController::class, 'streamInvoice'])->name('orders.stream');
     Route::get('/orders/{id}/print', [AdminOrderController::class, 'printInvoice'])->name('orders.print');
     Route::post('/orders/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update_status');

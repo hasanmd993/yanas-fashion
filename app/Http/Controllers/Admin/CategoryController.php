@@ -36,7 +36,10 @@ class CategoryController extends Controller
         $remaining = $categories->diff($sortedCategories);
         $categories = $sortedCategories->concat($remaining);
 
-        return view('admin.categories.index', compact('categories'));
+        return \Inertia\Inertia::render('Admin/Categories/Index', [
+            'categories' => $categories->values(),
+            'parentCategories' => Category::whereNull('parent_id')->orderBy('sort_order', 'asc')->get(),
+        ]);
     }
 
     public function create()

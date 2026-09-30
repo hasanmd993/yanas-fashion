@@ -6,12 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 
+use Inertia\Inertia;
+
 class SettingController extends Controller
 {
     public function index()
     {
         $settings = Setting::all()->pluck('value', 'key');
-        return view('admin.settings.index', compact('settings'));
+        return Inertia::render('Admin/Settings/Index', [
+            'settings' => $settings,
+            'logoUrl' => function_exists('get_logo_url') ? get_logo_url() : asset('logo.png'),
+            'faviconUrl' => function_exists('get_favicon_url') ? get_favicon_url() : asset('favicon.ico'),
+        ]);
     }
 
     public function update(Request $request)

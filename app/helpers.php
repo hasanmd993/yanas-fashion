@@ -92,3 +92,35 @@ if (!function_exists('get_whatsapp_number')) {
     }
 }
 
+if (!function_exists('resolve_image_url')) {
+    function resolve_image_url(?string $path, string $default = 'images/placeholder.jpg'): string
+    {
+        if (empty($path)) {
+            return asset($default);
+        }
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+        $trimmed = ltrim($path, '/');
+        // If file is located in public/ directory (e.g. assets/..., images/...)
+        if (file_exists(public_path($trimmed))) {
+            return asset($trimmed);
+        }
+        // If file is in public/storage/
+        if (file_exists(public_path('storage/' . $trimmed))) {
+            return asset('storage/' . $trimmed);
+        }
+        // If file is in storage/app/public/
+        if (file_exists(storage_path('app/public/' . $trimmed))) {
+            return asset('storage/' . $trimmed);
+        }
+        if (str_starts_with($trimmed, 'assets/') || str_starts_with($trimmed, 'images/')) {
+            return asset($trimmed);
+        }
+        if (str_starts_with($trimmed, 'storage/')) {
+            return asset($trimmed);
+        }
+        return asset('storage/' . $trimmed);
+    }
+}
+

@@ -16,7 +16,10 @@ class ProductController extends Controller
         $query = Product::with('category')->latest();
 
         if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
+            $catId = (int) $request->category_id;
+            $subCatIds = Category::where('parent_id', $catId)->pluck('id')->toArray();
+            $allCatIds = array_merge([$catId], $subCatIds);
+            $query->whereIn('category_id', $allCatIds);
         }
 
         if ($request->filled('search')) {
@@ -28,15 +31,23 @@ class ProductController extends Controller
         }
 
         $products = $query->paginate(15)->withQueryString();
-        $categories = Category::with('parent')->orderBy('sort_order', 'asc')->get();
+        $categories = Category::has('products')
+            ->orderBy('name', 'asc')
+            ->get(['id', 'name', 'slug']);
 
-        return view('admin.products.index', compact('products', 'categories'));
+        return \Inertia\Inertia::render('Admin/Products/Index', [
+            'products' => $products,
+            'categories' => $categories,
+            'filters' => $request->only(['category_id', 'search']),
+        ]);
     }
 
     public function create()
     {
         $categories = Category::with('parent')->orderBy('sort_order', 'asc')->get();
-        return view('admin.products.create', compact('categories'));
+        return \Inertia\Inertia::render('Admin/Products/Create', [
+            'categories' => $categories,
+        ]);
     }
 
     public function store(Request $request)
@@ -97,7 +108,10 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
         $categories = Category::with('parent')->orderBy('sort_order', 'asc')->get();
-        return view('admin.products.edit', compact('product', 'categories'));
+        return \Inertia\Inertia::render('Admin/Products/Edit', [
+            'product' => $product,
+            'categories' => $categories,
+        ]);
     }
 
     public function update(Request $request, $id)

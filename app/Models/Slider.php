@@ -27,6 +27,13 @@ class Slider extends Model
         'sort_order' => 'integer',
     ];
 
+    protected $appends = ['image_url'];
+
+    public function getImageUrlAttribute(): string
+    {
+        return resolve_image_url($this->image, 'images/hero-bg.jpg');
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true)->orderBy('sort_order', 'asc');

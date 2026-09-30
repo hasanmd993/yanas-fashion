@@ -14,15 +14,14 @@ class HomeController extends Controller
     {
         $sliders = Slider::active()->get();
 
-        // Only show child categories on homepage category grid
+        // Show featured gents categories on homepage category grid
         $categories = Category::where('is_active', true)
-            ->whereNotNull('parent_id')
             ->where(function ($query) {
-                $query->whereHas('parent', function ($q) {
-                    $q->whereNotNull('parent_id');
-                })->orWhereDoesntHave('children');
+                $query->where('is_featured', true)
+                    ->orWhereHas('products');
             })
             ->orderBy('sort_order', 'asc')
+            ->take(12)
             ->get();
 
         $featuredProducts = Product::with('category')
@@ -43,13 +42,13 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
-        return view('home', compact(
-            'sliders',
-            'categories',
-            'featuredProducts',
-            'trendingProducts',
-            'latestProducts'
-        ));
+        return \Inertia\Inertia::render('Home', [
+            'sliders' => $sliders,
+            'categories' => $categories,
+            'featuredProducts' => $featuredProducts,
+            'trendingProducts' => $trendingProducts,
+            'latestProducts' => $latestProducts,
+        ]);
     }
 
     public function sitemap()

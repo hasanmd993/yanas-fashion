@@ -38,10 +38,10 @@
             <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-primary-hover transition-all">
                 <i class="fa-solid fa-gauge"></i> Return to Dashboard
             </a>
-            <a href="{{ route('tyro-login.logout') }}" onclick="event.preventDefault(); document.getElementById('admin-logout-form-err').submit();" class="inline-flex items-center gap-2 rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] px-5 py-2.5 text-xs font-bold text-danger hover:bg-danger/10 transition-all">
+            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('admin-logout-form-err').submit();" class="inline-flex items-center gap-2 rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] px-5 py-2.5 text-xs font-bold text-danger hover:bg-danger/10 transition-all">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i> Switch Account
             </a>
-            <form id="admin-logout-form-err" action="{{ route('tyro-login.logout') }}" method="POST" class="hidden">@csrf</form>
+            <form id="admin-logout-form-err" action="{{ route('logout') }}" method="POST" class="hidden">@csrf</form>
         </div>
     </div>
 
@@ -75,7 +75,7 @@
                         <a href="{{ route('home') }}" class="btn-error-primary">
                             <i class="fa-solid fa-house"></i> Return to Homepage
                         </a>
-                        <a href="{{ route('tyro-login.login') }}" class="btn-error-secondary">
+                        <a href="{{ route('login') }}" class="btn-error-secondary">
                             <i class="fa-solid fa-arrow-right-to-bracket"></i> Login
                         </a>
                     </div>

@@ -12,7 +12,9 @@ class SliderController extends Controller
     public function index()
     {
         $sliders = Slider::orderBy('sort_order', 'asc')->get();
-        return view('admin.sliders.index', compact('sliders'));
+        return \Inertia\Inertia::render('Admin/Sliders/Index', [
+            'sliders' => $sliders,
+        ]);
     }
 
     public function create()

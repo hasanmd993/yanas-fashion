@@ -9,7 +9,9 @@ class OrderTrackingController extends Controller
 {
     public function index()
     {
-        return view('tracking.index');
+        return \Inertia\Inertia::render('Tracking/Index', [
+            'order' => null,
+        ]);
     }
 
     public function track(Request $request)
@@ -42,7 +44,9 @@ class OrderTrackingController extends Controller
                 ->with('error', 'No order found! Please verify the correct order number and phone number.');
         }
 
-        return view('tracking.index', compact('order'));
+        return \Inertia\Inertia::render('Tracking/Index', [
+            'order' => $order,
+        ]);
     }
 }
 

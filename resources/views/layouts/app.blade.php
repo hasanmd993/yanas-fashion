@@ -38,7 +38,7 @@
             @auth
                 <a href="{{ route('admin.dashboard') }}"><i class="fa-solid fa-gauge"></i> Admin Dashboard</a>
             @else
-                <a href="{{ route('tyro-login.login') }}"><i class="fa-solid fa-lock"></i> Login</a>
+                <a href="{{ route('login') }}"><i class="fa-solid fa-lock"></i> Login</a>
             @endauth
         </div>
     </div>

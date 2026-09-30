@@ -14,7 +14,11 @@ class CouponController extends Controller
         $totalCoupons = Coupon::count();
         $activeCoupons = Coupon::where('is_active', true)->count();
         
-        return view('admin.coupons.index', compact('coupons', 'totalCoupons', 'activeCoupons'));
+        return \Inertia\Inertia::render('Admin/Coupons/Index', [
+            'coupons' => $coupons,
+            'totalCoupons' => $totalCoupons,
+            'activeCoupons' => $activeCoupons,
+        ]);
     }
 
     public function create()

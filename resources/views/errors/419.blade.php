@@ -13,7 +13,7 @@
             <li><a href="{{ route('admin.dashboard') }}" class="text-primary hover:underline">Dashboard</a></li>
             <li class="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2"><span>Error 419</span></li>
         </ul>
-        <a href="{{ route('tyro-login.login') }}" class="btn inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white shadow-md hover:bg-primary-hover transition-all">
+        <a href="{{ route('login') }}" class="btn inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white shadow-md hover:bg-primary-hover transition-all">
             <i class="fa-solid fa-lock text-[11px]"></i> Log In
         </a>
     </div>
@@ -38,7 +38,7 @@
             <button type="button" onclick="window.location.reload();" class="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-primary-hover transition-all">
                 <i class="fa-solid fa-arrows-rotate"></i> Refresh Page
             </button>
-            <a href="{{ route('tyro-login.login') }}" class="inline-flex items-center gap-2 rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] px-5 py-2.5 text-xs font-bold text-gray-700 dark:text-gray-300 hover:border-primary hover:text-primary transition-all">
+            <a href="{{ route('login') }}" class="inline-flex items-center gap-2 rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] px-5 py-2.5 text-xs font-bold text-gray-700 dark:text-gray-300 hover:border-primary hover:text-primary transition-all">
                 <i class="fa-solid fa-right-to-bracket"></i> Log In Again
             </a>
             <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center gap-2 rounded-lg border border-gray-200 dark:border-[#192a43] bg-white dark:bg-[#0e1726] px-5 py-2.5 text-xs font-bold text-gray-700 dark:text-gray-300 hover:border-primary hover:text-primary transition-all">

@@ -15,7 +15,10 @@ class CartController extends Controller
             $total += $item['price'] * $item['quantity'];
         }
 
-        return view('cart.index', compact('cart', 'total'));
+        return \Inertia\Inertia::render('Cart/Index', [
+            'cart' => array_values($cart),
+            'total' => $total,
+        ]);
     }
 
     public function getCart()
@@ -123,6 +126,47 @@ class CartController extends Controller
     {
         session()->forget('cart');
         return redirect()->back()->with('success', 'Cart cleared!');
+    }
+
+    public function sync(Request $request)
+    {
+        $items = $request->input('items', []);
+        $cart = [];
+
+        foreach ($items as $item) {
+            $productId = $item['id'] ?? $item['product_id'] ?? null;
+            if (!$productId) continue;
+
+            $product = Product::find($productId);
+            if (!$product) continue;
+
+            $key = $item['key'] ?? ($productId . '-' . ($item['size'] ?? 'default') . '-' . ($item['color'] ?? 'default'));
+            $quantity = max(1, (int) ($item['quantity'] ?? 1));
+            $price = (float) ($product->sale_price ?? $product->regular_price ?? ($item['price'] ?? 0));
+            $regularPrice = (float) ($product->regular_price ?? ($item['regularPrice'] ?? $item['regular_price'] ?? $price));
+
+            $cart[$key] = [
+                'key' => $key,
+                'product_id' => $product->id,
+                'title' => $product->title,
+                'title_bn' => $product->title_bn,
+                'slug' => $product->slug,
+                'price' => $price,
+                'regular_price' => $regularPrice,
+                'thumbnail' => $item['image'] ?? $item['thumbnail'] ?? $product->primary_image ?? $product->thumbnail,
+                'size' => $item['size'] ?? null,
+                'color' => $item['color'] ?? null,
+                'quantity' => $quantity,
+            ];
+        }
+
+        session()->put('cart', $cart);
+
+        return response()->json([
+            'success' => true,
+            'items' => array_values($cart),
+            'count' => count($cart),
+        ]);
     }
 }
 

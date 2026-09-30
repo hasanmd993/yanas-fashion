@@ -25,6 +25,13 @@ class Category extends Model
         'is_active',
     ];
 
+    protected $appends = ['image_url'];
+
+    public function getImageUrlAttribute(): string
+    {
+        return resolve_image_url($this->image, 'images/category-placeholder.jpg');
+    }
+
     protected static function boot()
     {
         parent::boot();

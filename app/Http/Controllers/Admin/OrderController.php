@@ -35,13 +35,19 @@ class OrderController extends Controller
             'cancelled' => Order::where('order_status', 'cancelled')->count(),
         ];
 
-        return view('admin.orders.index', compact('orders', 'statusCounts'));
+        return \Inertia\Inertia::render('Admin/Orders/Index', [
+            'orders' => $orders,
+            'statusCounts' => $statusCounts,
+            'filters' => $request->only(['status', 'search']),
+        ]);
     }
 
     public function show($id)
     {
         $order = Order::with('items.product')->findOrFail($id);
-        return view('admin.orders.show', compact('order'));
+        return \Inertia\Inertia::render('Admin/Orders/Show', [
+            'order' => $order,
+        ]);
     }
 
     public function updateStatus(Request $request, $id)

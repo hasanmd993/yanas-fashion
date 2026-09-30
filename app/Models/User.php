@@ -8,17 +8,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use HasinHayder\Tyro\Concerns\HasTyroRoles;
-
-
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasTyroRoles;
+    use HasApiTokens, HasFactory, Notifiable;
 
-
-    /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    /**
+     * Determine if the user has admin dashboard privileges.
+     */
+    public function isAdmin(): bool
+    {
+        return true;
+    }
 
     /**
      * The attributes that are mass assignable.

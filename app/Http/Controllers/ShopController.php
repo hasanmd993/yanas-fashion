@@ -70,7 +70,14 @@ class ShopController extends Controller
 
         $categories = Category::where('is_active', true)->orderBy('sort_order', 'asc')->get();
 
-        return view('shop.index', compact('products', 'categories', 'currentCategory', 'parentCategories', 'activeParentCategory'));
+        return \Inertia\Inertia::render('Shop/Index', [
+            'products' => $products,
+            'categories' => $categories,
+            'currentCategory' => $currentCategory,
+            'parentCategories' => $parentCategories,
+            'activeParentCategory' => $activeParentCategory,
+            'filters' => $request->only(['category', 'q', 'sort']),
+        ]);
     }
 
     public function searchApi(Request $request)

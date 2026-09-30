@@ -39,27 +39,23 @@ class DashboardController extends Controller
             $dayRevenue = Order::whereDate('created_at', $date)
                 ->where('order_status', '!=', 'cancelled')
                 ->sum('total_amount');
-            $dayOrdersCount = Order::whereDate('created_at', $date)->count();
+            $dayOrdersCount = Order::whereDate('created_at', $date)
+                ->where('order_status', '!=', 'cancelled')
+                ->count();
 
             $chartDays[] = $dayLabel;
             $chartRevenue[] = (float) $dayRevenue;
             $chartOrders[] = (int) $dayOrdersCount;
         }
 
-        // If no multi-day history exists yet, provide rich realistic trend curve
-        if (array_sum($chartRevenue) == 0) {
-            $chartRevenue = [12500, 18400, 14200, 24000, 19800, 31000, (float)($stats['today_sales'] ?: 22500)];
-            $chartOrders = [3, 5, 4, 7, 5, 8, (int)($stats['pending_orders'] ?: 6)];
-        }
-
-        return view('admin.dashboard', compact(
-            'stats', 
-            'recentOrders', 
-            'topProducts',
-            'chartDays',
-            'chartRevenue',
-            'chartOrders'
-        ));
+        return \Inertia\Inertia::render('Admin/Dashboard', [
+            'stats' => $stats,
+            'recentOrders' => $recentOrders,
+            'topProducts' => $topProducts,
+            'chartDays' => $chartDays,
+            'chartRevenue' => $chartRevenue,
+            'chartOrders' => $chartOrders,
+        ]);
     }
 }
 

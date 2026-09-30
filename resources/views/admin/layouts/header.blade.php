@@ -192,7 +192,7 @@
                     <div class="border-t border-gray-100 dark:border-[#192a43] my-1"></div>
 
                     <!-- Logout Button -->
-                    <form action="{{ route('tyro-login.logout') }}" method="POST">
+                    <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="w-full flex items-center gap-2 px-4 py-2.5 text-xs text-danger hover:bg-danger-light dark:hover:bg-danger-dark-light transition-all text-left font-bold">
                             <i class="fa-solid fa-right-from-bracket text-xs"></i>
