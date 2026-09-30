@@ -22,6 +22,8 @@ class CheckoutController extends Controller
         if ($buyNowId) {
             $product = Product::findOrFail($buyNowId);
             $size = $request->size ?? $request->buy_now_size ?? ($product->sizes ? $product->sizes[0] : null);
+            $dbPrice = (float) ($product->sale_price ?? $product->regular_price ?? 0);
+
             $cart = [
                 'direct' => [
                     'key' => 'direct',
@@ -29,19 +31,43 @@ class CheckoutController extends Controller
                     'title' => $product->title,
                     'title_bn' => $product->title_bn,
                     'slug' => $product->slug,
-                    'price' => (float) ($product->sale_price ?? $product->regular_price),
+                    'price' => $dbPrice,
                     'regular_price' => (float) $product->regular_price,
                     'thumbnail' => $product->thumbnail,
                     'size' => $size,
-                    'quantity' => (int) ($request->quantity ?? 1),
+                    'quantity' => max(1, (int) ($request->quantity ?? 1)),
                 ]
             ];
+        } else {
+            // Re-sync all session cart items strictly against current Database prices
+            $dbCart = [];
+            foreach ($cart as $k => $item) {
+                $pid = $item['product_id'] ?? $item['id'] ?? null;
+                if (!$pid) continue;
+                $product = Product::find($pid);
+                if (!$product) continue;
+
+                $dbPrice = (float) ($product->sale_price ?? $product->regular_price ?? 0);
+                $dbCart[$k] = array_merge($item, [
+                    'product_id' => $product->id,
+                    'title' => $product->title,
+                    'title_bn' => $product->title_bn,
+                    'slug' => $product->slug,
+                    'price' => $dbPrice,
+                    'regular_price' => (float) $product->regular_price,
+                    'thumbnail' => $product->thumbnail,
+                    'quantity' => max(1, (int) ($item['quantity'] ?? 1)),
+                ]);
+            }
+            $cart = $dbCart;
+            session()->put('cart', $cart);
         }
 
         if (empty($cart)) {
             return redirect()->route('shop.index')->with('warning', 'Your cart is empty! Please select products first.');
         }
 
+        // Subtotal calculated strictly from DB prices
         $subtotal = 0;
         foreach ($cart as $item) {
             $subtotal += $item['price'] * $item['quantity'];
@@ -90,7 +116,13 @@ class CheckoutController extends Controller
         $cart = session()->get('cart', []);
         $subtotal = 0;
         foreach ($cart as $item) {
-            $subtotal += $item['price'] * $item['quantity'];
+            $pid = $item['product_id'] ?? $item['id'] ?? null;
+            if ($pid && $dbProd = Product::find($pid)) {
+                $itemPrice = (float) ($dbProd->sale_price ?? $dbProd->regular_price ?? 0);
+            } else {
+                $itemPrice = (float) ($item['price'] ?? 0);
+            }
+            $subtotal += $itemPrice * max(1, (int) ($item['quantity'] ?? 1));
         }
 
         if (!$coupon->isValidFor($subtotal)) {
@@ -144,43 +176,57 @@ class CheckoutController extends Controller
             $phone = '0' . substr($phone, 3);
         }
 
-        // Direct product order or cart order
+        // Direct product order or cart order - Always load live prices from database
         $cart = [];
         if ($request->filled('buy_now_product_id')) {
             $product = Product::findOrFail($request->buy_now_product_id);
+            $dbPrice = (float) ($product->sale_price ?? $product->regular_price ?? 0);
+
             $cart[] = [
                 'product_id' => $product->id,
                 'title' => $product->title,
                 'thumbnail' => $product->thumbnail,
                 'size' => $request->buy_now_size ?? ($product->sizes ? $product->sizes[0] : null),
-                'price' => (float) ($product->sale_price ?? $product->regular_price),
-                'quantity' => (int) ($request->buy_now_quantity ?? 1),
+                'price' => $dbPrice,
+                'quantity' => max(1, (int) ($request->buy_now_quantity ?? 1)),
             ];
         } else {
-            $sessionCart = session()->get('cart', []);
-            if (empty($sessionCart) && $request->filled('items') && is_array($request->items)) {
-                $sessionCart = [];
-                foreach ($request->items as $item) {
-                    $pid = $item['id'] ?? $item['product_id'] ?? null;
-                    if (!$pid) continue;
-                    $prod = Product::find($pid);
-                    if (!$prod) continue;
-                    $sessionCart[] = [
-                        'product_id' => $prod->id,
-                        'title' => $prod->title,
-                        'thumbnail' => $prod->thumbnail,
-                        'size' => $item['size'] ?? null,
-                        'price' => (float) ($prod->sale_price ?? $prod->regular_price),
-                        'quantity' => max(1, (int) ($item['quantity'] ?? 1)),
-                    ];
-                }
+            $rawItems = session()->get('cart', []);
+            if (empty($rawItems) && $request->filled('items') && is_array($request->items)) {
+                $rawItems = $request->items;
             }
-            if (empty($sessionCart)) {
+
+            if (empty($rawItems)) {
                 return redirect()->route('shop.index')->with('error', 'Your cart is empty!');
             }
-            $cart = array_values($sessionCart);
+
+            foreach ($rawItems as $item) {
+                $pid = $item['product_id'] ?? $item['id'] ?? null;
+                if (!$pid) continue;
+                
+                // Fetch product directly from DB
+                $product = Product::find($pid);
+                if (!$product) continue;
+
+                $dbPrice = (float) ($product->sale_price ?? $product->regular_price ?? 0);
+                $qty = max(1, (int) ($item['quantity'] ?? 1));
+
+                $cart[] = [
+                    'product_id' => $product->id,
+                    'title' => $product->title,
+                    'thumbnail' => $product->thumbnail,
+                    'size' => $item['size'] ?? ($product->sizes ? $product->sizes[0] : null),
+                    'price' => $dbPrice,
+                    'quantity' => $qty,
+                ];
+            }
         }
 
+        if (empty($cart)) {
+            return redirect()->route('shop.index')->with('error', 'Your cart is empty!');
+        }
+
+        // Subtotal calculated strictly from DB prices * quantities
         $subtotal = 0;
         foreach ($cart as $item) {
             $subtotal += $item['price'] * $item['quantity'];

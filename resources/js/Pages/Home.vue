@@ -76,51 +76,52 @@ const currentProducts = computed(() => {
     <Head title="Luxury Bangladeshi Fashion, Tailored Panjabis & Modern Outfits" />
 
     <StorefrontLayout>
-        <!-- Hero Slider Section -->
+        <!-- Hero Slider Section (Compact, Perfectly Proportioned) -->
         <section class="relative bg-slate-950 text-white overflow-hidden">
-            <div v-if="sliders.length > 0" class="relative min-h-[480px] sm:min-h-[580px] lg:min-h-[640px] flex items-center">
+            <div v-if="sliders.length > 0" class="relative h-[360px] sm:h-[420px] lg:h-[480px] flex items-center">
                 <div
                     v-for="(slider, index) in sliders"
                     :key="slider.id"
-                    class="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+                    class="absolute inset-0 transition-opacity duration-700 ease-in-out"
                     :class="index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'"
                 >
-                    <!-- Background Image with Gradient Overlay -->
+                    <!-- Background Image with Soft Balanced Scrim -->
                     <img
                         :src="slider.image_url || (slider.image ? (slider.image.startsWith('http') ? slider.image : (slider.image.startsWith('/') ? slider.image : `/${slider.image}`)) : '/images/hero-bg.jpg')"
                         :alt="slider.title"
-                        class="w-full h-full object-cover object-center scale-105 transition-transform duration-10000 ease-linear"
+                        class="w-full h-full object-cover object-top sm:object-center"
                     />
-                    <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/60 to-transparent" />
+                    <!-- Subtle Scrim on Left for Clean Legibility -->
+                    <div class="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/35 to-transparent" />
 
                     <!-- Slide Content -->
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center relative z-20">
-                        <div class="max-w-xl space-y-6 py-16">
-                            <div v-if="slider.tag" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-bold uppercase tracking-widest backdrop-blur-sm">
-                                <Sparkles class="w-3.5 h-3.5" /> {{ slider.tag }}
+                        <div class="max-w-lg space-y-4 py-8 sm:py-12">
+                            <div v-if="slider.tag" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/25 border border-rose-500/40 text-rose-300 text-[11px] font-bold uppercase tracking-wider backdrop-blur-md">
+                                <Sparkles class="w-3 h-3 text-rose-400" /> {{ slider.tag }}
                             </div>
 
-                            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.1] font-serif">
+                            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-snug font-serif">
                                 {{ slider.title }}
                             </h1>
 
-                            <p v-if="slider.subtitle" class="text-sm sm:text-base text-slate-300 leading-relaxed max-w-lg">
+                            <p v-if="slider.subtitle" class="text-xs sm:text-sm text-slate-200 leading-relaxed max-w-md line-clamp-2">
                                 {{ slider.subtitle }}
                             </p>
 
-                            <div class="flex flex-wrap items-center gap-4 pt-2">
+                            <div class="flex flex-wrap items-center gap-3 pt-1">
                                 <Link
                                     v-if="slider.button_text"
                                     :href="slider.button_link || route('shop.index')"
-                                    class="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-rose-600/30 transition-all hover:scale-105"
+                                    class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-rose-600/30 transition-all hover:scale-105"
                                 >
-                                    {{ slider.button_text }} <ArrowRight class="w-4 h-4" />
+                                    {{ slider.button_text }} <ArrowRight class="w-3.5 h-3.5" />
                                 </Link>
 
                                 <Link
                                     v-if="slider.secondary_button_text"
                                     :href="slider.secondary_button_link || route('shop.index')"
-                                    class="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-xs uppercase tracking-wider backdrop-blur-sm transition-all"
+                                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white font-bold text-xs uppercase tracking-wider backdrop-blur-sm transition-all"
                                 >
                                     {{ slider.secondary_button_text }}
                                 </Link>
@@ -278,29 +279,5 @@ const currentProducts = computed(() => {
             </div>
         </section>
 
-        <!-- Brand Banner / Fabric Craftsmanship Spotlight -->
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-rose-950 text-white p-8 sm:p-14 border border-slate-800 shadow-2xl">
-                <div class="relative z-10 max-w-xl space-y-4">
-                    <span class="inline-flex items-center gap-1.5 text-rose-400 text-xs font-bold tracking-widest uppercase">
-                        <ShieldCheck class="w-4 h-4" /> THE YANAS STANDARD
-                    </span>
-                    <h2 class="text-2xl sm:text-4xl font-extrabold font-serif leading-tight">
-                        Unmatched Quality & Tailored Distinction
-                    </h2>
-                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                        Every Yanas Fashion piece is tailored from high-thread-count pure fabrics with reinforced twel-stitch seams, tailored collars, and lustrous metallic snap buttons engineered for long-lasting luxury.
-                    </p>
-                    <div class="pt-4 flex flex-wrap gap-4">
-                        <Link
-                            :href="route('shop.index')"
-                            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg transition-all"
-                        >
-                            Shop The Collection
-                        </Link>
-                    </div>
-                </div>
-            </div>
-        </section>
     </StorefrontLayout>
 </template>

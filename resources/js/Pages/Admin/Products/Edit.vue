@@ -60,7 +60,10 @@ const handleGalleryChange = (e) => {
 };
 
 const submit = () => {
-    form.post(route('admin.products.update', props.product.id));
+    form.transform((data) => ({
+        ...data,
+        _method: 'PUT',
+    })).post(route('admin.products.update', props.product.id));
 };
 
 const handleDelete = () => {

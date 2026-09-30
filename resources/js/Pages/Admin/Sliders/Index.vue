@@ -55,7 +55,7 @@ const editSlider = (slider) => {
     form.sort_order = slider.sort_order ?? 0;
     form.is_active = Boolean(slider.is_active);
     form.image_file = null;
-    imagePreview.value = slider.image ? (slider.image.startsWith('http') ? slider.image : `/storage/${slider.image}`) : null;
+    imagePreview.value = slider.image_url || (slider.image ? (slider.image.startsWith('http') ? slider.image : (slider.image.startsWith('/') ? slider.image : `/${slider.image}`)) : null);
 };
 
 const cancelEdit = () => {
@@ -66,7 +66,10 @@ const cancelEdit = () => {
 
 const submit = () => {
     if (editingId.value) {
-        form.post(route('admin.sliders.update', editingId.value), {
+        form.transform((data) => ({
+            ...data,
+            _method: 'PUT',
+        })).post(route('admin.sliders.update', editingId.value), {
             onSuccess: () => cancelEdit(),
         });
     } else {
