@@ -10,6 +10,7 @@ import {
     ShieldCheck,
     Sparkles,
     ArrowLeft,
+    AlertCircle,
     CheckCircle2,
 } from "lucide-vue-next";
 
@@ -17,6 +18,7 @@ const page = usePage();
 const settings = page.props.settings || {};
 
 const showPassword = ref(false);
+const generalError = ref(null);
 
 const form = useForm({
     email: "",
@@ -24,8 +26,25 @@ const form = useForm({
     remember: true,
 });
 
+const fillAdminCredentials = () => {
+    form.email = "admin@yanasfashion.com";
+    form.password = "admin123";
+    generalError.value = null;
+};
+
 const submit = () => {
-    form.post(route("login.submit"), {
+    generalError.value = null;
+    form.post(route("login.submit", undefined, false), {
+        onError: (errors) => {
+            console.error("Login submission error:", errors);
+            if (errors.email) {
+                generalError.value = errors.email;
+            } else if (errors.password) {
+                generalError.value = errors.password;
+            } else {
+                generalError.value = Object.values(errors)[0] || "Invalid login credentials. Please check your email and password.";
+            }
+        },
         onFinish: () => form.reset("password"),
     });
 };
@@ -50,7 +69,7 @@ const submit = () => {
             class="w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between z-10"
         >
             <Link
-                :href="route('home')"
+                :href="route('home', undefined, false)"
                 class="flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-[#730163] dark:hover:text-white transition-colors"
             >
                 <ArrowLeft class="w-4 h-4" />
@@ -64,7 +83,7 @@ const submit = () => {
                 class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-8 sm:p-10 shadow-2xl shadow-slate-200/50 dark:shadow-none relative"
             >
                 <!-- Brand Logo / Title Header -->
-                <div class="text-center mb-8">
+                <div class="text-center mb-6">
                     <div
                         class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#730163] to-[#990284] text-white flex items-center justify-center mx-auto shadow-lg shadow-[#730163]/30 mb-4 p-3"
                     >
@@ -87,6 +106,20 @@ const submit = () => {
                     >
                         Sign in to access your dashboard & order management
                     </p>
+                </div>
+
+                <!-- Prominent Error Alert Banner -->
+                <div
+                    v-if="generalError || form.errors.email || form.errors.password || $page.props.flash?.error"
+                    class="mb-6 p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-300 text-xs flex items-start gap-3 shadow-sm animate-shake"
+                >
+                    <AlertCircle class="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+                    <div class="space-y-0.5">
+                        <p class="font-bold">Authentication Failed</p>
+                        <p class="text-[11px] leading-relaxed">
+                            {{ generalError || form.errors.email || form.errors.password || $page.props.flash?.error }}
+                        </p>
+                    </div>
                 </div>
 
                 <!-- Form -->
@@ -195,6 +228,18 @@ const submit = () => {
                                 : "Sign In to Dashboard"
                         }}</span>
                     </button>
+
+                    <!-- 1-Click Credentials Autofill -->
+                    <div class="pt-2 text-center">
+                        <button
+                            type="button"
+                            @click="fillAdminCredentials"
+                            class="text-[11px] font-semibold text-[#730163] dark:text-purple-400 hover:underline inline-flex items-center gap-1.5"
+                        >
+                            <Sparkles class="w-3.5 h-3.5 text-[#F68625]" />
+                            <span>Fill Demo Admin Credentials (admin@yanasfashion.com)</span>
+                        </button>
+                    </div>
                 </form>
             </div>
         </main>

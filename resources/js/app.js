@@ -10,9 +10,25 @@ import { Ziggy } from './ziggy';
 
 import ErrorBoundary from './Components/ErrorBoundary.vue';
 
-// Expose route helper globally to window for setup scripts and templates
-window.Ziggy = Ziggy;
-window.route = (name, params, absolute, config = Ziggy) => route(name, params, absolute, config);
+// Dynamically resolve Ziggy config using live browser origin so URLs adapt automatically
+const getZiggyConfig = () => {
+    const base = (typeof window !== 'undefined' && window.Ziggy && window.Ziggy.routes) ? window.Ziggy : Ziggy;
+    const origin = typeof window !== 'undefined' ? window.location.origin : (base.url || '');
+    const port = typeof window !== 'undefined' ? (window.location.port ? parseInt(window.location.port) : null) : null;
+    return {
+        ...base,
+        url: origin,
+        port: port,
+        routes: { ...Ziggy.routes, ...(base.routes || {}) },
+    };
+};
+
+const dynamicZiggy = getZiggyConfig();
+
+if (typeof window !== 'undefined') {
+    window.Ziggy = dynamicZiggy;
+    window.route = (name, params, absolute, config = dynamicZiggy) => route(name, params, absolute, config);
+}
 
 const appName = import.meta.env.VITE_APP_NAME || 'Yanas Fashion';
 
@@ -35,7 +51,7 @@ createInertiaApp({
         return vueApp
             .use(plugin)
             .use(pinia)
-            .use(ZiggyVue, Ziggy)
+            .use(ZiggyVue, dynamicZiggy)
             .component('Head', Head)
             .component('Link', Link)
             .component('ErrorBoundary', ErrorBoundary)

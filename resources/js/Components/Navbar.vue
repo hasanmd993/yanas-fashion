@@ -152,7 +152,7 @@ const handleSearch = () => {
                     <template v-if="authUser">
                         <a
                             v-if="authUser.is_admin"
-                            :href="route('admin.dashboard')"
+                            :href="route('admin.dashboard', undefined, false)"
                             class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold shadow-sm hover:opacity-90 transition-opacity"
                         >
                             <LayoutDashboard class="w-3.5 h-3.5" /> Admin
@@ -163,7 +163,7 @@ const handleSearch = () => {
                     </template>
                     <template v-else>
                         <Link
-                            :href="route('login')"
+                            :href="route('login', undefined, false)"
                             class="p-2.5 rounded-xl text-slate-700 dark:text-slate-300 hover:text-rose-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                             title="Account Login"
                         >
