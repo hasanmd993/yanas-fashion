@@ -91,8 +91,19 @@ const handleQuickAdd = (e) => {
                 </span>
             </div>
 
-            <!-- Quick Add Button Overlay -->
-            <div class="absolute inset-x-3 bottom-3 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 flex gap-2">
+            <!-- Mobile Quick Add Floating Button (Touch-Friendly) -->
+            <button
+                @click.prevent="handleQuickAdd"
+                :disabled="isOutOfStock"
+                class="sm:hidden absolute bottom-2 right-2 p-2 rounded-xl bg-white/95 dark:bg-slate-900/95 text-slate-800 dark:text-white shadow-md active:scale-90 transition-transform flex items-center justify-center disabled:opacity-40 z-10"
+                :title="isOutOfStock ? 'Sold Out' : 'Quick Add'"
+                :aria-label="isOutOfStock ? 'Sold Out' : 'Quick Add'"
+            >
+                <ShoppingBag class="w-3.5 h-3.5 text-rose-600" />
+            </button>
+
+            <!-- Desktop Quick Add Button Overlay (Hover) -->
+            <div class="hidden sm:flex absolute inset-x-3 bottom-3 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 gap-2 z-10">
                 <button
                     @click="handleQuickAdd"
                     :disabled="isOutOfStock"
@@ -112,10 +123,10 @@ const handleQuickAdd = (e) => {
         </div>
 
         <!-- Product Info Content -->
-        <div class="p-4 flex-1 flex flex-col justify-between">
+        <div class="p-3 sm:p-4 flex-1 flex flex-col justify-between">
             <div>
                 <!-- Category -->
-                <div v-if="product.category" class="text-[10px] font-bold uppercase tracking-wider text-rose-600 mb-1">
+                <div v-if="product.category" class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-rose-600 mb-1">
                     {{ product.category.name }}
                 </div>
 
@@ -128,20 +139,20 @@ const handleQuickAdd = (e) => {
             </div>
 
             <!-- Pricing Row -->
-            <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <div class="flex items-baseline gap-1.5 font-mono">
-                    <span class="text-sm font-extrabold text-slate-900 dark:text-white">
+            <div class="mt-2.5 sm:mt-3 pt-2 sm:pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <div class="flex items-baseline gap-1 sm:gap-1.5 font-mono">
+                    <span class="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white">
                         ৳{{ sellingPrice }}
                     </span>
                     <span
                         v-if="regularPrice > sellingPrice"
-                        class="text-[11px] text-slate-400 line-through"
+                        class="text-[10px] sm:text-[11px] text-slate-400 line-through"
                     >
                         ৳{{ regularPrice }}
                     </span>
                 </div>
 
-                <div v-if="product.sku" class="text-[10px] text-slate-400 font-mono">
+                <div v-if="product.sku" class="text-[9px] sm:text-[10px] text-slate-400 font-mono">
                     {{ product.sku }}
                 </div>
             </div>

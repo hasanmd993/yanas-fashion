@@ -26,12 +26,6 @@ const form = useForm({
     remember: true,
 });
 
-const fillAdminCredentials = () => {
-    form.email = "admin@yanasfashion.com";
-    form.password = "admin123";
-    generalError.value = null;
-};
-
 const submit = () => {
     generalError.value = null;
     form.post(route("login.submit", undefined, false), {
@@ -228,18 +222,6 @@ const submit = () => {
                                 : "Sign In to Dashboard"
                         }}</span>
                     </button>
-
-                    <!-- 1-Click Credentials Autofill -->
-                    <div class="pt-2 text-center">
-                        <button
-                            type="button"
-                            @click="fillAdminCredentials"
-                            class="text-[11px] font-semibold text-[#730163] dark:text-purple-400 hover:underline inline-flex items-center gap-1.5"
-                        >
-                            <Sparkles class="w-3.5 h-3.5 text-[#F68625]" />
-                            <span>Fill Demo Admin Credentials (admin@yanasfashion.com)</span>
-                        </button>
-                    </div>
                 </form>
             </div>
         </main>

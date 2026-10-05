@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\CourierController as AdminCourierController;
+use App\Http\Controllers\Admin\SmsController as AdminSmsController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\SliderController as AdminSliderController;
@@ -74,6 +76,14 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/orders/{id}/stream', [AdminOrderController::class, 'streamInvoice'])->name('orders.stream');
     Route::get('/orders/{id}/print', [AdminOrderController::class, 'printInvoice'])->name('orders.print');
     Route::post('/orders/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update_status');
+    Route::post('/orders/{id}/dispatch-courier', [AdminCourierController::class, 'dispatchOrder'])->name('orders.dispatch_courier');
+    Route::get('/orders/{id}/track-courier', [AdminCourierController::class, 'trackOrder'])->name('orders.track_courier');
+    Route::post('/orders/{id}/manual-courier', [AdminCourierController::class, 'manualCourier'])->name('orders.manual_courier');
+    Route::get('/courier/balance', [AdminCourierController::class, 'getBalance'])->name('courier.balance');
+    Route::post('/orders/{id}/send-sms', [AdminSmsController::class, 'sendOrderSms'])->name('orders.send_sms');
+    Route::post('/sms/test', [AdminSmsController::class, 'testSms'])->name('sms.test');
+    Route::get('/sms/balance', [AdminSmsController::class, 'getBalance'])->name('sms.balance');
+    Route::get('/sms/logs', [AdminSmsController::class, 'getLogs'])->name('sms.logs');
     Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
 
     // Products, Categories, Sliders & Coupons CRUD

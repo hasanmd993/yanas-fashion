@@ -21,7 +21,9 @@ class OrderController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('order_number', 'like', "%{$search}%")
                   ->orWhere('customer_name', 'like', "%{$search}%")
-                  ->orWhere('customer_phone', 'like', "%{$search}%");
+                  ->orWhere('customer_phone', 'like', "%{$search}%")
+                  ->orWhere('courier_tracking_code', 'like', "%{$search}%")
+                  ->orWhere('courier_consignment_id', 'like', "%{$search}%");
             });
         }
 
@@ -44,7 +46,7 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        $order = Order::with('items.product')->findOrFail($id);
+        $order = Order::with(['items.product', 'smsLogs'])->findOrFail($id);
         return \Inertia\Inertia::render('Admin/Orders/Show', [
             'order' => $order,
         ]);
@@ -59,11 +61,21 @@ class OrderController extends Controller
         ]);
 
         $order = Order::findOrFail($id);
+        $previousStatus = $order->order_status;
+
         $order->update([
             'order_status' => $request->order_status,
             'payment_status' => $request->payment_status,
             'admin_notes' => $request->admin_notes,
         ]);
+
+        if ($request->order_status === 'shipped' && $previousStatus !== 'shipped') {
+            try {
+                app(\App\Services\Sms\SmsService::class)->sendOrderShipped($order);
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('Automated Order Shipped SMS failed: ' . $e->getMessage());
+            }
+        }
 
         return redirect()->back()->with('success', "Order #{$order->order_number} status updated successfully!");
     }

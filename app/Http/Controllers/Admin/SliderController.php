@@ -25,13 +25,13 @@ class SliderController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'nullable|string|max:255',
             'tag' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string',
             'image' => 'nullable|string|max:255',
             'image_file' => 'nullable|image|max:12288', // up to 12MB banner
-            'button_text' => 'required|string|max:255',
-            'button_link' => 'required|string|max:255',
+            'button_text' => 'nullable|string|max:255',
+            'button_link' => 'nullable|string|max:255',
             'secondary_button_text' => 'nullable|string|max:255',
             'secondary_button_link' => 'nullable|string|max:255',
             'sort_order' => 'nullable|integer',
@@ -63,13 +63,13 @@ class SliderController extends Controller
         $slider = Slider::findOrFail($id);
 
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'nullable|string|max:255',
             'tag' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string',
             'image' => 'nullable|string|max:255',
             'image_file' => 'nullable|image|max:12288',
-            'button_text' => 'required|string|max:255',
-            'button_link' => 'required|string|max:255',
+            'button_text' => 'nullable|string|max:255',
+            'button_link' => 'nullable|string|max:255',
             'secondary_button_text' => 'nullable|string|max:255',
             'secondary_button_link' => 'nullable|string|max:255',
             'sort_order' => 'nullable|integer',

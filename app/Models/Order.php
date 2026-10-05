@@ -36,6 +36,12 @@ class Order extends Model
         'payment_status',
         'order_status',
         'admin_notes',
+        'courier_name',
+        'courier_tracking_code',
+        'courier_consignment_id',
+        'courier_status',
+        'courier_dispatched_at',
+        'courier_response',
     ];
 
     protected $casts = [
@@ -43,6 +49,15 @@ class Order extends Model
         'subtotal' => 'decimal:2',
         'discount' => 'decimal:2',
         'total_amount' => 'decimal:2',
+        'courier_dispatched_at' => 'datetime',
+        'courier_response' => 'array',
+    ];
+
+    protected $appends = [
+        'zone_label',
+        'status_badge_class',
+        'courier_tracking_url',
+        'courier_label',
     ];
 
     protected static function boot()
@@ -58,6 +73,11 @@ class Order extends Model
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function smsLogs(): HasMany
+    {
+        return $this->hasMany(SmsLog::class)->latest();
     }
 
     public function getZoneLabelAttribute(): string
@@ -79,6 +99,29 @@ class Order extends Model
             'delivered' => 'badge-delivered',
             'cancelled' => 'badge-cancelled',
             default => 'badge-default',
+        };
+    }
+
+    public function getCourierTrackingUrlAttribute(): ?string
+    {
+        if (empty($this->courier_tracking_code)) {
+            return null;
+        }
+
+        return match($this->courier_name) {
+            'steadfast' => "https://steadfast.com.bd/t/{$this->courier_tracking_code}",
+            'pathao' => "https://pathao.com/courier-tracking/?consignment_id={$this->courier_tracking_code}",
+            default => null,
+        };
+    }
+
+    public function getCourierLabelAttribute(): string
+    {
+        return match($this->courier_name) {
+            'steadfast' => 'Steadfast Express',
+            'pathao' => 'Pathao Courier',
+            'manual' => 'Manual Courier',
+            default => $this->courier_name ? ucfirst($this->courier_name) : 'Not Dispatched',
         };
     }
 }

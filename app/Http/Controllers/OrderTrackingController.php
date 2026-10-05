@@ -31,6 +31,8 @@ class OrderTrackingController extends Controller
             ->where(function ($q) use ($orderNum) {
                 $q->where('order_number', $orderNum)
                   ->orWhere('order_number', 'YF-' . $orderNum)
+                  ->orWhere('courier_tracking_code', $orderNum)
+                  ->orWhere('courier_consignment_id', $orderNum)
                   ->orWhere('id', $orderNum);
             })
             ->where(function ($q) use ($phone) {

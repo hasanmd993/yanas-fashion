@@ -212,10 +212,27 @@ const handleDelete = (id, orderNumber) => {
                                 <td class="py-3.5 px-4">
                                     <Link
                                         :href="route('admin.orders.show', order.id)"
-                                        class="font-mono font-bold text-[#730163] hover:underline"
+                                        class="font-mono font-bold text-[#730163] hover:underline block"
                                     >
                                         #{{ order.order_number }}
                                     </Link>
+                                    <!-- Courier Badge -->
+                                    <div v-if="order.courier_name" class="mt-1 flex items-center gap-1.5 flex-wrap">
+                                        <span
+                                            class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider"
+                                            :class="{
+                                                'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800': order.courier_name === 'steadfast',
+                                                'bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800': order.courier_name === 'pathao',
+                                                'bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300': order.courier_name !== 'steadfast' && order.courier_name !== 'pathao',
+                                            }"
+                                        >
+                                            <Truck class="w-2.5 h-2.5" />
+                                            {{ order.courier_name === 'steadfast' ? 'Steadfast' : (order.courier_name === 'pathao' ? 'Pathao' : order.courier_name) }}
+                                        </span>
+                                        <span v-if="order.courier_tracking_code" class="text-[9px] font-mono text-slate-500">
+                                            {{ order.courier_tracking_code }}
+                                        </span>
+                                    </div>
                                 </td>
                                 <td class="py-3.5 px-3 text-slate-500 whitespace-nowrap">
                                     {{ new Date(order.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) }}

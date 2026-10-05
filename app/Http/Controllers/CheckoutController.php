@@ -289,6 +289,15 @@ class CheckoutController extends Controller
             return $order;
         });
 
+        // Trigger automated SMS notifications (Customer Order Placed & Admin Alert)
+        try {
+            $smsService = app(\App\Services\Sms\SmsService::class);
+            $smsService->sendOrderPlaced($order);
+            $smsService->sendAdminNewOrderAlert($order);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Automated Order Placed SMS failed: ' . $e->getMessage());
+        }
+
         // Clear Cart and Coupon sessions
         session()->forget('cart');
         session()->forget('coupon');

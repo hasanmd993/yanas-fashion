@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import StorefrontLayout from '@/Layouts/StorefrontLayout.vue';
 import {
@@ -11,7 +12,10 @@ import {
     AlertCircle,
     ChevronRight,
     User,
-    Phone
+    Phone,
+    ExternalLink,
+    Copy,
+    Check
 } from 'lucide-vue-next';
 
 const props = defineProps({
@@ -25,6 +29,14 @@ const form = useForm({
     order_number: '',
     phone: '',
 });
+
+const copied = ref(false);
+const copyTracking = (code) => {
+    if (!code) return;
+    navigator.clipboard.writeText(code);
+    copied.value = true;
+    setTimeout(() => copied.value = false, 2000);
+};
 
 const trackOrder = () => {
     form.post(route('tracking.track'), {
@@ -66,19 +78,19 @@ const getStatusStep = (status) => {
                         Track Your Parcel Status
                     </h1>
                     <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">
-                        Enter your Order ID (e.g. #YF-102934) and mobile number to see real-time dispatch and delivery updates.
+                        Enter your Order ID (e.g. #YF-102934) or Courier Tracking Code and mobile number to see real-time dispatch and delivery updates.
                     </p>
                 </div>
 
                 <form @submit.prevent="trackOrder" class="grid grid-cols-1 sm:grid-cols-12 gap-3 text-left">
                     <div class="sm:col-span-6">
                         <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
-                            Order Number
+                            Order Number or Tracking Code
                         </label>
                         <input
                             v-model="form.order_number"
                             type="text"
-                            placeholder="e.g. YF-102934 or 102934"
+                            placeholder="e.g. YF-102934 or 241005ABCD"
                             class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-mono focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500/20"
                             required
                         />
@@ -132,6 +144,115 @@ const getStatusStep = (status) => {
                     >
                         Status: {{ order.order_status?.toUpperCase() }}
                     </span>
+                </div>
+
+                <!-- Official Courier Dispatch Info Card -->
+                <div
+                    v-if="order.courier_name"
+                    class="rounded-2xl border p-5 sm:p-6 transition-all"
+                    :class="{
+                        'bg-emerald-50/70 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800/60': order.courier_name === 'steadfast',
+                        'bg-rose-50/70 dark:bg-rose-950/20 border-rose-200 dark:border-rose-800/60': order.courier_name === 'pathao',
+                        'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700': order.courier_name !== 'steadfast' && order.courier_name !== 'pathao',
+                    }"
+                >
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="flex items-start sm:items-center gap-3">
+                            <div
+                                class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-sm"
+                                :class="{
+                                    'bg-emerald-600 text-white': order.courier_name === 'steadfast',
+                                    'bg-rose-600 text-white': order.courier_name === 'pathao',
+                                    'bg-slate-800 text-white': order.courier_name !== 'steadfast' && order.courier_name !== 'pathao',
+                                }"
+                            >
+                                <Truck class="w-6 h-6" />
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h3 class="font-extrabold text-slate-900 dark:text-white text-base">
+                                        {{ order.courier_label || (order.courier_name === 'steadfast' ? 'Steadfast Courier' : (order.courier_name === 'pathao' ? 'Pathao Courier' : order.courier_name)) }}
+                                    </h3>
+                                    <span
+                                        v-if="order.courier_status"
+                                        class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white dark:bg-slate-900 border"
+                                        :class="{
+                                            'text-emerald-700 border-emerald-300': order.courier_status === 'delivered',
+                                            'text-rose-700 border-rose-300': order.courier_status === 'cancelled',
+                                            'text-sky-700 border-sky-300': order.courier_status !== 'delivered' && order.courier_status !== 'cancelled',
+                                        }"
+                                    >
+                                        {{ order.courier_status.replace(/_/g, ' ') }}
+                                    </span>
+                                </div>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+                                    Official delivery partner handling your parcel.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Direct Track Button -->
+                        <div v-if="order.courier_tracking_url" class="shrink-0">
+                            <a
+                                :href="order.courier_tracking_url"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
+                                :class="{
+                                    'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/30': order.courier_name === 'steadfast',
+                                    'bg-rose-600 hover:bg-rose-500 shadow-rose-600/30': order.courier_name === 'pathao',
+                                    'bg-slate-900 hover:bg-slate-800': order.courier_name !== 'steadfast' && order.courier_name !== 'pathao',
+                                }"
+                            >
+                                <span>Track on {{ order.courier_name === 'steadfast' ? 'Steadfast' : (order.courier_name === 'pathao' ? 'Pathao' : 'Courier') }}</span>
+                                <ExternalLink class="w-3.5 h-3.5" />
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Tracking Codes & Consignment Details -->
+                    <div class="mt-4 pt-4 border-t border-slate-200/60 dark:border-slate-700/60 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div v-if="order.courier_tracking_code" class="flex items-center justify-between bg-white/80 dark:bg-slate-900/80 px-3.5 py-2 rounded-xl border border-slate-200/80 dark:border-slate-800">
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-400 text-[11px] font-medium">Tracking Code:</span>
+                                <span class="font-mono font-bold text-slate-900 dark:text-white">{{ order.courier_tracking_code }}</span>
+                            </div>
+                            <button
+                                @click="copyTracking(order.courier_tracking_code)"
+                                type="button"
+                                class="text-slate-500 hover:text-slate-900 dark:hover:text-white p-1 rounded transition-colors"
+                                title="Copy Tracking Code"
+                            >
+                                <Check v-if="copied" class="w-3.5 h-3.5 text-emerald-600" />
+                                <Copy v-else class="w-3.5 h-3.5" />
+                            </button>
+                        </div>
+
+                        <div v-if="order.courier_consignment_id && order.courier_consignment_id !== order.courier_tracking_code" class="flex items-center justify-between bg-white/80 dark:bg-slate-900/80 px-3.5 py-2 rounded-xl border border-slate-200/80 dark:border-slate-800">
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-400 text-[11px] font-medium">Consignment ID:</span>
+                                <span class="font-mono font-bold text-slate-900 dark:text-white">{{ order.courier_consignment_id }}</span>
+                            </div>
+                        </div>
+
+                        <div v-if="order.courier_dispatched_at" class="sm:col-span-2 text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                            <Clock class="w-3 h-3 text-slate-400" />
+                            <span>Handed over to courier on {{ new Date(order.courier_dispatched_at).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    v-else
+                    class="rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 p-4 bg-slate-50/50 dark:bg-slate-800/30 flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400"
+                >
+                    <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0">
+                        <Clock class="w-4 h-4 text-slate-600 dark:text-slate-300" />
+                    </div>
+                    <div>
+                        <p class="font-bold text-slate-700 dark:text-slate-200">Courier Handover in Progress</p>
+                        <p class="text-[11px]">Your parcel is currently being prepared for dispatch via our official express courier.</p>
+                    </div>
                 </div>
 
                 <!-- 4-Step Visual Timeline -->
