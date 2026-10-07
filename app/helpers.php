@@ -102,25 +102,28 @@ if (!function_exists('resolve_image_url')) {
             return $path;
         }
         $trimmed = ltrim($path, '/');
-        // If file is located in public/ directory (e.g. assets/..., images/...)
+        $cleanStorage = preg_replace('#^storage/#i', '', $trimmed);
+
+        // 1. Direct file in public/
         if (file_exists(public_path($trimmed))) {
             return asset($trimmed);
         }
-        // If file is in public/storage/
-        if (file_exists(public_path('storage/' . $trimmed))) {
-            return asset('storage/' . $trimmed);
+        // 2. File in public/storage/
+        if (file_exists(public_path('storage/' . $cleanStorage))) {
+            return asset('storage/' . $cleanStorage);
         }
-        // If file is in storage/app/public/
-        if (file_exists(storage_path('app/public/' . $trimmed))) {
-            return asset('storage/' . $trimmed);
+        // 3. File in storage/app/public/
+        if (file_exists(storage_path('app/public/' . $cleanStorage))) {
+            return asset('storage/' . $cleanStorage);
         }
+        // 4. Known folder patterns
         if (str_starts_with($trimmed, 'assets/') || str_starts_with($trimmed, 'images/')) {
             return asset($trimmed);
         }
         if (str_starts_with($trimmed, 'storage/')) {
             return asset($trimmed);
         }
-        return asset('storage/' . $trimmed);
+        return asset('storage/' . $cleanStorage);
     }
 }
 

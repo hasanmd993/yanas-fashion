@@ -13,13 +13,32 @@ const props = defineProps({
 
 const cart = useCartStore();
 
+const resolveMediaUrl = (img) => {
+    if (!img) return '/images/placeholder.jpg';
+    if (typeof img === 'object' && img.url) return img.url;
+    if (typeof img !== 'string') return '/images/placeholder.jpg';
+    if (img.startsWith('http://') || img.startsWith('https://')) return img;
+    const trimmed = img.replace(/^\/+/, '');
+    if (trimmed.startsWith('assets/') || trimmed.startsWith('images/')) {
+        return `/${trimmed}`;
+    }
+    if (trimmed.startsWith('storage/')) {
+        return `/${trimmed}`;
+    }
+    return `/storage/${trimmed}`;
+};
+
 const primaryImage = computed(() => {
-    return props.product.primary_image || props.product.image_url || (props.product.images && props.product.images[0]?.image_url) || '/images/placeholder.jpg';
+    const raw = props.product.primary_image || props.product.thumbnail || (props.product.gallery && props.product.gallery[0]) || props.product.image_url || (props.product.images && props.product.images[0]?.image_url);
+    return resolveMediaUrl(raw);
 });
 
 const secondaryImage = computed(() => {
+    if (props.product.gallery && props.product.gallery.length > 1) {
+        return resolveMediaUrl(props.product.gallery[1]);
+    }
     if (props.product.images && props.product.images.length > 1) {
-        return props.product.images[1].image_url;
+        return resolveMediaUrl(props.product.images[1].image_url);
     }
     return primaryImage.value;
 });
@@ -66,6 +85,7 @@ const handleQuickAdd = (e) => {
                     :alt="product.name"
                     class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
                     loading="lazy"
+                    @error="$event.target.src = '/images/placeholder.jpg'"
                 />
             </Link>
 

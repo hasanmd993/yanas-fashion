@@ -34,20 +34,66 @@ const props = defineProps({
 
 const cart = useCartStore();
 
-// Images Gallery
+// Safe Image URL Resolver
+const resolveMediaUrl = (img) => {
+    if (!img) return null;
+    if (typeof img === 'object' && img.url) return img.url;
+    if (typeof img !== 'string') return null;
+    if (img.startsWith('http://') || img.startsWith('https://')) return img;
+    const trimmed = img.replace(/^\/+/, '');
+    if (trimmed.startsWith('assets/') || trimmed.startsWith('images/')) {
+        return `/${trimmed}`;
+    }
+    if (trimmed.startsWith('storage/')) {
+        return `/${trimmed}`;
+    }
+    return `/storage/${trimmed}`;
+};
+
+// Images Gallery (combines primary_image, gallery_urls, gallery_items, and gallery raw)
 const allImages = computed(() => {
     const list = [];
-    if (props.product.primary_image) list.push(props.product.primary_image);
-    if (props.product.gallery && Array.isArray(props.product.gallery)) {
-        props.product.gallery.forEach(img => {
-            const url = img.startsWith('http') ? img : `/storage/${img}`;
-            if (!list.includes(url)) list.push(url);
+    
+    // 1. Primary image
+    const primary = resolveMediaUrl(props.product.primary_image || props.product.thumbnail);
+    if (primary && !list.includes(primary)) {
+        list.push(primary);
+    }
+
+    // 2. Gallery URLs (Backend Accessor)
+    if (Array.isArray(props.product.gallery_urls) && props.product.gallery_urls.length > 0) {
+        props.product.gallery_urls.forEach(url => {
+            const resolved = resolveMediaUrl(url);
+            if (resolved && !list.includes(resolved)) {
+                list.push(resolved);
+            }
         });
     }
+
+    // 3. Gallery Items (Backend Accessor)
+    if (Array.isArray(props.product.gallery_items) && props.product.gallery_items.length > 0) {
+        props.product.gallery_items.forEach(item => {
+            const resolved = resolveMediaUrl(item?.url || item?.raw);
+            if (resolved && !list.includes(resolved)) {
+                list.push(resolved);
+            }
+        });
+    }
+
+    // 4. Raw Gallery array fallback
+    if (Array.isArray(props.product.gallery) && props.product.gallery.length > 0) {
+        props.product.gallery.forEach(img => {
+            const resolved = resolveMediaUrl(img);
+            if (resolved && !list.includes(resolved)) {
+                list.push(resolved);
+            }
+        });
+    }
+
     return list.length > 0 ? list : ['/images/placeholder.jpg'];
 });
 
-const selectedImage = ref(allImages.value[0]);
+const selectedImage = ref(allImages.value[0] || '/images/placeholder.jpg');
 
 // Variants & Options
 const availableSizes = computed(() => {
@@ -163,7 +209,12 @@ const submitReview = () => {
                             class="w-16 h-20 rounded-xl overflow-hidden border-2 bg-slate-100 dark:bg-slate-800 shrink-0 transition-all"
                             :class="selectedImage === img ? 'border-rose-600 shadow-md ring-2 ring-rose-500/20' : 'border-slate-200 dark:border-slate-700 opacity-70 hover:opacity-100'"
                         >
-                            <img :src="img" :alt="`${product.name} preview ${idx + 1}`" class="w-full h-full object-cover" />
+                            <img
+                                :src="img"
+                                :alt="`${product.name} preview ${idx + 1}`"
+                                class="w-full h-full object-cover"
+                                @error="$event.target.src = '/images/placeholder.jpg'"
+                            />
                         </button>
                     </div>
 
@@ -173,6 +224,7 @@ const submitReview = () => {
                             :src="selectedImage"
                             :alt="product.name"
                             class="w-full h-full object-cover object-center transition-all duration-300"
+                            @error="$event.target.src = '/images/placeholder.jpg'"
                         />
 
                         <!-- Badges Overlay -->

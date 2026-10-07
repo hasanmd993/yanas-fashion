@@ -315,10 +315,11 @@ const hasTextOverlay = (slider) => {
                 >
                     <div class="w-16 h-16 sm:w-24 sm:h-24 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 group-hover:border-rose-500 transition-colors mb-2.5 sm:mb-3">
                         <img
-                            :src="cat.image_url"
+                            :src="cat.image_url || (cat.image ? (cat.image.startsWith('http') ? cat.image : (cat.image.startsWith('/') ? cat.image : (cat.image.startsWith('assets/') ? `/${cat.image}` : `/storage/${cat.image}`))) : '/images/placeholder.jpg')"
                             :alt="cat.name"
                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                             loading="lazy"
+                            @error="$event.target.src = '/images/placeholder.jpg'"
                         />
                     </div>
                     <h3 class="text-xs font-bold text-slate-800 dark:text-white group-hover:text-rose-600 transition-colors truncate w-full px-1">
