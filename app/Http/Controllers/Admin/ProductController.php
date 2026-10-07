@@ -129,6 +129,8 @@ class ProductController extends Controller
             'thumbnail' => 'nullable|string',
             'thumbnail_file' => 'nullable|image|max:10240',
             'gallery_files.*' => 'nullable|image|max:10240',
+            'existing_gallery' => 'nullable|array',
+            'existing_gallery.*' => 'nullable|string',
             'sizes' => 'nullable|string',
             'badge' => 'nullable|string|max:50',
             'short_desc' => 'nullable|string',
@@ -144,14 +146,29 @@ class ProductController extends Controller
             $validated['thumbnail'] = $product->thumbnail;
         }
 
-        // Process Gallery Files
+        // Process Gallery Files and retain user-selected existing gallery items
+        $gallery = $request->input('existing_gallery', []);
+        if (!is_array($gallery)) {
+            $gallery = [];
+        }
+
+        // Delete any removed images from disk if they were previously uploaded storage files
+        if (is_array($product->gallery)) {
+            foreach ($product->gallery as $oldPath) {
+                if (!in_array($oldPath, $gallery) && !str_starts_with($oldPath, '/assets/') && !str_starts_with($oldPath, 'http')) {
+                    ImageService::delete($oldPath);
+                }
+            }
+        }
+
+        // Append newly uploaded gallery files
         if ($request->hasFile('gallery_files')) {
-            $gallery = $product->gallery ?? [];
             foreach ($request->file('gallery_files') as $gFile) {
                 $gallery[] = ImageService::uploadAndOptimize($gFile, 'products/gallery', 1200, 82);
             }
-            $validated['gallery'] = $gallery;
         }
+
+        $validated['gallery'] = array_values($gallery);
 
         $sizes = [];
         if ($request->filled('sizes')) {

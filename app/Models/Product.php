@@ -74,6 +74,7 @@ class Product extends Model
         'discount_percent',
         'primary_image',
         'gallery_urls',
+        'gallery_items',
         'name',
     ];
 
@@ -101,6 +102,23 @@ class Product extends Model
         return array_map(function ($img) {
             return resolve_image_url($img, 'images/placeholder.jpg');
         }, $this->gallery);
+    }
+
+    public function getGalleryItemsAttribute(): array
+    {
+        if (empty($this->gallery) || !is_array($this->gallery)) {
+            return [];
+        }
+        $items = [];
+        foreach ($this->gallery as $raw) {
+            if (!empty($raw)) {
+                $items[] = [
+                    'raw' => $raw,
+                    'url' => resolve_image_url($raw, 'images/placeholder.jpg'),
+                ];
+            }
+        }
+        return $items;
     }
 
     public function category(): BelongsTo
