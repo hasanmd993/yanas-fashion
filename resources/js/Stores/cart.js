@@ -24,7 +24,7 @@ export const useCartStore = defineStore('cart', {
         discountAmount: (state) => {
             if (!state.coupon) return 0;
             const subtotal = state.items.reduce((sum, item) => sum + (Number(item.price) || 0) * (Number(item.quantity) || 1), 0);
-            if (state.coupon.type === 'percentage') {
+            if (state.coupon.type === 'percent' || state.coupon.type === 'percentage') {
                 return Math.round((subtotal * Number(state.coupon.value)) / 100);
             }
             return Math.min(Number(state.coupon.value) || 0, subtotal);
@@ -32,11 +32,10 @@ export const useCartStore = defineStore('cart', {
 
         shippingCharge: (state) => {
             const subtotal = state.items.reduce((sum, item) => sum + (Number(item.price) || 0) * (Number(item.quantity) || 1), 0);
-            // Free delivery threshold 2500 BDT
-            if (subtotal >= 2500 && subtotal > 0) {
-                return 0;
+            // Free delivery threshold 3000 BDT for inside Dhaka (aligns with backend settings)
+            if (state.deliveryType === 'inside_dhaka') {
+                return (subtotal >= 3000 && subtotal > 0) ? 0 : 70;
             }
-            if (state.deliveryType === 'inside_dhaka') return 70;
             if (state.deliveryType === 'dhaka_suburbs') return 100;
             return 130;
         },

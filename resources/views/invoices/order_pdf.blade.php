@@ -222,11 +222,11 @@
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>
-                        <strong>{{ $item->product_title }}</strong>
+                        <strong>{{ $item->product_name }}</strong>
                     </td>
                     <td class="text-center">{{ $item->size ?? 'Standard' }}</td>
                     <td class="text-center">{{ $item->quantity }}</td>
-                    <td class="text-right">{{ number_format($item->subtotal) }}</td>
+                    <td class="text-right">{{ number_format($item->total_price) }}</td>
                 </tr>
             @endforeach
         </tbody>

@@ -28,13 +28,19 @@ class OrderController extends Controller
         }
 
         $orders = $query->paginate(15)->withQueryString();
+
+        $rawCounts = Order::selectRaw('order_status, count(*) as count')
+            ->groupBy('order_status')
+            ->pluck('count', 'order_status')
+            ->toArray();
+
         $statusCounts = [
-            'all' => Order::count(),
-            'pending' => Order::where('order_status', 'pending')->count(),
-            'processing' => Order::where('order_status', 'processing')->count(),
-            'shipped' => Order::where('order_status', 'shipped')->count(),
-            'delivered' => Order::where('order_status', 'delivered')->count(),
-            'cancelled' => Order::where('order_status', 'cancelled')->count(),
+            'all' => array_sum($rawCounts),
+            'pending' => (int) ($rawCounts['pending'] ?? 0),
+            'processing' => (int) ($rawCounts['processing'] ?? 0),
+            'shipped' => (int) ($rawCounts['shipped'] ?? 0),
+            'delivered' => (int) ($rawCounts['delivered'] ?? 0),
+            'cancelled' => (int) ($rawCounts['cancelled'] ?? 0),
         ];
 
         return \Inertia\Inertia::render('Admin/Orders/Index', [
@@ -70,11 +76,7 @@ class OrderController extends Controller
         ]);
 
         if ($request->order_status === 'shipped' && $previousStatus !== 'shipped') {
-            try {
-                app(\App\Services\Sms\SmsService::class)->sendOrderShipped($order);
-            } catch (\Throwable $e) {
-                \Illuminate\Support\Facades\Log::error('Automated Order Shipped SMS failed: ' . $e->getMessage());
-            }
+            \App\Jobs\SendOrderSmsJob::dispatch($order, 'order_shipped');
         }
 
         return redirect()->back()->with('success', "Order #{$order->order_number} status updated successfully!");
@@ -135,7 +137,7 @@ class OrderController extends Controller
             });
         }
 
-        $orders = $query->get();
+        $orders = $query->take(500)->get();
 
         $totalRevenue = $orders->sum('total_amount');
         $statusCounts = [

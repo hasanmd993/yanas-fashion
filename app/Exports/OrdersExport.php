@@ -60,7 +60,7 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping, ShouldA
     public function map($order): array
     {
         $itemsSummary = $order->items->map(function ($item) {
-            return "{$item->product_title} (" . ($item->size ?? 'Standard') . ") x{$item->quantity}";
+            return "{$item->product_name} (" . ($item->size ?? 'Standard') . ") x{$item->quantity}";
         })->implode(', ');
 
         return [

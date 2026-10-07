@@ -26,6 +26,21 @@ class OrderItem extends Model
         'total_price' => 'decimal:2',
     ];
 
+    protected $appends = [
+        'product_title',
+        'subtotal',
+    ];
+
+    public function getProductTitleAttribute(): string
+    {
+        return $this->product_name ?? '';
+    }
+
+    public function getSubtotalAttribute(): float
+    {
+        return (float) ($this->total_price ?? ($this->unit_price * $this->quantity));
+    }
+
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);

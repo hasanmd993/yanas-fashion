@@ -57,7 +57,7 @@ class HandleInertiaRequests extends Middleware
                 'warning' => fn () => $request->session()->get('warning'),
                 'info' => fn () => $request->session()->get('info'),
             ],
-            'settings' => [
+            'settings' => fn () => [
                 'site_name' => function_exists('get_setting') ? get_setting('site_name', 'Yanas Fashion') : 'Yanas Fashion',
                 'site_logo' => function_exists('get_logo_url') ? get_logo_url() : asset('images/logo.png'),
                 'site_favicon' => function_exists('get_favicon_url') ? get_favicon_url() : asset('favicon.ico'),
@@ -68,7 +68,7 @@ class HandleInertiaRequests extends Middleware
                 'inside_dhaka_charge' => function_exists('get_setting') ? (float) get_setting('inside_dhaka_charge', 70) : 70,
                 'suburbs_charge' => function_exists('get_setting') ? (float) get_setting('suburbs_charge', 100) : 100,
                 'outside_dhaka_charge' => function_exists('get_setting') ? (float) get_setting('outside_dhaka_charge', 130) : 130,
-                'free_shipping_threshold' => function_exists('get_setting') ? (float) get_setting('free_shipping_threshold', 2500) : 2500,
+                'free_shipping_threshold' => function_exists('get_setting') ? (float) get_setting('free_shipping_threshold', 3000) : 3000,
             ],
             'navigation_categories' => fn () => Category::query()
                 ->whereNull('parent_id')
@@ -86,44 +86,46 @@ class HandleInertiaRequests extends Middleware
                     return [];
                 }
 
-                $notifications = [];
+                return \Illuminate\Support\Facades\Cache::remember('admin_quick_notifications', 30, function () {
+                    $notifications = [];
 
-                // 1. Pending Orders Notifications
-                $pendingOrders = \App\Models\Order::where('order_status', 'pending')
-                    ->latest()
-                    ->take(5)
-                    ->get();
+                    // 1. Pending Orders Notifications
+                    $pendingOrders = \App\Models\Order::where('order_status', 'pending')
+                        ->latest()
+                        ->take(5)
+                        ->get();
 
-                foreach ($pendingOrders as $order) {
-                    $notifications[] = [
-                        'id' => 'order-' . $order->id,
-                        'type' => 'order',
-                        'title' => 'New Order #' . $order->order_number,
-                        'description' => 'Placed by ' . ($order->customer_name ?: 'Customer') . ' (৳' . number_format($order->total_amount) . ')',
-                        'time' => $order->created_at ? $order->created_at->diffForHumans(null, true) . ' ago' : 'Recent',
-                        'isRead' => false,
-                        'route' => 'admin.orders.index',
-                    ];
-                }
+                    foreach ($pendingOrders as $order) {
+                        $notifications[] = [
+                            'id' => 'order-' . $order->id,
+                            'type' => 'order',
+                            'title' => 'New Order #' . $order->order_number,
+                            'description' => 'Placed by ' . ($order->customer_name ?: 'Customer') . ' (৳' . number_format($order->total_amount) . ')',
+                            'time' => $order->created_at ? $order->created_at->diffForHumans(null, true) . ' ago' : 'Recent',
+                            'isRead' => false,
+                            'route' => 'admin.orders.index',
+                        ];
+                    }
 
-                // 2. Low Stock Products Notifications
-                $lowStock = \App\Models\Product::where('stock_qty', '<=', 5)
-                    ->take(3)
-                    ->get();
+                    // 2. Low Stock Products Notifications
+                    $lowStock = \App\Models\Product::where('stock_qty', '<=', 5)
+                        ->take(3)
+                        ->get();
 
-                foreach ($lowStock as $prod) {
-                    $notifications[] = [
-                        'id' => 'stock-' . $prod->id,
-                        'type' => 'stock',
-                        'title' => 'Low Stock Warning',
-                        'description' => $prod->title . ' has only ' . $prod->stock_qty . ' items left',
-                        'time' => 'Inventory alert',
-                        'isRead' => false,
-                        'route' => 'admin.products.index',
-                    ];
-                }
+                    foreach ($lowStock as $prod) {
+                        $notifications[] = [
+                            'id' => 'stock-' . $prod->id,
+                            'type' => 'stock',
+                            'title' => 'Low Stock Warning',
+                            'description' => $prod->title . ' has only ' . $prod->stock_qty . ' items left',
+                            'time' => 'Inventory alert',
+                            'isRead' => false,
+                            'route' => 'admin.products.index',
+                        ];
+                    }
 
-                return $notifications;
+                    return $notifications;
+                });
             },
         ];
     }

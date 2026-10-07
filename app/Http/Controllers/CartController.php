@@ -130,15 +130,26 @@ class CartController extends Controller
 
     public function sync(Request $request)
     {
+        $request->validate([
+            'items' => 'nullable|array|max:50',
+            'items.*.id' => 'nullable|integer',
+            'items.*.product_id' => 'nullable|integer',
+            'items.*.quantity' => 'nullable|integer|min:1|max:99',
+            'items.*.size' => 'nullable|string|max:50',
+            'items.*.color' => 'nullable|string|max:50',
+        ]);
+
         $items = $request->input('items', []);
         $cart = [];
 
+        $productIds = collect($items)->map(fn($item) => $item['id'] ?? $item['product_id'] ?? null)->filter()->unique()->values();
+        $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+
         foreach ($items as $item) {
             $productId = $item['id'] ?? $item['product_id'] ?? null;
-            if (!$productId) continue;
+            if (!$productId || !isset($products[$productId])) continue;
 
-            $product = Product::find($productId);
-            if (!$product) continue;
+            $product = $products[$productId];
 
             $key = $item['key'] ?? ($productId . '-' . ($item['size'] ?? 'default') . '-' . ($item['color'] ?? 'default'));
             $quantity = max(1, (int) ($item['quantity'] ?? 1));

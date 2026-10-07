@@ -402,7 +402,7 @@
                         <div class="items-list">
                             @foreach($order->items as $item)
                                 <div class="item-row">
-                                    • {{ $item->product_title ?? 'Product' }}
+                                    • {{ $item->product_name ?? 'Product' }}
                                     @if($item->size)
                                         <span class="item-size">({{ $item->size }})</span>
                                     @endif

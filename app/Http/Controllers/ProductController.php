@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Review;
 use Illuminate\Http\Request;
@@ -38,13 +39,32 @@ class ProductController extends Controller
             'comment' => 'required|string|max:1500',
         ]);
 
+        $cleanName = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $validated['name']);
+        $cleanName = strip_tags(trim($cleanName));
+
+        $cleanComment = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $validated['comment']);
+        $cleanComment = strip_tags(trim($cleanComment));
+
+        $email = $validated['email'] ?? null;
+
+        // Verified buyer check: customer must have a delivered, completed, or shipped order containing this product
+        $isVerifiedBuyer = false;
+        if (!empty($cleanName)) {
+            $isVerifiedBuyer = OrderItem::where('product_id', $product->id)
+                ->whereHas('order', function ($query) use ($cleanName) {
+                    $query->where('customer_name', $cleanName)
+                        ->whereIn('order_status', ['delivered', 'completed', 'shipped']);
+                })
+                ->exists();
+        }
+
         $review = new Review();
         $review->product_id = $product->id;
-        $review->name = $validated['name'];
-        $review->email = $validated['email'] ?? null;
+        $review->name = $cleanName;
+        $review->email = $email;
         $review->rating = $validated['rating'];
-        $review->comment = $validated['comment'];
-        $review->is_verified_buyer = true;
+        $review->comment = $cleanComment;
+        $review->is_verified_buyer = $isVerifiedBuyer;
         $review->is_approved = true;
         $review->save();
 

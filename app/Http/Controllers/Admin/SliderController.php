@@ -19,7 +19,7 @@ class SliderController extends Controller
 
     public function create()
     {
-        return view('admin.sliders.create');
+        return redirect()->route('admin.sliders.index');
     }
 
     public function store(Request $request)
@@ -54,8 +54,7 @@ class SliderController extends Controller
 
     public function edit($id)
     {
-        $slider = Slider::findOrFail($id);
-        return view('admin.sliders.edit', compact('slider'));
+        return redirect()->route('admin.sliders.index');
     }
 
     public function update(Request $request, $id)

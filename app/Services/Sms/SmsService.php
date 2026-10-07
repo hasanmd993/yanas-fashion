@@ -129,7 +129,7 @@ class SmsService
      */
     protected function sendViaGreenweb(string $token, string $to, string $message): array
     {
-        $response = Http::timeout(15)->asForm()->post('http://api.greenweb.com.bd/api.php', [
+        $response = Http::timeout(15)->asForm()->post('https://api.greenweb.com.bd/api.php', [
             'token' => $token,
             'to' => $to,
             'message' => $message,
@@ -167,7 +167,7 @@ class SmsService
             'message' => $message,
         ];
 
-        $response = Http::timeout(15)->asForm()->post('http://bulksmsbd.net/api/smsapi', $payload);
+        $response = Http::timeout(15)->asForm()->post('https://bulksmsbd.net/api/smsapi', $payload);
         $data = $response->json();
 
         // BulkSMSBD returns response_code 202 on accepted/submitted
@@ -209,6 +209,35 @@ class SmsService
             [urlencode($apiKey), urlencode($apiKey), urlencode($senderId), urlencode($senderId), urlencode($to), urlencode($to), urlencode($to), urlencode($message), urlencode($message)],
             $genericUrl
         );
+
+        $parsed = parse_url($url);
+        $scheme = strtolower($parsed['scheme'] ?? '');
+        $host = $parsed['host'] ?? '';
+
+        if (!in_array($scheme, ['http', 'https']) || empty($host)) {
+            return [
+                'success' => false,
+                'message' => 'Invalid Generic SMS Gateway URL format.',
+                'response' => null,
+            ];
+        }
+
+        $ip = gethostbyname($host);
+        if ($ip === $host && filter_var($ip, FILTER_VALIDATE_IP) === false) {
+            return [
+                'success' => false,
+                'message' => 'Unable to resolve Generic SMS Gateway hostname.',
+                'response' => null,
+            ];
+        }
+
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
+            return [
+                'success' => false,
+                'message' => 'Generic SMS Gateway URL resolves to a private or reserved network address.',
+                'response' => null,
+            ];
+        }
 
         $response = Http::timeout(15)->get($url);
 
@@ -313,7 +342,7 @@ class SmsService
             }
 
             try {
-                $response = Http::timeout(10)->get("http://api.greenweb.com.bd/grebxml.php?token={$apiKey}&balance");
+                $response = Http::timeout(10)->get("https://api.greenweb.com.bd/grebxml.php?token={$apiKey}&balance");
                 return [
                     'success' => true,
                     'balance' => trim($response->body()),
@@ -328,7 +357,7 @@ class SmsService
             }
 
             try {
-                $response = Http::timeout(10)->get("http://bulksmsbd.net/api/getBalanceApi?api_key={$apiKey}");
+                $response = Http::timeout(10)->get("https://bulksmsbd.net/api/getBalanceApi?api_key={$apiKey}");
                 $data = $response->json();
                 return [
                     'success' => true,

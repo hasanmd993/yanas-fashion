@@ -39,13 +39,14 @@ class CheckoutController extends Controller
                 ]
             ];
         } else {
-            // Re-sync all session cart items strictly against current Database prices
+            // Re-sync all session cart items strictly against current Database prices (Single Batch Query)
+            $productIds = collect($cart)->map(fn($item) => $item['product_id'] ?? $item['id'] ?? null)->filter()->unique()->values();
+            $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
             $dbCart = [];
             foreach ($cart as $k => $item) {
                 $pid = $item['product_id'] ?? $item['id'] ?? null;
-                if (!$pid) continue;
-                $product = Product::find($pid);
-                if (!$product) continue;
+                if (!$pid || !isset($products[$pid])) continue;
+                $product = $products[$pid];
 
                 $dbPrice = (float) ($product->sale_price ?? $product->regular_price ?? 0);
                 $dbCart[$k] = array_merge($item, [
@@ -114,11 +115,13 @@ class CheckoutController extends Controller
         }
 
         $cart = session()->get('cart', []);
+        $productIds = collect($cart)->map(fn($item) => $item['product_id'] ?? $item['id'] ?? null)->filter()->unique()->values();
+        $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
         $subtotal = 0;
         foreach ($cart as $item) {
             $pid = $item['product_id'] ?? $item['id'] ?? null;
-            if ($pid && $dbProd = Product::find($pid)) {
-                $itemPrice = (float) ($dbProd->sale_price ?? $dbProd->regular_price ?? 0);
+            if ($pid && isset($products[$pid])) {
+                $itemPrice = (float) ($products[$pid]->sale_price ?? $products[$pid]->regular_price ?? 0);
             } else {
                 $itemPrice = (float) ($item['price'] ?? 0);
             }
@@ -200,13 +203,15 @@ class CheckoutController extends Controller
                 return redirect()->route('shop.index')->with('error', 'Your cart is empty!');
             }
 
+            $productIds = collect($rawItems)->map(fn($item) => $item['product_id'] ?? $item['id'] ?? null)->filter()->unique()->values();
+            $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+
             foreach ($rawItems as $item) {
                 $pid = $item['product_id'] ?? $item['id'] ?? null;
-                if (!$pid) continue;
+                if (!$pid || !isset($products[$pid])) continue;
                 
-                // Fetch product directly from DB
-                $product = Product::find($pid);
-                if (!$product) continue;
+                // Fetch product directly from batch
+                $product = $products[$pid];
 
                 $dbPrice = (float) ($product->sale_price ?? $product->regular_price ?? 0);
                 $qty = max(1, (int) ($item['quantity'] ?? 1));
@@ -289,18 +294,13 @@ class CheckoutController extends Controller
             return $order;
         });
 
-        // Trigger automated SMS notifications (Customer Order Placed & Admin Alert)
-        try {
-            $smsService = app(\App\Services\Sms\SmsService::class);
-            $smsService->sendOrderPlaced($order);
-            $smsService->sendAdminNewOrderAlert($order);
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error('Automated Order Placed SMS failed: ' . $e->getMessage());
-        }
+        // Trigger queued SMS notifications (Customer Order Placed & Admin Alert)
+        \App\Jobs\SendOrderSmsJob::dispatch($order, 'order_placed');
 
         // Clear Cart and Coupon sessions
         session()->forget('cart');
         session()->forget('coupon');
+        session()->put('verified_order_' . $order->order_number, true);
 
         return redirect()->route('checkout.success', $order->order_number);
     }
@@ -308,6 +308,7 @@ class CheckoutController extends Controller
     public function success($order_number)
     {
         $order = Order::with('items')->where('order_number', $order_number)->firstOrFail();
+        session()->put('verified_order_' . $order->order_number, true);
         $whatsappNumber = Setting::get('whatsapp_number', '8801713580400');
 
         // Pre-formatted WhatsApp message for customer confirmation
@@ -330,16 +331,33 @@ class CheckoutController extends Controller
         );
 
         $whatsappUrl = "https://wa.me/{$whatsappNumber}?text={$waMessage}";
+        $invoiceUrl = \Illuminate\Support\Facades\URL::temporarySignedRoute(
+            'order.invoice',
+            now()->addDays(7),
+            ['order_number' => $order->order_number]
+        );
 
         return \Inertia\Inertia::render('Checkout/Success', [
             'order' => $order,
             'whatsappUrl' => $whatsappUrl,
+            'invoiceUrl' => $invoiceUrl,
         ]);
     }
 
-    public function downloadInvoice($order_number)
+    public function downloadInvoice(Request $request, $order_number)
     {
         $order = Order::with('items')->where('order_number', $order_number)->firstOrFail();
+
+        // Security authorization check
+        $isAuthorized = auth()->check()
+            || $request->hasValidSignature()
+            || session()->get('verified_order_' . $order_number) === true
+            || ($request->filled('phone') && preg_replace('/[^0-9]/', '', (string)$request->phone) === preg_replace('/[^0-9]/', '', (string)$order->customer_phone));
+
+        if (!$isAuthorized) {
+            abort(403, 'Unauthorized access to invoice. Please track your order or use the secure link provided upon checkout.');
+        }
+
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('invoices.order_pdf', compact('order'));
         return $pdf->download("Invoice-{$order->order_number}.pdf");
     }

@@ -44,12 +44,7 @@ class CategoryController extends Controller
 
     public function create()
     {
-        $parentCategories = Category::with('children')
-            ->whereNull('parent_id')
-            ->orderBy('sort_order', 'asc')
-            ->get();
-
-        return view('admin.categories.create', compact('parentCategories'));
+        return redirect()->route('admin.categories.index');
     }
 
     public function store(Request $request)
@@ -93,16 +88,7 @@ class CategoryController extends Controller
 
     public function edit($id)
     {
-        $category = Category::with('parent')->findOrFail($id);
-        $excludeIds = $category->getAllDescendantIds();
-
-        $parentCategories = Category::with('children')
-            ->whereNull('parent_id')
-            ->whereNotIn('id', $excludeIds)
-            ->orderBy('sort_order', 'asc')
-            ->get();
-
-        return view('admin.categories.edit', compact('category', 'parentCategories', 'excludeIds'));
+        return redirect()->route('admin.categories.index');
     }
 
     public function update(Request $request, $id)

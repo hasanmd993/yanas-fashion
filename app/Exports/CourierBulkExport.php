@@ -42,7 +42,7 @@ class CourierBulkExport implements FromCollection, WithHeadings, WithMapping, Sh
     public function map($order): array
     {
         $itemsList = $order->items->map(function ($item) {
-            return "{$item->product_title} (" . ($item->size ?? 'Std') . ") x{$item->quantity}";
+            return "{$item->product_name} (" . ($item->size ?? 'Std') . ") x{$item->quantity}";
         })->implode('; ');
 
         return [

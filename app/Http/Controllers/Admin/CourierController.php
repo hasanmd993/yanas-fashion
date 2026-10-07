@@ -43,11 +43,7 @@ class CourierController extends Controller
         }
 
         if ($result['success']) {
-            try {
-                app(\App\Services\Sms\SmsService::class)->sendOrderShipped($order->fresh());
-            } catch (\Throwable $e) {
-                \Illuminate\Support\Facades\Log::error('Courier Dispatch Shipped SMS failed: ' . $e->getMessage());
-            }
+            \App\Jobs\SendOrderSmsJob::dispatch($order->fresh(), 'order_shipped');
 
             return redirect()->back()->with('success', $result['message']);
         }
@@ -102,11 +98,7 @@ class CourierController extends Controller
             'order_status' => ($order->order_status === 'pending') ? 'shipped' : $order->order_status,
         ]);
 
-        try {
-            app(\App\Services\Sms\SmsService::class)->sendOrderShipped($order->fresh());
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error('Manual Courier Shipped SMS failed: ' . $e->getMessage());
-        }
+        \App\Jobs\SendOrderSmsJob::dispatch($order->fresh(), 'order_shipped');
 
         return redirect()->back()->with('success', "Assigned {$request->courier_name} tracking (#{$request->courier_tracking_code}) successfully!");
     }

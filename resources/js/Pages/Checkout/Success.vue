@@ -23,6 +23,10 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    invoiceUrl: {
+        type: String,
+        default: null,
+    },
 });
 </script>
 
@@ -136,7 +140,7 @@ const props = defineProps({
                 <!-- Action Buttons -->
                 <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
                     <a
-                        :href="route('order.invoice', order.order_number)"
+                        :href="invoiceUrl || route('order.invoice', order.order_number)"
                         class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-white hover:bg-slate-50 transition-colors"
                     >
                         <Download class="w-4 h-4" /> Download PDF Invoice

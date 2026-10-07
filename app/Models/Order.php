@@ -65,7 +65,9 @@ class Order extends Model
         parent::boot();
         static::creating(function ($order) {
             if (empty($order->order_number)) {
-                $order->order_number = 'YF-' . mt_rand(10000, 99999);
+                do {
+                    $order->order_number = 'YF-' . date('ymd') . strtoupper(Str::random(4));
+                } while (static::where('order_number', $order->order_number)->exists());
             }
         });
     }

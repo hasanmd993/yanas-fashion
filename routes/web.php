@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 // Authentication Routes (Vue 3 / Inertia)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
+    Route::post('/login', [LoginController::class, 'login'])->name('login.submit')->middleware('throttle:5,1');
 });
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
@@ -35,7 +35,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/sitemap.xml', [HomeController::class, 'sitemap'])->name('sitemap');
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
-Route::post('/product/{id}/review', [ProductController::class, 'storeReview'])->name('product.review.store');
+Route::post('/product/{id}/review', [ProductController::class, 'storeReview'])->name('product.review.store')->middleware('throttle:5,1');
 
 // Live AJAX Search & Quick-view
 Route::get('/api/search-products', [ShopController::class, 'searchApi'])->name('api.search');
@@ -52,14 +52,14 @@ Route::post('/cart/sync', [CartController::class, 'sync'])->name('cart.sync');
 
 // 1-Page Bangladeshi Fast Checkout
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
-Route::post('/checkout/coupon', [CheckoutController::class, 'applyCoupon'])->name('checkout.coupon');
+Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store')->middleware('throttle:10,1');
+Route::post('/checkout/coupon', [CheckoutController::class, 'applyCoupon'])->name('checkout.coupon')->middleware('throttle:15,1');
 Route::get('/order-confirmed/{order_number}', [CheckoutController::class, 'success'])->name('checkout.success');
 Route::get('/order/{order_number}/invoice', [CheckoutController::class, 'downloadInvoice'])->name('order.invoice');
 
 // Order Tracking
 Route::get('/order-tracking', [OrderTrackingController::class, 'index'])->name('tracking.index');
-Route::post('/order-tracking', [OrderTrackingController::class, 'track'])->name('tracking.track');
+Route::post('/order-tracking', [OrderTrackingController::class, 'track'])->name('tracking.track')->middleware('throttle:10,1');
 
 // Protected Admin Panel Routes
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {

@@ -23,7 +23,7 @@ class CouponController extends Controller
 
     public function create()
     {
-        return view('admin.coupons.create');
+        return redirect()->route('admin.coupons.index');
     }
 
     public function store(Request $request)
@@ -48,8 +48,7 @@ class CouponController extends Controller
 
     public function edit($id)
     {
-        $coupon = Coupon::findOrFail($id);
-        return view('admin.coupons.edit', compact('coupon'));
+        return redirect()->route('admin.coupons.index');
     }
 
     public function update(Request $request, $id)
