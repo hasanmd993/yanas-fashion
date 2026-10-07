@@ -50,44 +50,41 @@ const resolveMediaUrl = (img) => {
     return `/storage/${trimmed}`;
 };
 
-// Images Gallery (combines primary_image, gallery_urls, gallery_items, and gallery raw)
+// Normalize image key for bulletproof deduplication across full URLs and relative paths
+const normalizeImgKey = (url) => {
+    if (!url) return '';
+    const clean = String(url).replace(/^https?:\/\/[^\/]+/i, '').replace(/^\/+/, '').toLowerCase();
+    return clean;
+};
+
+// Images Gallery (Deduplicated, single gallery source priority)
 const allImages = computed(() => {
     const list = [];
-    
-    // 1. Primary image
-    const primary = resolveMediaUrl(props.product.primary_image || props.product.thumbnail);
-    if (primary && !list.includes(primary)) {
-        list.push(primary);
+    const seen = new Set();
+
+    const addImage = (raw) => {
+        if (!raw) return;
+        const resolved = resolveMediaUrl(raw);
+        if (!resolved) return;
+        const key = normalizeImgKey(resolved);
+        if (key && !seen.has(key)) {
+            seen.add(key);
+            list.push(resolved);
+        }
+    };
+
+    // 1. Add primary thumbnail
+    if (props.product.primary_image || props.product.thumbnail) {
+        addImage(props.product.primary_image || props.product.thumbnail);
     }
 
-    // 2. Gallery URLs (Backend Accessor)
+    // 2. Add gallery images from the highest-fidelity source available
     if (Array.isArray(props.product.gallery_urls) && props.product.gallery_urls.length > 0) {
-        props.product.gallery_urls.forEach(url => {
-            const resolved = resolveMediaUrl(url);
-            if (resolved && !list.includes(resolved)) {
-                list.push(resolved);
-            }
-        });
-    }
-
-    // 3. Gallery Items (Backend Accessor)
-    if (Array.isArray(props.product.gallery_items) && props.product.gallery_items.length > 0) {
-        props.product.gallery_items.forEach(item => {
-            const resolved = resolveMediaUrl(item?.url || item?.raw);
-            if (resolved && !list.includes(resolved)) {
-                list.push(resolved);
-            }
-        });
-    }
-
-    // 4. Raw Gallery array fallback
-    if (Array.isArray(props.product.gallery) && props.product.gallery.length > 0) {
-        props.product.gallery.forEach(img => {
-            const resolved = resolveMediaUrl(img);
-            if (resolved && !list.includes(resolved)) {
-                list.push(resolved);
-            }
-        });
+        props.product.gallery_urls.forEach(addImage);
+    } else if (Array.isArray(props.product.gallery_items) && props.product.gallery_items.length > 0) {
+        props.product.gallery_items.forEach(item => addImage(item?.url || item?.raw));
+    } else if (Array.isArray(props.product.gallery) && props.product.gallery.length > 0) {
+        props.product.gallery.forEach(addImage);
     }
 
     return list.length > 0 ? list : ['/images/placeholder.jpg'];
